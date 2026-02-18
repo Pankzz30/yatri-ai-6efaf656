@@ -35,7 +35,7 @@ const Login = () => {
       <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden lg:flex">
         {/* Background gradient */}
         <div className="absolute inset-0 gradient-hero" />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, hsla(262,83%,40%,0.4) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, hsla(200,90%,30%,0.3) 0%, transparent 60%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 40%, hsla(224,76%,55%,0.4) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, hsla(200,88%,50%,0.3) 0%, transparent 60%)" }} />
 
         {/* Grid overlay */}
         <div
@@ -48,7 +48,7 @@ const Login = () => {
 
         {/* Floating orbs */}
         <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/20 blur-3xl float" />
-        <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-indigo-600/20 blur-3xl float-delayed" />
+        <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-sky-300/20 blur-3xl float-delayed" />
 
         <div className="relative z-10 flex flex-col h-full justify-between p-12">
           {/* Logo */}

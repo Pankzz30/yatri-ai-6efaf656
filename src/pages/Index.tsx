@@ -83,9 +83,9 @@ const Index = () => {
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden pt-20">
         {/* Animated background orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-purple-300/30 blur-[120px] float" />
-          <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-indigo-300/25 blur-[100px] float-delayed" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-purple-200/20 blur-[80px] float-slow" />
+          <div className="absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-blue-200/30 blur-[120px] float" />
+          <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-sky-200/25 blur-[100px] float-delayed" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-blue-100/20 blur-[80px] float-slow" />
         </div>
 
         {/* Grid pattern overlay */}
@@ -220,7 +220,7 @@ const Index = () => {
       </section>
 
       {/* ===== FEATURES SECTION ===== */}
-      <section className="relative py-24 overflow-hidden">
+      <section className="relative py-24 overflow-hidden section-light">
         <div className="container mx-auto px-6">
           <motion.div
             variants={sectionVariants}
@@ -254,7 +254,7 @@ const Index = () => {
       {/* ===== HOW IT WORKS ===== */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-purple-200/30 blur-[100px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-blue-100/40 blur-[100px]" />
         </div>
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
@@ -406,7 +406,7 @@ const Index = () => {
               >
                 <Link
                   to="/register"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-white px-10 py-4 text-base font-bold text-purple-700 shadow-2xl transition-all hover:shadow-white/25"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-white px-10 py-4 text-base font-bold text-blue-700 shadow-2xl transition-all hover:shadow-white/25"
                 >
                   <Sparkles size={20} />
                   Get Started Free
