@@ -31,7 +31,7 @@ const AnimatedButton = ({
   const baseClasses = cn(
     "relative inline-flex items-center justify-center gap-2 font-semibold rounded-2xl transition-all duration-300 overflow-hidden cursor-pointer select-none",
     {
-      "gradient-primary text-white shadow-lg hover:shadow-[0_0_30px_hsla(262,83%,65%,0.5)]": variant === "primary",
+      "gradient-primary text-white shadow-lg hover:shadow-[0_0_30px_hsla(347,77%,50%,0.45)]": variant === "primary",
       "glass border border-primary/30 text-foreground hover:border-primary/60": variant === "secondary",
       "text-muted-foreground hover:text-foreground": variant === "ghost",
       "border border-border text-foreground hover:border-primary/50": variant === "outline",

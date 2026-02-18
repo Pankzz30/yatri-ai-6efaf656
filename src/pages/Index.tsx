@@ -31,19 +31,19 @@ const Index = () => {
       icon: <Brain size={28} />,
       title: "AI-Powered Itineraries",
       description: "Our advanced AI analyzes thousands of trips to craft the perfect personalized itinerary tailored to your style, budget, and interests.",
-      gradient: "hsl(262, 83%, 65%)",
+      gradient: "hsl(347, 77%, 50%)",
     },
     {
       icon: <Wallet size={28} />,
       title: "Budget Optimization",
       description: "Smart cost analysis finds the best value experiences, hotels, and transport — maximizing every rupee of your travel budget.",
-      gradient: "hsl(180, 80%, 55%)",
+      gradient: "hsl(355, 80%, 55%)",
     },
     {
       icon: <Compass size={28} />,
       title: "Smart Recommendations",
       description: "Discover hidden gems and nearby attractions powered by real-time data, local insights, and thousands of traveler reviews.",
-      gradient: "hsl(320, 80%, 65%)",
+      gradient: "hsl(340, 75%, 48%)",
     },
   ];
 
@@ -83,16 +83,16 @@ const Index = () => {
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden pt-20">
         {/* Animated background orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-blue-200/30 blur-[120px] float" />
-          <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-sky-200/25 blur-[100px] float-delayed" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-blue-100/20 blur-[80px] float-slow" />
+          <div className="absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-rose-100/40 blur-[120px] float" />
+          <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-red-100/30 blur-[100px] float-delayed" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-rose-50/30 blur-[80px] float-slow" />
         </div>
 
         {/* Grid pattern overlay */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.025]"
           style={{
-            backgroundImage: "linear-gradient(hsl(262,83%,65%) 1px, transparent 1px), linear-gradient(90deg, hsl(262,83%,65%) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, hsl(347,77%,50%) 1px, transparent 1px)",
             backgroundSize: "60px 60px",
           }}
         />
@@ -254,7 +254,7 @@ const Index = () => {
       {/* ===== HOW IT WORKS ===== */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-blue-100/40 blur-[100px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-rose-50/60 blur-[100px]" />
         </div>
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
@@ -406,7 +406,7 @@ const Index = () => {
               >
                 <Link
                   to="/register"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-white px-10 py-4 text-base font-bold text-blue-700 shadow-2xl transition-all hover:shadow-white/25"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-white px-10 py-4 text-base font-bold text-primary shadow-2xl transition-all hover:shadow-white/25"
                 >
                   <Sparkles size={20} />
                   Get Started Free
