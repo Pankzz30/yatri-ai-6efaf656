@@ -129,7 +129,7 @@ const Register = () => {
       </div>
 
       {/* ===== RIGHT PANEL ===== */}
-      <div className="flex w-full items-center justify-center bg-background px-6 py-16 lg:w-1/2">
+      <div className="flex w-full min-h-screen items-center justify-center bg-background px-6 py-12 lg:w-1/2 lg:min-h-0">
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
