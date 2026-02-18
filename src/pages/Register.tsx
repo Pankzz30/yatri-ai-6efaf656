@@ -49,7 +49,7 @@ const Register = () => {
       {/* ===== LEFT PANEL ===== */}
       <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden lg:flex">
         <div className="absolute inset-0 gradient-hero" />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 60% 30%, hsla(262,83%,40%,0.5) 0%, transparent 60%), radial-gradient(ellipse at 30% 80%, hsla(200,90%,30%,0.3) 0%, transparent 60%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 60% 30%, hsla(224,76%,55%,0.5) 0%, transparent 60%), radial-gradient(ellipse at 30% 80%, hsla(200,88%,50%,0.3) 0%, transparent 60%)" }} />
 
         <div
           className="absolute inset-0 opacity-[0.04]"
@@ -60,7 +60,7 @@ const Register = () => {
         />
 
         <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-primary/15 blur-3xl float" />
-        <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-indigo-600/15 blur-3xl float-delayed" />
+        <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-sky-300/15 blur-3xl float-delayed" />
 
         <div className="relative z-10 flex flex-col h-full justify-between p-12">
           {/* Logo */}
