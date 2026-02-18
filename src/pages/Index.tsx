@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
-import SearchBar from "@/components/SearchBar";
+import HeroSearch from "@/components/HeroSearch";
 import DestinationCard from "@/components/DestinationCard";
 import OnboardingModal from "@/components/OnboardingModal";
 import FeatureCard from "@/components/FeatureCard";
@@ -185,7 +185,7 @@ const Index = () => {
             transition={{ delay: 0.4, duration: 0.5 }}
             className="mx-auto max-w-2xl"
           >
-            <SearchBar />
+            <HeroSearch />
           </motion.div>
 
           {/* Stats bar */}
