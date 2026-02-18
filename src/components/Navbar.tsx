@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import LogoComponent from "./LogoComponent";
 import AnimatedButton from "./AnimatedButton";
 
+const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
+
 const Navbar = () => {
   const { isAuthenticated, user, logout } = useUser();
   const location = useLocation();
@@ -17,6 +19,9 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (AUTH_ROUTES.includes(location.pathname)) return null;
+
 
   const navLinks = [
     { to: "/", label: "Home" },

@@ -128,19 +128,19 @@ const Login = () => {
       </div>
 
       {/* ===== RIGHT PANEL ===== */}
-      <div className="flex w-full items-center justify-center bg-background px-6 py-16 lg:w-1/2">
+      <div className="flex w-full min-h-screen items-center justify-center bg-background px-6 py-12 lg:w-1/2 lg:min-h-0">
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           className="w-full max-w-md"
         >
-          {/* Mobile logo */}
+          {/* Mobile logo - only shown when left panel is hidden */}
           <div className="mb-8 flex items-center gap-2 lg:hidden">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl gradient-primary">
               <Sparkles size={15} className="text-white" />
             </div>
-            <span className="text-xl font-bold"><span className="text-gradient">Yatri</span> AI</span>
+            <span className="text-xl font-bold"><span className="text-gradient">Yatri</span><span className="text-foreground/70"> AI</span></span>
           </div>
 
           <div className="mb-8">
