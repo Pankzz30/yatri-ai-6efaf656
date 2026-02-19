@@ -39,7 +39,7 @@ export const destinations: Destination[] = [
     category: ["Historic Places"],
     distance: 230,
     budgetRange: "₹2,500 - ₹6,000",
-    image: "https://images.unsplash.com/photo-1564507592385-ba60e3dca0e7?w=600",
+    image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=600",
     popularityScore: 98,
     description: "Home to the iconic Taj Mahal — a monument of eternal love."
   },
@@ -50,7 +50,7 @@ export const destinations: Destination[] = [
     category: ["Adventure & Trekking", "Spiritual & Religious", "Nature & Scenic"],
     distance: 350,
     budgetRange: "₹2,000 - ₹5,000",
-    image: "https://images.unsplash.com/photo-1600100397608-e4b0f8b6b3d1?w=600",
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600",
     popularityScore: 90,
     description: "The Yoga Capital of the World, nestled along the holy Ganges."
   },
