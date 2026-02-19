@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { Home, Heart, Map, Sparkles } from "lucide-react";
 
+const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
+
 const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/plan", label: "AI Plan", icon: Sparkles },
@@ -11,6 +13,8 @@ const navItems = [
 
 const MobileBottomNav = () => {
   const location = useLocation();
+
+  if (AUTH_ROUTES.includes(location.pathname)) return null;
 
   const isActive = (path: string) =>
     path === "/" ? location.pathname === "/" : location.pathname === path;
