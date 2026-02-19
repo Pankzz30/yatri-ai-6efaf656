@@ -3,25 +3,28 @@ import { useEffect, useState } from "react";
 
 interface SvgLogoProps {
   stage: "hidden" | "stroke" | "fill" | "done";
+  fast?: boolean;
 }
 
-const SvgLogo = ({ stage }: SvgLogoProps) => {
+const SvgLogo = ({ stage, fast = false }: SvgLogoProps) => {
   const [shimmer, setShimmer] = useState(false);
 
   useEffect(() => {
     if (stage === "fill") {
-      const t = setTimeout(() => setShimmer(true), 400);
+      const t = setTimeout(() => setShimmer(true), fast ? 150 : 400);
       return () => clearTimeout(t);
     }
     setShimmer(false);
-  }, [stage]);
+  }, [stage, fast]);
+
+  const strokeDuration = fast ? 0.45 : 1.4;
 
   const strokeVariants = {
     hidden: { pathLength: 0, opacity: 0 },
     visible: {
       pathLength: 1,
       opacity: 1,
-      transition: { duration: 1.4, ease: [0.4, 0, 0.2, 1] as [number,number,number,number] },
+      transition: { duration: strokeDuration, ease: [0.4, 0, 0.2, 1] as [number,number,number,number] },
     },
   };
 
@@ -29,7 +32,7 @@ const SvgLogo = ({ stage }: SvgLogoProps) => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { duration: 0.6, ease: "easeOut" as const },
+      transition: { duration: fast ? 0.3 : 0.6, ease: "easeOut" as const },
     },
   };
 
@@ -60,26 +63,26 @@ const SvgLogo = ({ stage }: SvgLogoProps) => {
         }}
       />
 
-      {/* SVG icon mark */}
+      {/* SVG icon mark — car shape */}
       <div className="relative">
         <svg
-          width="80"
+          width="100"
           height="80"
-          viewBox="0 0 80 80"
+          viewBox="0 0 100 80"
           fill="none"
           className="overflow-visible"
         >
-          {/* Rounded rect background — fills in */}
+          {/* Rounded rect background */}
           <motion.rect
-            x="4" y="4" width="72" height="72" rx="20"
+            x="2" y="4" width="96" height="72" rx="18"
             fill="hsl(347,77%,50%)"
             variants={fillVariants}
             initial="hidden"
             animate={isFill ? "visible" : "hidden"}
           />
-          {/* Stroke outline of rect */}
+          {/* Stroke outline */}
           <motion.rect
-            x="4" y="4" width="72" height="72" rx="20"
+            x="2" y="4" width="96" height="72" rx="18"
             stroke="hsl(347,77%,50%)"
             strokeWidth="2.5"
             fill="none"
@@ -88,11 +91,12 @@ const SvgLogo = ({ stage }: SvgLogoProps) => {
             animate={isStroke ? "visible" : "hidden"}
           />
 
-          {/* Abstract "Y" path — stroke then becomes white on fill */}
+          {/* ── CAR BODY ── */}
+          {/* Main body lower */}
           <motion.path
-            d="M28 22 L40 36 L52 22"
+            d="M14 47 L14 56 Q14 60 18 60 L82 60 Q86 60 86 56 L86 47 Z"
             stroke={isFill ? "white" : "hsl(347,77%,50%)"}
-            strokeWidth="3.5"
+            strokeWidth="2.8"
             strokeLinecap="round"
             strokeLinejoin="round"
             fill="none"
@@ -101,50 +105,99 @@ const SvgLogo = ({ stage }: SvgLogoProps) => {
             animate={isStroke ? "visible" : "hidden"}
             style={{ transition: "stroke 0.4s ease" }}
           />
+          {/* Cabin / roof */}
           <motion.path
-            d="M40 36 L40 58"
+            d="M28 47 L33 33 Q35 29 40 29 L60 29 Q65 29 67 33 L72 47 Z"
             stroke={isFill ? "white" : "hsl(347,77%,50%)"}
-            strokeWidth="3.5"
+            strokeWidth="2.8"
             strokeLinecap="round"
+            strokeLinejoin="round"
             fill="none"
             variants={strokeVariants}
             initial="hidden"
             animate={isStroke ? "visible" : "hidden"}
             style={{ transition: "stroke 0.4s ease" }}
           />
+          {/* Windshield split line */}
+          <motion.line
+            x1="50" y1="30" x2="50" y2="47"
+            stroke={isFill ? "rgba(255,255,255,0.55)" : "hsla(347,77%,50%,0.55)"}
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            variants={strokeVariants}
+            initial="hidden"
+            animate={isStroke ? "visible" : "hidden"}
+            style={{ transition: "stroke 0.4s ease" }}
+          />
 
-          {/* AI spark dots */}
+          {/* Left wheel */}
+          <motion.circle
+            cx="28" cy="60" r="7"
+            stroke={isFill ? "white" : "hsl(347,77%,50%)"}
+            strokeWidth="2.8"
+            fill="none"
+            variants={strokeVariants}
+            initial="hidden"
+            animate={isStroke ? "visible" : "hidden"}
+            style={{ transition: "stroke 0.4s ease" }}
+          />
+          {/* Left wheel hub */}
+          <motion.circle
+            cx="28" cy="60" r="2.5"
+            fill={isFill ? "white" : "hsl(347,77%,50%)"}
+            initial={{ opacity: 0 }}
+            animate={isStroke ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ delay: strokeDuration * 0.7, duration: 0.3 }}
+            style={{ transition: "fill 0.4s ease" }}
+          />
+
+          {/* Right wheel */}
+          <motion.circle
+            cx="72" cy="60" r="7"
+            stroke={isFill ? "white" : "hsl(347,77%,50%)"}
+            strokeWidth="2.8"
+            fill="none"
+            variants={strokeVariants}
+            initial="hidden"
+            animate={isStroke ? "visible" : "hidden"}
+            style={{ transition: "stroke 0.4s ease" }}
+          />
+          {/* Right wheel hub */}
+          <motion.circle
+            cx="72" cy="60" r="2.5"
+            fill={isFill ? "white" : "hsl(347,77%,50%)"}
+            initial={{ opacity: 0 }}
+            animate={isStroke ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ delay: strokeDuration * 0.7, duration: 0.3 }}
+            style={{ transition: "fill 0.4s ease" }}
+          />
+
+          {/* Headlight */}
           {isFill && (
-            <>
-              <motion.circle
-                cx="56" cy="28" r="3.5"
-                fill="white"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.4, ease: "backOut" }}
-              />
-              <motion.circle
-                cx="62" cy="36" r="2.5"
-                fill="rgba(255,255,255,0.7)"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.45, duration: 0.4, ease: "backOut" }}
-              />
-              <motion.circle
-                cx="56" cy="44" r="3"
-                fill="rgba(255,255,255,0.5)"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6, duration: 0.4, ease: "backOut" }}
-              />
-            </>
+            <motion.ellipse
+              cx="84" cy="50" rx="4" ry="3"
+              fill="rgba(255,255,220,0.9)"
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ delay: 0.25, duration: 0.35, ease: "backOut" }}
+            />
+          )}
+          {/* Tail light */}
+          {isFill && (
+            <motion.ellipse
+              cx="16" cy="50" rx="3.5" ry="2.5"
+              fill="rgba(255,100,100,0.85)"
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ delay: 0.4, duration: 0.35, ease: "backOut" }}
+            />
           )}
         </svg>
 
         {/* Shimmer sweep over icon */}
         {shimmer && (
           <motion.div
-            className="absolute inset-0 rounded-[20px] overflow-hidden pointer-events-none"
+            className="absolute inset-0 rounded-[18px] overflow-hidden pointer-events-none"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
@@ -156,7 +209,7 @@ const SvgLogo = ({ stage }: SvgLogoProps) => {
               }}
               initial={{ left: "-70%" }}
               animate={{ left: "140%" }}
-              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+              transition={{ duration: fast ? 0.5 : 0.8, ease: [0.4, 0, 0.2, 1] }}
             />
           </motion.div>
         )}
@@ -168,7 +221,7 @@ const SvgLogo = ({ stage }: SvgLogoProps) => {
           className="flex items-baseline gap-1"
           initial={{ opacity: 0, y: 20 }}
           animate={isStroke ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+          transition={{ duration: fast ? 0.3 : 0.6, ease: "easeOut", delay: fast ? 0.1 : 0.4 }}
         >
           <span
             className="text-5xl font-bold tracking-tight"
@@ -194,7 +247,7 @@ const SvgLogo = ({ stage }: SvgLogoProps) => {
             }}
             initial={{ left: "-60%" }}
             animate={{ left: "160%" }}
-            transition={{ duration: 0.85, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: fast ? 0.55 : 0.85, ease: [0.4, 0, 0.2, 1] }}
           />
         )}
       </div>
@@ -205,27 +258,29 @@ const SvgLogo = ({ stage }: SvgLogoProps) => {
         style={{ color: "hsl(220,9%,46%)" }}
         initial={{ opacity: 0 }}
         animate={isFill ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+        transition={{ duration: fast ? 0.35 : 0.7, ease: "easeOut", delay: fast ? 0.05 : 0.2 }}
       >
         Intelligent Indian Trip Planner
       </motion.p>
 
-      {/* Progress bar */}
-      <motion.div
-        className="h-px w-32 rounded-full overflow-hidden"
-        style={{ background: "hsl(350,20%,90%)" }}
-        initial={{ opacity: 0 }}
-        animate={isFill ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      >
+      {/* Progress bar — only in full mode */}
+      {!fast && (
         <motion.div
-          className="h-full rounded-full"
-          style={{ background: "hsl(347,77%,50%)" }}
-          initial={{ width: "0%" }}
-          animate={isFill ? { width: "100%" } : { width: "0%" }}
-          transition={{ duration: 1, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
-        />
-      </motion.div>
+          className="h-px w-32 rounded-full overflow-hidden"
+          style={{ background: "hsl(350,20%,90%)" }}
+          initial={{ opacity: 0 }}
+          animate={isFill ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: "hsl(347,77%,50%)" }}
+            initial={{ width: "0%" }}
+            animate={isFill ? { width: "100%" } : { width: "0%" }}
+            transition={{ duration: 1, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
+          />
+        </motion.div>
+      )}
     </div>
   );
 };
