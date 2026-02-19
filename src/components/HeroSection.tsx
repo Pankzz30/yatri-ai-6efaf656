@@ -211,7 +211,7 @@ const CategoryTabs = ({
 /* ─────────────────────────────────────────────────────────────────
    HERO SECTION
 ───────────────────────────────────────────────────────────────── */
-const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
+const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: boolean; sceneStartSignal?: boolean }) => {
   const [category, setCategory] = useState<Category>("bus");
 
   return (
@@ -252,7 +252,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
               animate={{ opacity: 1 }}
               transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
             >
-              <TravelStoryScene className="w-full h-44 sm:h-52 lg:h-60 max-w-md lg:max-w-none" />
+              <TravelStoryScene className="w-full h-44 sm:h-52 lg:h-60 max-w-md lg:max-w-none" startSignal={sceneStartSignal} />
 
               <motion.h1
                 className="mt-3 text-[1.7rem] sm:text-[2.1rem] lg:text-[2.6rem] font-extrabold leading-tight tracking-tight text-foreground"
