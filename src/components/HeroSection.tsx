@@ -386,7 +386,10 @@ const AIItineraryCard = () => {
         {/* Duration + Budget row */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <p className="text-[11px] font-medium text-muted-foreground mb-1.5">Duration</p>
+            <p className="text-[12px] font-bold text-foreground mb-2 flex items-center gap-1.5">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+              Duration
+            </p>
             <div className="flex flex-wrap gap-1">
               {DURATION_OPTS.map((d) => (
                 d === "Custom" ? (
@@ -431,7 +434,10 @@ const AIItineraryCard = () => {
           </div>
 
           <div>
-            <p className="text-[11px] font-medium text-muted-foreground mb-1.5">Budget</p>
+            <p className="text-[12px] font-bold text-foreground mb-2 flex items-center gap-1.5">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+              Budget
+            </p>
             <div className="flex flex-wrap gap-1">
               {BUDGET_OPTS.map((b) => (
                 <button key={b} onClick={() => setBudget(b)} className={pill(budget === b)}>
@@ -447,8 +453,10 @@ const AIItineraryCard = () => {
 
         {/* Trip Style — multi-select */}
         <div>
-          <p className="text-[11px] font-medium text-muted-foreground mb-1.5">
-            Trip Style <span className="text-muted-foreground/50 font-normal">(multi-select)</span>
+          <p className="text-[12px] font-bold text-foreground mb-2 flex items-center gap-1.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+            Trip Style
+            <span className="text-[10px] font-normal text-muted-foreground/60 ml-0.5">· multi-select</span>
           </p>
           <div className="flex flex-wrap gap-1">
             {STYLE_OPTS.map((s) => (
