@@ -212,6 +212,8 @@ const AIItineraryCard = () => {
   const [tripStyle, setTripStyle] = useState<typeof STYLE_OPTS[number]>("Adventure");
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const isReady = destination.trim().length > 0;
+
   const buildPrompt = () =>
     `Plan a ${duration} trip to ${destination || "India"}${from ? ` starting from ${from}` : ""}. Budget: ${budget}. Trip style: ${tripStyle}. Provide a detailed day-by-day itinerary.`;
 
@@ -231,6 +233,14 @@ const AIItineraryCard = () => {
     }, 1200);
   };
 
+  /* Shared pill classes */
+  const pill = (active: boolean) =>
+    `relative px-3 py-1 text-xs font-medium rounded-lg transition-all duration-200 ${
+      active
+        ? "bg-primary/10 text-primary"
+        : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+    }`;
+
   return (
     <motion.div
       key="home-card"
@@ -239,165 +249,157 @@ const AIItineraryCard = () => {
       animate="center"
       exit="exit"
       transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
-      className="w-full rounded-2xl border border-border/70 bg-white shadow-[0_4px_32px_rgba(0,0,0,0.07)] overflow-hidden"
+      className="w-full rounded-2xl bg-white shadow-[0_2px_24px_rgba(0,0,0,0.06)] overflow-hidden border border-border/50"
     >
       {/* Header */}
-      <div className="px-5 pt-5 pb-3">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">AI Itinerary</p>
-        <h3 className="mt-0.5 text-base font-bold text-foreground leading-snug">Plan Your Perfect Journey</h3>
+      <div className="px-5 pt-5 pb-4">
+        <h3 className="text-base font-bold text-foreground leading-snug">Plan Your Trip</h3>
+        <p className="text-xs text-muted-foreground mt-0.5">AI-powered day-by-day itinerary</p>
       </div>
 
-      <div className="mx-5 border-t border-border/60" />
-
-      {/* From */}
-      <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
-          <MapPin size={16} />
+      {/* From + Destination — side by side on desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 px-5 pb-3">
+        {/* From */}
+        <div className="group pr-0 sm:pr-3">
+          <p className="text-[11px] font-medium text-muted-foreground mb-1">From</p>
+          <div className="flex items-center gap-2 rounded-xl bg-secondary/40 px-3 py-2.5 transition-colors focus-within:bg-secondary/60">
+            <MapPin size={13} className="text-primary shrink-0" />
+            <input
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+              placeholder="Your city"
+              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 outline-none min-w-0"
+            />
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">From</p>
-          <input
-            value={from}
-            onChange={(e) => setFrom(e.target.value)}
-            placeholder="Your city (auto-filled)"
-            className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
-          />
-        </div>
-      </div>
 
-      <div className="mx-5 border-t border-border/60" />
-
-      {/* Destination */}
-      <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
-          <MapPin size={16} strokeWidth={2.5} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Destination</p>
-          <input
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-            placeholder="Where do you want to go?"
-            className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
-          />
+        {/* Destination */}
+        <div className="mt-2.5 sm:mt-0 sm:pl-3 sm:border-l sm:border-border/40">
+          <p className="text-[11px] font-medium text-muted-foreground mb-1">Destination</p>
+          <div className="flex items-center gap-2 rounded-xl bg-secondary/40 px-3 py-2.5 transition-colors focus-within:bg-secondary/60">
+            <MapPin size={13} className="text-primary shrink-0" strokeWidth={2.5} />
+            <input
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              placeholder="Where to?"
+              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 outline-none min-w-0"
+            />
+          </div>
         </div>
       </div>
 
-      <div className="mx-5 border-t border-border/60" />
-
-      {/* Duration */}
-      <div className="flex items-center gap-4 px-5 py-3.5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
-          <Calendar size={16} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">Duration</p>
-          <div className="flex flex-wrap gap-1.5">
+      {/* Duration + Budget — side by side */}
+      <div className="grid grid-cols-2 gap-0 px-5 py-3">
+        {/* Duration */}
+        <div className="pr-3">
+          <p className="text-[11px] font-medium text-muted-foreground mb-2">Duration</p>
+          <div className="flex flex-wrap gap-1">
             {DURATION_OPTS.map((d) => (
-              <button
-                key={d}
-                onClick={() => setDuration(d)}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                  duration === d
-                    ? "bg-primary text-white shadow-sm"
-                    : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
-                }`}
-              >
-                {d}
+              <button key={d} onClick={() => setDuration(d)} className={pill(duration === d)}>
+                {duration === d && (
+                  <motion.span
+                    layoutId="duration-pill"
+                    className="absolute inset-0 rounded-lg bg-primary/10"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative">{d}</span>
               </button>
             ))}
           </div>
         </div>
-      </div>
 
-      <div className="mx-5 border-t border-border/60" />
-
-      {/* Budget */}
-      <div className="flex items-center gap-4 px-5 py-3.5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
-          <span className="text-xs font-black">₹</span>
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">Budget</p>
-          <div className="flex gap-1.5">
+        {/* Budget */}
+        <div className="pl-3 border-l border-border/40">
+          <p className="text-[11px] font-medium text-muted-foreground mb-2">Budget</p>
+          <div className="flex flex-wrap gap-1">
             {BUDGET_OPTS.map((b) => (
-              <button
-                key={b}
-                onClick={() => setBudget(b)}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                  budget === b
-                    ? "bg-primary text-white shadow-sm"
-                    : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
-                }`}
-              >
-                {b}
+              <button key={b} onClick={() => setBudget(b)} className={pill(budget === b)}>
+                {budget === b && (
+                  <motion.span
+                    layoutId="budget-pill"
+                    className="absolute inset-0 rounded-lg bg-primary/10"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative">{b}</span>
               </button>
             ))}
           </div>
         </div>
       </div>
-
-      <div className="mx-5 border-t border-border/60" />
 
       {/* Trip Style */}
-      <div className="flex items-center gap-4 px-5 py-3.5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
-          <Sparkles size={15} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">Trip Style</p>
-          <div className="flex flex-wrap gap-1.5">
-            {STYLE_OPTS.map((s) => (
-              <button
-                key={s}
-                onClick={() => setTripStyle(s)}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-                  tripStyle === s
-                    ? "bg-primary text-white shadow-sm"
-                    : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
-                }`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
+      <div className="px-5 py-3">
+        <p className="text-[11px] font-medium text-muted-foreground mb-2">Trip Style</p>
+        <div className="flex flex-wrap gap-1">
+          {STYLE_OPTS.map((s) => (
+            <button key={s} onClick={() => setTripStyle(s)} className={pill(tripStyle === s)}>
+              {tripStyle === s && (
+                <motion.span
+                  layoutId="style-pill"
+                  className="absolute inset-0 rounded-lg bg-primary/10"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+              <span className="relative">{s}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* CTAs */}
-      <div className="px-5 py-4 flex gap-2.5">
-        <motion.button
-          onClick={handleGenerate}
-          disabled={isGenerating}
-          whileHover={isGenerating ? {} : { scale: 1.025 }}
-          whileTap={isGenerating ? {} : { scale: 0.975 }}
-          transition={{ type: "tween", duration: 0.18 }}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition-shadow hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] disabled:opacity-70 disabled:cursor-not-allowed"
-        >
-          {isGenerating ? (
-            <>
-              <Loader2 size={15} className="animate-spin" />
-              <span>Crafting your itinerary…</span>
-            </>
-          ) : (
-            <>
-              <Sparkles size={15} />
-              Generate My Trip
-            </>
-          )}
-        </motion.button>
+      {/* CTA */}
+      <div className="px-5 pt-2 pb-5">
+        <div className="flex items-center gap-2.5">
+          <motion.button
+            onClick={handleGenerate}
+            disabled={isGenerating || !isReady}
+            whileHover={isGenerating || !isReady ? {} : { scale: 1.018 }}
+            whileTap={isGenerating || !isReady ? {} : { scale: 0.982 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-[0_4px_16px_hsla(347,77%,50%,0.28)] transition-shadow hover:shadow-[0_6px_22px_hsla(347,77%,50%,0.38)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+            style={{ background: "linear-gradient(135deg, hsl(347,77%,50%) 0%, hsl(350,80%,58%) 100%)" }}
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 size={14} className="animate-spin" />
+                <span>Crafting itinerary…</span>
+              </>
+            ) : (
+              <span>Generate My Trip</span>
+            )}
+          </motion.button>
 
-        <motion.button
-          onClick={handleSurprise}
-          disabled={isGenerating}
-          whileHover={isGenerating ? {} : { scale: 1.05 }}
-          whileTap={isGenerating ? {} : { scale: 0.95 }}
-          transition={{ type: "tween", duration: 0.18 }}
-          title="Surprise Me"
-          className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-xl border border-border bg-white text-muted-foreground shadow-sm transition-colors hover:border-primary/40 hover:text-primary disabled:opacity-50"
-        >
-          <Shuffle size={16} />
-        </motion.button>
+          <motion.button
+            onClick={handleSurprise}
+            disabled={isGenerating}
+            whileHover={isGenerating ? {} : { scale: 1.06 }}
+            whileTap={isGenerating ? {} : { scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            title="Surprise Me"
+            className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border border-border/60 bg-white text-muted-foreground shadow-sm transition-colors hover:border-primary/30 hover:text-primary disabled:opacity-50"
+          >
+            <Shuffle size={15} />
+          </motion.button>
+        </div>
+
+        {/* Status text */}
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={isGenerating ? "gen" : isReady ? "ready" : "idle"}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.2 }}
+            className="mt-2 text-center text-[10px] text-muted-foreground/70"
+          >
+            {isGenerating
+              ? "✦ Building your perfect itinerary…"
+              : isReady
+              ? "✦ Ready to generate"
+              : "Enter a destination to get started"}
+          </motion.p>
+        </AnimatePresence>
       </div>
 
       {/* Generating overlay shimmer */}
