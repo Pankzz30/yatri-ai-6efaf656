@@ -14,7 +14,7 @@ import { useUser } from "@/context/UserContext";
 type Category = "home" | "bus" | "train" | "flight" | "hotels";
 
 const CATEGORIES: { id: Category; label: string; Icon: React.ElementType }[] = [
-  { id: "home",   label: "Home",   Icon: Home  },
+  { id: "home",   label: "AI",   Icon: Home  },
   { id: "bus",    label: "Bus",    Icon: Bus   },
   { id: "train",  label: "Train",  Icon: Train  },
   { id: "flight", label: "Flight", Icon: Plane  },
