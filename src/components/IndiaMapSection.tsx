@@ -208,11 +208,14 @@ function RouteLine({ from, to }: { from: CityPin; to: CityPin }) {
 function FloatingSuggestion({ cities }: { cities: CityPin[] }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
+    setIdx(0);
     const t = setInterval(() => setIdx((i) => (i + 1) % cities.length), 3500);
     return () => clearInterval(t);
   }, [cities.length]);
 
-  const city = cities[idx];
+  if (!cities.length) return null;
+  const city = cities[idx % cities.length];
+  if (!city) return null;
   return (
     <div className="absolute top-3 left-3 z-20">
       <AnimatePresence mode="wait">
