@@ -360,58 +360,77 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   const [category, setCategory] = useState<Category>("bus");
 
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden bg-background px-4 pt-24 pb-20">
+    <>
+      {/* ── Sticky category tabs — fixed below navbar ── */}
+      <div className="fixed top-16 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-border/60 shadow-sm">
+        <div className="mx-auto max-w-md px-4">
+          <CategoryTabs active={category} onChange={setCategory} />
+        </div>
+      </div>
 
-      <MonsoonWaves />
+      <section className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden bg-background px-4 pt-36 pb-20">
 
-      {/* Dot grid */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.012]"
-        aria-hidden="true"
-        style={{
-          backgroundImage: "radial-gradient(circle, hsl(347,77%,50%) 1px, transparent 1px)",
-          backgroundSize: "36px 36px",
-        }}
-      />
+        <MonsoonWaves />
 
-      {/* Ambient blobs */}
-      <div className="pointer-events-none absolute -top-56 -left-44 h-[480px] w-[480px] rounded-full bg-primary/[0.022] blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-44 -right-44 h-[400px] w-[400px] rounded-full bg-primary/[0.022] blur-[100px]" />
+        {/* Dot grid */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.012]"
+          aria-hidden="true"
+          style={{
+            backgroundImage: "radial-gradient(circle, hsl(347,77%,50%) 1px, transparent 1px)",
+            backgroundSize: "36px 36px",
+          }}
+        />
 
-      {/* ── Content ── */}
-      <div className="relative z-10 mx-auto w-full max-w-md">
+        {/* Ambient blobs */}
+        <div className="pointer-events-none absolute -top-56 -left-44 h-[480px] w-[480px] rounded-full bg-primary/[0.022] blur-[120px]" />
+        <div className="pointer-events-none absolute -bottom-44 -right-44 h-[400px] w-[400px] rounded-full bg-primary/[0.022] blur-[100px]" />
 
-        {/* Monument + tagline */}
-        <motion.div
-          className="flex flex-col items-center text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
-        >
-          <MonumentCycle />
+        {/* ── Content ── */}
+        <div className="relative z-10 mx-auto w-full max-w-md">
 
-          <motion.h1
-            className="mt-3 text-[1.7rem] sm:text-[2.1rem] font-extrabold leading-tight tracking-tight text-foreground whitespace-nowrap"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.9 }}
+          {/* Monument + tagline */}
+          <motion.div
+            className="flex flex-col items-center text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
           >
-            Har Safar,{" "}
-            <span className="relative inline-block text-primary">
-              Ab Smart.
-              <motion.span
-                className="absolute -bottom-1 left-0 right-0 h-[2.5px] rounded-full bg-primary"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.65, ease: "easeOut", delay: 1.3 }}
-                style={{ originX: 0 }}
-              />
-            </span>
-          </motion.h1>
+            <MonumentCycle />
+
+            <motion.h1
+              className="mt-3 text-[1.7rem] sm:text-[2.1rem] font-extrabold leading-tight tracking-tight text-foreground whitespace-nowrap"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.9 }}
+            >
+              Har Safar,{" "}
+              <span className="relative inline-block text-primary">
+                Ab Smart.
+                <motion.span
+                  className="absolute -bottom-1 left-0 right-0 h-[2.5px] rounded-full bg-primary"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.65, ease: "easeOut", delay: 1.3 }}
+                  style={{ originX: 0 }}
+                />
+              </span>
+            </motion.h1>
+          </motion.div>
+
+          {/* Booking form — below monument + tagline */}
+          <motion.div
+            className="mt-8"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, ease: "easeOut", delay: 0.8 }}
+          >
+            <BookingCard category={category} />
+          </motion.div>
 
           {!isAuthenticated && (
             <motion.div
-              className="mt-6"
+              className="mt-6 flex justify-center"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut", delay: 1.1 }}
@@ -425,19 +444,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
               </Link>
             </motion.div>
           )}
-        </motion.div>
-
-        {/* Booking widget — below monument + tagline */}
-        <motion.div
-          className="mt-8"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: "easeOut", delay: 0.8 }}
-        >
-          <CategoryTabs active={category} onChange={setCategory} />
-          <BookingCard category={category} />
-        </motion.div>
-      </div>
+        </div>
 
       {/* Scroll indicator */}
       <motion.a
@@ -456,6 +463,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
 
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
     </section>
+    </>
   );
 };
 
