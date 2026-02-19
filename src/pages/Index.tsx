@@ -1,30 +1,20 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
 import { useState } from "react";
-import DestinationCard from "@/components/DestinationCard";
 import OnboardingModal from "@/components/OnboardingModal";
 import AnimatedLogoIntro from "@/components/intro/AnimatedLogoIntro";
 import HeroSection from "@/components/HeroSection";
-import { destinations } from "@/data/mockData";
-import { Sparkles, Brain, Wallet, Compass } from "lucide-react";
+import BelowHeroSections from "@/components/BelowHeroSections";
 
-// Cinematic stagger entrance — runs after intro overlay fades
 const container = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } },
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
 };
 
 const Index = () => {
   const { isAuthenticated, user } = useUser();
   const showOnboarding = isAuthenticated && user?.isFirstLogin;
 
-  // First-ever visit this session → full cinematic. Return visits → fast.
   const isFirstVisit = !sessionStorage.getItem("yatri_visited");
   const [introComplete, setIntroComplete] = useState(false);
 
@@ -33,32 +23,8 @@ const Index = () => {
     setIntroComplete(true);
   };
 
-  const trending = destinations
-    .slice()
-    .sort((a, b) => b.popularityScore - a.popularityScore)
-    .slice(0, 6);
-
-  const features = [
-    {
-      icon: <Brain size={22} />,
-      title: "AI Itineraries",
-      description: "Personalized day-by-day plans crafted by AI in seconds.",
-    },
-    {
-      icon: <Wallet size={22} />,
-      title: "Budget Optimizer",
-      description: "Smart cost breakdowns to make every rupee count.",
-    },
-    {
-      icon: <Compass size={22} />,
-      title: "Hidden Gems",
-      description: "Discover offbeat spots most travelers never find.",
-    },
-  ];
-
   return (
     <>
-      {/* Intro plays every mount; fast mode after first session visit */}
       {!introComplete && (
         <AnimatedLogoIntro fast={!isFirstVisit} onComplete={handleIntroComplete} />
       )}
@@ -74,92 +40,21 @@ const Index = () => {
         {/* ── HERO ── */}
         <HeroSection isAuthenticated={isAuthenticated} sceneStartSignal={introComplete} />
 
-        {/* ── WHY YATRI AI ── */}
-        <motion.section variants={fadeUp} className="bg-[hsl(350,80%,98%)] py-20">
-          <div className="container mx-auto px-6">
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold text-foreground">
-                Everything you need for a{" "}
-                <span className="text-gradient">perfect trip</span>
-              </h2>
-            </div>
-
-            <div className="grid gap-5 md:grid-cols-3">
-              {features.map((f, i) => (
-                <motion.div
-                  key={f.title}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="rounded-2xl bg-white p-7 shadow-sm border border-border/60 transition-shadow hover:shadow-md"
-                >
-                  <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    {f.icon}
-                  </div>
-                  <h3 className="mb-2 text-base font-bold text-foreground">{f.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{f.description}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* ── DESTINATIONS ── */}
-        <motion.section id="destinations" variants={fadeUp} className="py-20">
-          <div className="container mx-auto px-6">
-            <div className="mb-10 flex items-end justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">Popular Destinations</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Top-rated places loved by Indian travelers</p>
-              </div>
-            </div>
-
-            <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide">
-              {trending.map((d, i) => (
-                <DestinationCard key={d.id} destination={d} index={i} />
-              ))}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* ── CTA ── */}
-        <motion.section variants={fadeUp} className="py-20">
-          <div className="container mx-auto px-6">
-            <div className="relative overflow-hidden rounded-3xl gradient-cta p-12 text-center">
-              <div
-                className="pointer-events-none absolute inset-0"
-                style={{ background: "radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%)" }}
-              />
-              <div className="relative z-10">
-                <h2 className="mb-3 text-3xl font-bold text-white">Start your dream trip today</h2>
-                <p className="mx-auto mb-8 max-w-sm text-sm text-white/75">
-                  Join 50,000+ travelers who plan smarter with Yatri AI.
-                </p>
-                <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-bold text-primary shadow-xl transition-all hover:scale-[1.03]"
-                >
-                  <Sparkles size={16} />
-                  Get started free
-                </Link>
-              </div>
-            </div>
-          </div>
-        </motion.section>
+        {/* ── DYNAMIC BELOW-HERO SECTIONS ── */}
+        <BelowHeroSections />
 
         {/* ── FOOTER ── */}
         <footer className="border-t border-border py-10">
           <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-6 md:flex-row">
             <div className="flex items-center gap-2">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-              <svg width="18" height="11" viewBox="0 0 120 72" fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M10 46 L10 54 Q10 58 14 58 L106 58 Q110 58 110 54 L110 46 Z" strokeWidth="9"/>
-                <path d="M24 46 C26 38 32 26 42 22 L78 22 C88 22 94 30 96 38 L100 46" strokeWidth="9"/>
-                <path d="M96 38 L106 46" strokeWidth="9"/>
-                <circle cx="30" cy="58" r="9" strokeWidth="8"/>
-                <circle cx="90" cy="58" r="9" strokeWidth="8"/>
-              </svg>
+                <svg width="18" height="11" viewBox="0 0 120 72" fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10 46 L10 54 Q10 58 14 58 L106 58 Q110 58 110 54 L110 46 Z" strokeWidth="9"/>
+                  <path d="M24 46 C26 38 32 26 42 22 L78 22 C88 22 94 30 96 38 L100 46" strokeWidth="9"/>
+                  <path d="M96 38 L106 46" strokeWidth="9"/>
+                  <circle cx="30" cy="58" r="9" strokeWidth="8"/>
+                  <circle cx="90" cy="58" r="9" strokeWidth="8"/>
+                </svg>
               </div>
               <span className="text-sm font-bold text-foreground">Yatri <span className="text-primary">AI</span></span>
             </div>
