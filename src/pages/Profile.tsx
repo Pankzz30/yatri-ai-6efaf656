@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useUser } from "@/context/UserContext";
 import {
-  User, MapPin, Heart, Map, Settings, MessageCircle,
-  Award, Star, Backpack, Zap, TrendingUp, ChevronRight,
+  User, MapPin, Heart, Map, Settings, MessageCircle, ChevronRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import EditPreferencesSheet from "@/components/preferences/EditPreferencesSheet";
 
 /* ── Animation helpers ───────────────────────────────── */
 const ease = [0.4, 0, 0.2, 1] as const;
@@ -116,21 +117,19 @@ const MiniIndiaMap = ({ highlights }: { highlights: string[] }) => (
 ═══════════════════════════════════════════════════════ */
 const Profile = () => {
   const { user, isAuthenticated } = useUser();
+  const [editOpen, setEditOpen] = useState(false);
 
   /* ── Unauthenticated state ── */
   if (!isAuthenticated || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center pt-16">
-        <motion.div {...fadeUp()} className="text-center">
+        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }} className="text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent">
             <User size={28} className="text-primary" />
           </div>
           <h2 className="text-xl font-bold text-foreground">Sign in to view profile</h2>
           <p className="mt-1 text-sm text-muted-foreground">Your travel identity awaits.</p>
-          <Link
-            to="/login"
-            className="mt-5 inline-block rounded-2xl bg-primary px-7 py-2.5 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.28)] hover:scale-[1.02]"
-          >
+          <Link to="/login" className="mt-5 inline-block rounded-2xl bg-primary px-7 py-2.5 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.28)] hover:scale-[1.02]">
             Sign in
           </Link>
         </motion.div>
@@ -328,7 +327,6 @@ const Profile = () => {
               { to: "/my-trips",  icon: <Map size={17} className="text-primary" />,            label: "View My Trips",      sub: `${user.savedTrips.length} saved` },
               { to: "/wishlist",  icon: <Heart size={17} className="text-primary" />,           label: "My Wishlist",        sub: `${user.wishlist.length} places` },
               { to: "/contact",   icon: <MessageCircle size={17} className="text-primary" />,   label: "Chat Assistant",     sub: "Plan with Yatri AI" },
-              { to: "/profile",   icon: <Settings size={17} className="text-muted-foreground" />, label: "Edit Preferences", sub: "Update your travel style" },
             ].map(({ to, icon, label, sub }) => (
               <Link
                 key={label}
@@ -345,10 +343,28 @@ const Profile = () => {
                 <ChevronRight size={15} className="text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5" />
               </Link>
             ))}
+
+            {/* Edit Preferences — opens sheet */}
+            <button
+              onClick={() => setEditOpen(true)}
+              className="flex w-full items-center gap-4 rounded-2xl border border-border bg-white px-4 py-3.5 text-left transition-all duration-200 hover:border-primary/20 hover:bg-accent hover:shadow-[0_4px_16px_hsla(347,77%,50%,0.08)] group"
+            >
+              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-accent">
+                <Settings size={17} className="text-muted-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground">Edit Preferences</p>
+                <p className="text-xs text-muted-foreground">Update your travel style</p>
+              </div>
+              <ChevronRight size={15} className="text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5" />
+            </button>
           </div>
         </motion.div>
 
       </div>
+
+      {/* Edit Preferences slide-up sheet */}
+      <EditPreferencesSheet open={editOpen} onClose={() => setEditOpen(false)} />
     </div>
   );
 };
