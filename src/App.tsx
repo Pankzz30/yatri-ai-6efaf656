@@ -4,7 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { UserProvider } from "@/context/UserContext";
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import LogoIntro from "@/components/LogoIntro";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -19,12 +21,16 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  const [introComplete, setIntroComplete] = useState(false);
+
+  return (
   <QueryClientProvider client={queryClient}>
     <UserProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        {!introComplete && <LogoIntro onComplete={() => setIntroComplete(true)} />}
         <BrowserRouter>
           <Navbar />
           <Routes>
@@ -44,6 +50,7 @@ const App = () => (
       </TooltipProvider>
     </UserProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;

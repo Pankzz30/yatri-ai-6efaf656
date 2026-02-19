@@ -7,11 +7,25 @@ import OnboardingModal from "@/components/OnboardingModal";
 import { destinations } from "@/data/mockData";
 import { Sparkles, Brain, Wallet, Compass, ArrowRight } from "lucide-react";
 
+// Cinematic stagger entrance — runs after intro overlay fades
+const container = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.14, delayChildren: 0.05 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" as const } },
+};
+
 const Index = () => {
   const { isAuthenticated, user } = useUser();
   const showOnboarding = isAuthenticated && user?.isFirstLogin;
 
-  const trending = destinations.slice().sort((a, b) => b.popularityScore - a.popularityScore).slice(0, 6);
+  const trending = destinations
+    .slice()
+    .sort((a, b) => b.popularityScore - a.popularityScore)
+    .slice(0, 6);
 
   const features = [
     {
@@ -32,15 +46,20 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div
+      className="min-h-screen bg-background"
+      variants={container}
+      initial="hidden"
+      animate="visible"
+    >
       {showOnboarding && <OnboardingModal />}
 
       {/* ── HERO ── */}
       <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-24 pb-16">
-        {/* Subtle background blobs */}
+        {/* Soft background blobs */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-32 left-1/4 h-96 w-96 rounded-full bg-rose-100/50 blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-red-50/60 blur-3xl" />
+          <div className="absolute -top-32 left-1/4 h-96 w-96 rounded-full bg-secondary/60 blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-accent/40 blur-3xl" />
         </div>
 
         {/* Dot grid */}
@@ -54,21 +73,16 @@ const Index = () => {
 
         <div className="relative z-10 w-full max-w-3xl text-center">
           {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary"
-          >
-            <Sparkles size={12} />
-            AI-Powered Indian Trip Planner
+          <motion.div variants={fadeUp}>
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary">
+              <Sparkles size={12} />
+              AI-Powered Indian Trip Planner
+            </span>
           </motion.div>
 
           {/* Headline */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
+            variants={fadeUp}
             className="mb-5 text-5xl font-bold leading-[1.1] tracking-tight text-foreground md:text-6xl"
           >
             Plan smarter.{" "}
@@ -77,29 +91,20 @@ const Index = () => {
 
           {/* Subtext */}
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            variants={fadeUp}
             className="mx-auto mb-10 max-w-md text-base text-muted-foreground"
           >
             Discover India's most beautiful destinations with personalized AI itineraries, budget planning, and insider tips.
           </motion.p>
 
           {/* Search */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="mb-8"
-          >
+          <motion.div variants={fadeUp} className="mb-8">
             <HeroSearch />
           </motion.div>
 
           {/* CTA links */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.4 }}
+            variants={fadeUp}
             className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center"
           >
             {!isAuthenticated && (
@@ -126,20 +131,14 @@ const Index = () => {
       </section>
 
       {/* ── WHY YATRI AI ── */}
-      <section className="bg-[hsl(350,80%,98%)] py-20">
+      <motion.section variants={fadeUp} className="bg-[hsl(350,80%,98%)] py-20">
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.5 }}
-            className="mb-12 text-center"
-          >
+          <div className="mb-12 text-center">
             <h2 className="text-3xl font-bold text-foreground">
               Everything you need for a{" "}
               <span className="text-gradient">perfect trip</span>
             </h2>
-          </motion.div>
+          </div>
 
           <div className="grid gap-5 md:grid-cols-3">
             {features.map((f, i) => (
@@ -160,23 +159,17 @@ const Index = () => {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ── DESTINATIONS ── */}
-      <section id="destinations" className="py-20">
+      <motion.section id="destinations" variants={fadeUp} className="py-20">
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-10 flex items-end justify-between"
-          >
+          <div className="mb-10 flex items-end justify-between">
             <div>
               <h2 className="text-2xl font-bold text-foreground">Popular Destinations</h2>
               <p className="mt-1 text-sm text-muted-foreground">Top-rated places loved by Indian travelers</p>
             </div>
-          </motion.div>
+          </div>
 
           <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide">
             {trending.map((d, i) => (
@@ -184,19 +177,16 @@ const Index = () => {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ── CTA ── */}
-      <section className="py-20">
+      <motion.section variants={fadeUp} className="py-20">
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="relative overflow-hidden rounded-3xl gradient-cta p-12 text-center"
-          >
-            <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%)" }} />
+          <div className="relative overflow-hidden rounded-3xl gradient-cta p-12 text-center">
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{ background: "radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%)" }}
+            />
             <div className="relative z-10">
               <h2 className="mb-3 text-3xl font-bold text-white">Start your dream trip today</h2>
               <p className="mx-auto mb-8 max-w-sm text-sm text-white/75">
@@ -210,9 +200,9 @@ const Index = () => {
                 Get started free
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ── FOOTER ── */}
       <footer className="border-t border-border py-10">
@@ -235,7 +225,7 @@ const Index = () => {
           <p className="text-xs text-muted-foreground">© 2026 Yatri AI</p>
         </div>
       </footer>
-    </div>
+    </motion.div>
   );
 };
 
