@@ -50,6 +50,12 @@ const FieldRow = ({
 /* ─────────────────────────────────────────────────────────────────
    BOOKING CARD — dynamic per category
 ───────────────────────────────────────────────────────────────── */
+const slideVariants = {
+  enter: { opacity: 0, x: 18 },
+  center: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -14 },
+};
+
 const BookingCard = ({ category }: { category: Category }) => {
   const [swapped, setSwapped] = useState(false);
 
@@ -144,31 +150,33 @@ const BookingCard = ({ category }: { category: Category }) => {
   };
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={category}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -6 }}
-        transition={{ duration: 0.28, ease: "easeOut" }}
-        className="w-full rounded-2xl border border-border/70 bg-white shadow-[0_4px_32px_rgba(0,0,0,0.07)] overflow-hidden"
-      >
-        {renderFields()}
+    <div className="w-full rounded-2xl border border-border/70 bg-white shadow-[0_4px_32px_rgba(0,0,0,0.07)] overflow-hidden">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={category}
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
+        >
+          {renderFields()}
 
-        {/* CTA */}
-        <div className="px-5 py-4">
-          <Link
-            to="/register"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition-all hover:scale-[1.03] hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] active:scale-[0.98]"
-          >
-            {category === "bus" && "Search Buses"}
-            {category === "train" && "Search Trains"}
-            {category === "flight" && "Search Flights"}
-            {category === "hotels" && "Search Hotels"}
-          </Link>
-        </div>
-      </motion.div>
-    </AnimatePresence>
+          {/* CTA */}
+          <div className="px-5 py-4">
+            <Link
+              to="/register"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition-all hover:scale-[1.03] hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] active:scale-[0.98]"
+            >
+              {category === "bus" && "Search Buses"}
+              {category === "train" && "Search Trains"}
+              {category === "flight" && "Search Flights"}
+              {category === "hotels" && "Search Hotels"}
+            </Link>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 };
 
@@ -199,7 +207,7 @@ const CategoryTabs = ({
             <motion.span
               layoutId="tab-underline"
               className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-full bg-primary"
-              transition={{ type: "spring", stiffness: 380, damping: 34 }}
+              transition={{ type: "tween", duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
             />
           )}
         </button>
