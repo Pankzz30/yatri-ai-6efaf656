@@ -124,7 +124,7 @@ const monuments = [
   { id: "indiagate", Component: IndiaGate },
 ];
 
-const MonumentCycle = () => {
+const MonumentCycle = ({ className = "" }: { className?: string }) => {
   const [current, setCurrent] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setCurrent((p) => (p + 1) % monuments.length), 6000);
@@ -132,7 +132,7 @@ const MonumentCycle = () => {
   }, []);
   const { Component } = monuments[current];
   return (
-    <div className="relative w-full max-w-md h-44 sm:h-52 mx-auto">
+    <div className={`relative w-full h-44 sm:h-52 ${className}`}>
       <AnimatePresence mode="wait">
         <motion.div
           key={current}
@@ -366,7 +366,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
         </div>
       </div>
 
-      <section className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden bg-background px-4 pt-36 pb-20">
+      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 pt-36 pb-20 lg:pt-28 lg:pb-16">
 
         <MonsoonWaves />
 
@@ -385,50 +385,82 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
         <div className="pointer-events-none absolute -bottom-44 -right-44 h-[400px] w-[400px] rounded-full bg-primary/[0.022] blur-[100px]" />
 
         {/* ── Content ── */}
-        <div className="relative z-10 mx-auto w-full max-w-md">
+        <div className="relative z-10 mx-auto w-full max-w-md lg:max-w-6xl">
 
-          {/* Monument + tagline */}
-          <motion.div
-            className="flex flex-col items-center text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
-          >
-            <MonumentCycle />
+          {/* MOBILE: stacked | DESKTOP: split 2-col grid */}
+          <div className="flex flex-col items-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-16">
 
-            <motion.h1
-              className="mt-3 text-[1.7rem] sm:text-[2.1rem] font-extrabold leading-tight tracking-tight text-foreground whitespace-nowrap"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.9 }}
+            {/* LEFT — Monument + tagline */}
+            <motion.div
+              className="flex flex-col items-center text-center lg:items-start lg:text-left"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
             >
-              Har Safar,{" "}
-              <span className="relative inline-block text-primary">
-                Ab Smart.
-                <motion.span
-                  className="absolute -bottom-1 left-0 right-0 h-[2.5px] rounded-full bg-primary"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.65, ease: "easeOut", delay: 1.3 }}
-                  style={{ originX: 0 }}
-                />
-              </span>
-            </motion.h1>
-          </motion.div>
+              <MonumentCycle className="max-w-md lg:max-w-none lg:h-60" />
 
-          {/* Booking form — below monument + tagline */}
-          <motion.div
-            className="mt-8"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, ease: "easeOut", delay: 0.8 }}
-          >
-            <BookingCard category={category} />
-          </motion.div>
+              <motion.h1
+                className="mt-3 text-[1.7rem] sm:text-[2.1rem] lg:text-[2.6rem] font-extrabold leading-tight tracking-tight text-foreground"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.9 }}
+              >
+                Har Safar,{" "}
+                <span className="relative inline-block text-primary">
+                  Ab Smart.
+                  <motion.span
+                    className="absolute -bottom-1 left-0 right-0 h-[2.5px] rounded-full bg-primary"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.65, ease: "easeOut", delay: 1.3 }}
+                    style={{ originX: 0 }}
+                  />
+                </span>
+              </motion.h1>
 
+              <motion.p
+                className="mt-4 hidden lg:block text-sm text-muted-foreground leading-relaxed max-w-sm"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 1.1 }}
+              >
+                Every journey, now smarter. Plan buses, trains, flights and hotels in one place.
+              </motion.p>
+
+              {!isAuthenticated && (
+                <motion.div
+                  className="mt-6 hidden lg:flex"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut", delay: 1.3 }}
+                >
+                  <Link
+                    to="/register"
+                    className="group inline-flex items-center gap-2 rounded-2xl border border-primary/25 px-6 py-2.5 text-sm font-semibold text-primary transition-all hover:border-primary/45 hover:bg-primary/5"
+                  >
+                    Explore Destinations
+                    <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </motion.div>
+              )}
+            </motion.div>
+
+            {/* RIGHT — Booking form */}
+            <motion.div
+              className="mt-8 w-full lg:mt-0 lg:w-[500px] lg:justify-self-end"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, ease: "easeOut", delay: 0.8 }}
+            >
+              <BookingCard category={category} />
+            </motion.div>
+
+          </div>
+
+          {/* Mobile-only CTA */}
           {!isAuthenticated && (
             <motion.div
-              className="mt-6 flex justify-center"
+              className="mt-6 flex justify-center lg:hidden"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut", delay: 1.1 }}
