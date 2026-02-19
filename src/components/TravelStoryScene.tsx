@@ -17,12 +17,11 @@ import { useState, useEffect } from "react";
 
 /* ── Timing (ms) ── */
 const T = {
-  sceneIn:     100,
-  personOut:   1100,
-  wheelsStart: 1300,
-  driveStart:  1400,
-  driveEnd:    2800,
-  wheelsStop:  3300,
+  personOut:   2000,   // person dissolves after 2s (clearly visible at scene open)
+  wheelsStart: 2200,   // wheels spin
+  driveStart:  2400,   // car begins moving
+  driveEnd:    4000,   // car settles
+  wheelsStop:  4500,
 };
 
 /* ── Design tokens ── */
@@ -151,24 +150,31 @@ const Person = ({ visible }: { visible: boolean }) => (
 /* ─────────────────────────────────────────
    MAIN COMPONENT
 ───────────────────────────────────────── */
-const TravelStoryScene = ({ className = "" }: { className?: string }) => {
+const TravelStoryScene = ({ className = "", startSignal = true }: { className?: string; startSignal?: boolean }) => {
   const [sceneVisible,   setSceneVisible]   = useState(false);
   const [personVisible,  setPersonVisible]  = useState(true);
   const [wheelsSpinning, setWheelsSpinning] = useState(false);
   const [carOffset,      setCarOffset]      = useState(0);
+  const started = useState(false);
+  const hasStarted = started[0];
+  const setHasStarted = started[1];
 
   useEffect(() => {
+    // Only fire once, when the parent signals the hero is visible
+    if (!startSignal || hasStarted) return;
+    setHasStarted(true);
+
     const timers: ReturnType<typeof setTimeout>[] = [];
     const s = (fn: () => void, ms: number) => { timers.push(setTimeout(fn, ms)); };
 
-    s(() => setSceneVisible(true),    T.sceneIn);
+    setSceneVisible(true);
     s(() => setPersonVisible(false),  T.personOut);
     s(() => setWheelsSpinning(true),  T.wheelsStart);
-    s(() => setCarOffset(115),        T.driveStart);
+    s(() => setCarOffset(160),        T.driveStart);
     s(() => setWheelsSpinning(false), T.wheelsStop);
 
     return () => timers.forEach(clearTimeout);
-  }, []);
+  }, [startSignal, hasStarted, setHasStarted]);
 
   const driveDuration = (T.driveEnd - T.driveStart) / 1000;
 
@@ -180,64 +186,75 @@ const TravelStoryScene = ({ className = "" }: { className?: string }) => {
       transition={{ duration: 0.7, ease: "easeInOut" }}
     >
       {/*
-        SVG canvas: 340 × 80
-        Road line at y=57. Car wheels at cy=48, so car group sits on road.
-        Person placed to the left of car's initial position.
+        SVG canvas: 400 × 90 — wider for comfortable layout
+        Road at y=62.
+        Car body: wheels cy=48, placed at translateY(14) → wheels land at y=62.
+        Car body x spans roughly 0–110, so car group startX = 60 puts car at SVG x 60–170.
+        Person stands at x=10 (SVG), feet at y=62.
+        Person width ≈ 33px → rightmost point ~x=43, well clear of car at x=60.
       */}
       <svg
-        viewBox="0 0 340 80"
+        viewBox="0 0 400 90"
         fill="none"
         className="w-full max-w-[440px] lg:max-w-full"
         aria-label="Person and car travel scene"
         style={{ overflow: "visible" }}
       >
-        {/* ── LANDSCAPE (behind everything) ── */}
+        {/* ── LANDSCAPE (drawn first, behind everything) ── */}
+        {/* Sky gradient tint */}
+        <rect x="0" y="0" width="400" height="62" fill="white" />
         {/* Rolling hills */}
         <path
-          d="M0 44 Q50 30 100 44 Q150 58 200 40 Q250 24 300 40 Q320 46 340 40 L340 57 L0 57 Z"
-          fill="hsl(220,14%,97%)"
+          d="M0 50 Q60 36 120 50 Q180 64 240 46 Q290 30 360 46 Q380 52 400 46 L400 62 L0 62 Z"
+          fill="hsl(220,14%,96%)"
         />
         {/* Sun */}
-        <circle cx="298" cy="16" r="6.5" stroke={ACCENT} strokeWidth="1" fill="none" opacity="0.38" />
+        <circle cx="360" cy="20" r="7" stroke={ACCENT} strokeWidth="1.1" fill="none" opacity="0.35" />
         {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => {
-          const r = (deg * Math.PI) / 180;
+          const rad = (deg * Math.PI) / 180;
           return (
             <line key={deg}
-              x1={298 + 8.5 * Math.cos(r)} y1={16 + 8.5 * Math.sin(r)}
-              x2={298 + 10.5 * Math.cos(r)} y2={16 + 10.5 * Math.sin(r)}
-              stroke={ACCENT} strokeWidth="0.85" strokeLinecap="round" opacity="0.3"
+              x1={360 + 9.5 * Math.cos(rad)} y1={20 + 9.5 * Math.sin(rad)}
+              x2={360 + 12 * Math.cos(rad)}  y2={20 + 12 * Math.sin(rad)}
+              stroke={ACCENT} strokeWidth="0.9" strokeLinecap="round" opacity="0.28"
             />
           );
         })}
 
         {/* ── ROAD ── */}
-        {/* Road fill */}
-        <rect x="0" y="57" width="340" height="14" fill="hsl(220,14%,93%)" />
-        {/* Road edge line */}
-        <line x1="0" y1="57" x2="340" y2="57" stroke={STROKE} strokeWidth="1.3" opacity="0.5" />
-        {/* Road dashes */}
-        {[10, 50, 90, 130, 170, 210, 250, 290, 330].map((x) => (
+        <rect x="0" y="62" width="400" height="16" fill="hsl(220,14%,93%)" />
+        <line x1="0" y1="62" x2="400" y2="62" stroke={STROKE} strokeWidth="1.2" opacity="0.4" />
+        {[8, 55, 102, 149, 196, 243, 290, 337, 384].map((x) => (
           <line key={x}
-            x1={x} y1="64" x2={x + 18} y2="64"
+            x1={x} y1="70" x2={x + 20} y2="70"
             stroke="hsl(220,14%,76%)" strokeWidth="0.9" strokeLinecap="round"
           />
         ))}
 
-        {/* ── PERSON — standing left of parked car ── */}
-        {/* Transform so person's feet align with y=57: person height ≈33px, bottom at y=32, offset to y=24 */}
-        <g transform="translate(82, 24)">
+        {/* ── PERSON — drawn ABOVE landscape/road, clearly left of car ── */}
+        {/*
+          Person local coords: head top y≈0, feet y≈32, rightmost x≈31 (with suitcase).
+          translateY = 62 - 32 = 30 → feet land exactly on road.
+          translateX = 10 → person spans x 10–41.
+          Car starts at SVG x 60 → clear 19px gap.
+        */}
+        <g transform="translate(10, 30)">
           <Person visible={personVisible} />
         </g>
 
-        {/* ── CAR — slides right when driving ── */}
+        {/* ── CAR — animates right ── */}
+        {/*
+          Car wheels cy=48; road y=62 → translateY = 62 - 48 = 14.
+          Car body x: 2 to 110 (width 108). Start SVG x = 60 (car right edge at 170).
+          Drive +160 → car right edge at 330, centred in 400-wide canvas.
+        */}
         <motion.g
           animate={{ x: carOffset }}
           transition={{
             duration: driveDuration,
             ease: [0.22, 0.0, 0.18, 1.0],
           }}
-          /* Car: wheels cy=48, road y=57, so car group at y=9 aligns wheels on road */
-          transform="translate(100, 9)"
+          transform="translate(60, 14)"
         >
           <Car spinning={wheelsSpinning} />
         </motion.g>

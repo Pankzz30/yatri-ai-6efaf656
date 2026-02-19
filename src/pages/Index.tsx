@@ -72,7 +72,7 @@ const Index = () => {
         {showOnboarding && <OnboardingModal />}
 
         {/* ── HERO ── */}
-        <HeroSection isAuthenticated={isAuthenticated} />
+        <HeroSection isAuthenticated={isAuthenticated} sceneStartSignal={introComplete} />
 
         {/* ── WHY YATRI AI ── */}
         <motion.section variants={fadeUp} className="bg-[hsl(350,80%,98%)] py-20">
