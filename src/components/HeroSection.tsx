@@ -1,153 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Bus, Train, Plane, Hotel, MapPin, Calendar, Users, ArrowLeftRight, ChevronDown, ArrowRight,
 } from "lucide-react";
-
-/* ─────────────────────────────────────────────────────────────────
-   MONSOON WAVE BACKGROUND
-───────────────────────────────────────────────────────────────── */
-const MonsoonWaves = () => (
-  <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-    <svg viewBox="0 0 1440 560" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full">
-      <defs>
-        <linearGradient id="wg1" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="hsl(347,77%,50%)" stopOpacity="0.012" />
-          <stop offset="50%" stopColor="hsl(347,77%,50%)" stopOpacity="0.022" />
-          <stop offset="100%" stopColor="hsl(347,77%,50%)" stopOpacity="0.006" />
-        </linearGradient>
-      </defs>
-      <motion.path
-        d="M-200 200 C100 160 300 240 600 200 C900 160 1100 240 1440 200 C1740 160 1900 240 2080 200 L2080 280 C1900 320 1740 240 1440 280 C1100 320 900 240 600 280 C300 320 100 240 -200 280 Z"
-        fill="url(#wg1)"
-        animate={{ x: [0, -300, 0] }}
-        transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
-      />
-    </svg>
-  </div>
-);
-
-/* ─────────────────────────────────────────────────────────────────
-   MONUMENT SVGs
-───────────────────────────────────────────────────────────────── */
-const TajMahal = () => (
-  <svg viewBox="0 0 400 240" fill="none" className="w-full h-full" aria-hidden="true">
-    <g stroke="hsl(347,77%,50%)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.55">
-      <motion.path d="M200 175 C200 155 200 150 200 150 C200 122 180 92 200 72 C220 92 200 122 200 150"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 2.2, ease: "easeInOut", delay: 0.1 }} />
-      <motion.path d="M162 175 C162 138 146 115 165 98 C175 88 189 82 200 72 C211 82 225 88 235 98 C254 115 238 138 238 175"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 2.4, ease: "easeInOut", delay: 0.35 }} />
-      <motion.path d="M120 175 L120 130 C120 118 116 112 120 106 C124 112 120 118 120 130"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.6, ease: "easeInOut", delay: 0.7 }} />
-      <motion.path d="M116 106 C116 99 118 95 120 92 C122 95 124 99 124 106"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeInOut", delay: 1.1 }} />
-      <motion.path d="M280 175 L280 130 C280 118 276 112 280 106 C284 112 280 118 280 130"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.6, ease: "easeInOut", delay: 0.8 }} />
-      <motion.path d="M276 106 C276 99 278 95 280 92 C282 95 284 99 284 106"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "easeInOut", delay: 1.2 }} />
-      <motion.path d="M140 175 L260 175 M134 182 L266 182 M126 189 L274 189"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.8, ease: "easeInOut", delay: 1.5 }} />
-      <motion.path d="M148 175 L148 145 C148 132 155 124 162 120 C169 116 180 114 200 114 C220 114 231 116 238 120 C245 124 252 132 252 145 L252 175"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 2, ease: "easeInOut", delay: 1.1 }} />
-    </g>
-  </svg>
-);
-
-const GatewayOfIndia = () => (
-  <svg viewBox="0 0 400 240" fill="none" className="w-full h-full" aria-hidden="true">
-    <g stroke="hsl(347,77%,50%)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.55">
-      <motion.path d="M152 185 L152 128 C152 100 168 84 200 84 C232 84 248 100 248 128 L248 185"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 2.4, ease: "easeInOut" }} />
-      <motion.path d="M166 185 L166 136 C166 112 179 100 200 100 C221 100 234 112 234 136 L234 185"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 2, ease: "easeInOut", delay: 0.4 }} />
-      <motion.path d="M114 185 L114 120 C114 114 117 109 122 106 L152 106"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.6, ease: "easeInOut", delay: 0.6 }} />
-      <motion.path d="M286 185 L286 120 C286 114 283 109 278 106 L248 106"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.6, ease: "easeInOut", delay: 0.7 }} />
-      <motion.path d="M108 120 C108 108 112 101 114 96 C116 101 120 108 120 120"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1, ease: "easeInOut", delay: 1.1 }} />
-      <motion.path d="M280 120 C280 108 284 101 286 96 C288 101 292 108 292 120"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1, ease: "easeInOut", delay: 1.2 }} />
-      <motion.path d="M108 120 L292 120 M110 128 L290 128"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.4, ease: "easeInOut", delay: 1.4 }} />
-      <motion.path d="M96 185 L304 185 M90 192 L310 192"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.2, ease: "easeInOut", delay: 1.8 }} />
-    </g>
-  </svg>
-);
-
-const IndiaGate = () => (
-  <svg viewBox="0 0 400 240" fill="none" className="w-full h-full" aria-hidden="true">
-    <g stroke="hsl(347,77%,50%)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.55">
-      <motion.path d="M158 185 L158 130 C158 104 172 88 200 82 C228 88 242 104 242 130 L242 185"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 2.4, ease: "easeInOut" }} />
-      <motion.path d="M172 185 L172 138 C172 116 182 103 200 98 C218 103 228 116 228 138 L228 185"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 2, ease: "easeInOut", delay: 0.35 }} />
-      <motion.path d="M148 88 L252 88 L252 80 L148 80 Z"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.2, ease: "easeInOut", delay: 0.8 }} />
-      <motion.path d="M195 80 L195 66 C195 60 197 56 200 52 C203 56 205 60 205 66 L205 80"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1, ease: "easeInOut", delay: 1.1 }} />
-      <motion.path d="M198 52 C198 46 199 42 200 39 C201 42 202 46 202 52"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 0.7, ease: "easeInOut", delay: 1.4 }} />
-      <motion.path d="M110 185 L290 185 M102 192 L298 192 M94 199 L306 199"
-        initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.4, ease: "easeInOut", delay: 1.6 }} />
-    </g>
-  </svg>
-);
-
-const monuments = [
-  { id: "taj", Component: TajMahal },
-  { id: "gateway", Component: GatewayOfIndia },
-  { id: "indiagate", Component: IndiaGate },
-];
-
-const MonumentCycle = ({ className = "" }: { className?: string }) => {
-  const [current, setCurrent] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setCurrent((p) => (p + 1) % monuments.length), 6000);
-    return () => clearInterval(t);
-  }, []);
-  const { Component } = monuments[current];
-  return (
-    <div className={`relative w-full h-44 sm:h-52 ${className}`}>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.6, ease: "easeInOut" }}
-        >
-          <Component />
-        </motion.div>
-      </AnimatePresence>
-    </div>
-  );
-};
+import TravelStoryScene from "@/components/TravelStoryScene";
 
 /* ─────────────────────────────────────────────────────────────────
    CATEGORY TABS
@@ -368,8 +225,6 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
 
       <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 pt-36 pb-20 lg:pt-28 lg:pb-16">
 
-        <MonsoonWaves />
-
         {/* Dot grid */}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.012]"
@@ -390,14 +245,14 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
           {/* MOBILE: stacked | DESKTOP: split 2-col grid */}
           <div className="flex flex-col items-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-16">
 
-            {/* LEFT — Monument + tagline */}
+            {/* LEFT — Travel scene + tagline */}
             <motion.div
               className="flex flex-col items-center text-center lg:items-start lg:text-left"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
             >
-              <MonumentCycle className="max-w-md lg:max-w-none lg:h-60" />
+              <TravelStoryScene className="w-full h-44 sm:h-52 lg:h-60 max-w-md lg:max-w-none" />
 
               <motion.h1
                 className="mt-3 text-[1.7rem] sm:text-[2.1rem] lg:text-[2.6rem] font-extrabold leading-tight tracking-tight text-foreground"
