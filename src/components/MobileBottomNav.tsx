@@ -6,9 +6,9 @@ const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
-  { to: "/plan", label: "AI Plan", icon: Sparkles },
-  { to: "/wishlist", label: "Wishlist", icon: Heart },
   { to: "/my-trips", label: "My Trips", icon: Map },
+  { to: "/wishlist", label: "Wishlist", icon: Heart },
+  { to: "/plan", label: "AI Plan", icon: Sparkles },
 ];
 
 const MobileBottomNav = () => {
