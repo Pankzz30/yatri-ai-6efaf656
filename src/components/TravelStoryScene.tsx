@@ -23,7 +23,11 @@ if (typeof document !== "undefined" && !document.getElementById(SPIN_ID)) {
       from { transform: rotate(0deg); }
       to   { transform: rotate(360deg); }
     }
-    .ws { transform-box: fill-box; transform-origin: center; animation: wheelSpin 0.5s linear infinite; }
+    .ws {
+      transform-box: fill-box;
+      transform-origin: 50% 50%;
+      animation: wheelSpin 0.4s linear infinite;
+    }
   `;
   document.head.appendChild(s);
 }
@@ -58,14 +62,18 @@ const CarSvg = () => (
     {/* Rear wheel */}
     <circle cx="28" cy="48" r="9" stroke={STROKE} strokeWidth="1.6" fill="white" />
     <circle cx="28" cy="48" r="4" stroke={STROKE} strokeWidth="1.2" fill="none" />
-    <g className="ws" style={{ transformOrigin: "28px 48px" }}>
-      {[0,60,120].map(d => { const r=d*Math.PI/180; return <line key={d} x1={28+4*Math.cos(r)} y1={48+4*Math.sin(r)} x2={28+8*Math.cos(r)} y2={48+8*Math.sin(r)} stroke={STROKE} strokeWidth="1.2" strokeLinecap="round"/>; })}
+    <g className="ws">
+      <line x1="28" y1="40" x2="28" y2="56" stroke={STROKE} strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="21" y1="44.1" x2="35" y2="51.9" stroke={STROKE} strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="21" y1="51.9" x2="35" y2="44.1" stroke={STROKE} strokeWidth="1.2" strokeLinecap="round" />
     </g>
     {/* Front wheel */}
     <circle cx="88" cy="48" r="9" stroke={STROKE} strokeWidth="1.6" fill="white" />
     <circle cx="88" cy="48" r="4" stroke={STROKE} strokeWidth="1.2" fill="none" />
-    <g className="ws" style={{ transformOrigin: "88px 48px" }}>
-      {[0,60,120].map(d => { const r=d*Math.PI/180; return <line key={d} x1={88+4*Math.cos(r)} y1={48+4*Math.sin(r)} x2={88+8*Math.cos(r)} y2={48+8*Math.sin(r)} stroke={STROKE} strokeWidth="1.2" strokeLinecap="round"/>; })}
+    <g className="ws">
+      <line x1="88" y1="40" x2="88" y2="56" stroke={STROKE} strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="81" y1="44.1" x2="95" y2="51.9" stroke={STROKE} strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="81" y1="51.9" x2="95" y2="44.1" stroke={STROKE} strokeWidth="1.2" strokeLinecap="round" />
     </g>
   </g>
 );
