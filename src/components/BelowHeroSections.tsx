@@ -1,8 +1,9 @@
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useState, useCallback } from "react";
 import { MapPin, Clock, Shuffle, ChevronRight, Sparkles } from "lucide-react";
 import { destinations } from "@/data/mockData";
 import { useUser } from "@/context/UserContext";
+import IndiaMapSection from "@/components/IndiaMapSection";
 
 /* ─────────────────────────────────────────────────────────────────
    ANIMATION VARIANTS
@@ -285,62 +286,7 @@ function TrendingCard({ d, index }: { d: typeof destinations[0]; index: number }
   );
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   6. MINI INDIA MAP
-───────────────────────────────────────────────────────────────── */
-const CITY_DOTS: { name: string; x: number; y: number; state: string; img: string }[] = [
-  { name: "Delhi", x: 42, y: 22, state: "Delhi", img: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=300" },
-  { name: "Jaipur", x: 35, y: 30, state: "Rajasthan", img: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=300" },
-  { name: "Agra", x: 45, y: 28, state: "UP", img: "https://images.unsplash.com/photo-1564507592385-ba60e3dca0e7?w=300" },
-  { name: "Varanasi", x: 55, y: 33, state: "UP", img: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=300" },
-  { name: "Manali", x: 38, y: 12, state: "HP", img: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=300" },
-  { name: "Goa", x: 28, y: 65, state: "Goa", img: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=300" },
-  { name: "Hampi", x: 32, y: 70, state: "Karnataka", img: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=300" },
-  { name: "Kolkata", x: 70, y: 38, state: "WB", img: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=300" },
-];
-
-function MapDot({ city }: { city: typeof CITY_DOTS[0] }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <div
-      className="absolute"
-      style={{ left: `${city.x}%`, top: `${city.y}%`, transform: "translate(-50%, -50%)" }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {/* Pulse ring */}
-      <motion.div
-        className="absolute -inset-2 rounded-full bg-primary/20"
-        animate={{ scale: [1, 1.6, 1], opacity: [0.5, 0, 0.5] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" as const }}
-      />
-      {/* Dot */}
-      <motion.div
-        className="relative h-2.5 w-2.5 rounded-full bg-primary cursor-pointer shadow-sm shadow-primary/50"
-        animate={{ scale: hovered ? 1.4 : 1 }}
-        transition={{ duration: 0.2 }}
-      />
-      {/* Hover card */}
-      <AnimatePresence>
-        {hovered && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85, y: -4 }}
-            animate={{ opacity: 1, scale: 1, y: -8 }}
-            exit={{ opacity: 0, scale: 0.85, y: -4 }}
-            transition={{ duration: 0.18 }}
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-28 rounded-xl overflow-hidden shadow-lg border border-border/50 z-20 bg-white"
-          >
-            <img src={city.img} alt={city.name} className="w-full h-14 object-cover" />
-            <div className="px-2 py-1.5">
-              <p className="text-[11px] font-bold text-foreground">{city.name}</p>
-              <p className="text-[10px] text-muted-foreground">{city.state}</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
+/* India Map is now in IndiaMapSection.tsx */
 
 /* ─────────────────────────────────────────────────────────────────
    MAIN EXPORT
@@ -431,39 +377,9 @@ export default function BelowHeroSections() {
         </div>
       </Section>
 
-      {/* ── 6. MINI INDIA MAP ── */}
+      {/* ── 6. INTERACTIVE INDIA MAP ── */}
       <Section className="py-16">
-        <div className="container mx-auto px-6">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-primary mb-1">Explore India</p>
-          <h2 className="text-2xl font-bold text-foreground mb-6">Where to Next?</h2>
-          <div
-            className="relative mx-auto max-w-sm rounded-2xl border border-border/40 bg-[hsl(350,80%,98.5%)] overflow-hidden shadow-sm"
-            style={{ aspectRatio: "3/4" }}
-          >
-            {/* Decorative grid */}
-            <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="hsl(var(--primary))" strokeWidth="0.5" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
-            </svg>
-            {/* India emoji backdrop */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-[0.05]">
-              <span className="text-[200px] leading-none select-none">🗺️</span>
-            </div>
-            {/* City dots */}
-            {CITY_DOTS.map((city) => (
-              <MapDot key={city.name} city={city} />
-            ))}
-            {/* Legend */}
-            <div className="absolute bottom-3 right-3 bg-white/80 backdrop-blur rounded-lg px-3 py-1.5 text-[10px] text-muted-foreground border border-border/30">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary mr-1" />
-              Recommended city
-            </div>
-          </div>
-        </div>
+        <IndiaMapSection />
       </Section>
 
       {/* ── FOOTER CTA ── */}
