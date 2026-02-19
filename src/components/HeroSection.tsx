@@ -381,22 +381,12 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
       {/* ── Content ── */}
       <div className="relative z-10 mx-auto w-full max-w-md">
 
-        {/* Booking widget */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: "easeOut", delay: 0.3 }}
-        >
-          <CategoryTabs active={category} onChange={setCategory} />
-          <BookingCard category={category} />
-        </motion.div>
-
         {/* Monument + tagline */}
         <motion.div
-          className="mt-10 flex flex-col items-center text-center"
+          className="flex flex-col items-center text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.0, ease: "easeOut", delay: 0.7 }}
+          transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
         >
           <MonumentCycle />
 
@@ -435,6 +425,17 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
               </Link>
             </motion.div>
           )}
+        </motion.div>
+
+        {/* Booking widget — below monument + tagline */}
+        <motion.div
+          className="mt-8"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.65, ease: "easeOut", delay: 0.8 }}
+        >
+          <CategoryTabs active={category} onChange={setCategory} />
+          <BookingCard category={category} />
         </motion.div>
       </div>
 
