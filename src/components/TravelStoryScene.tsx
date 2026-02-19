@@ -114,14 +114,14 @@ const TravelStoryScene = ({ className = "" }: { className?: string }) => {
   return (
     <div className={`relative w-full flex items-center justify-center ${className}`}>
       <svg
-        viewBox="0 0 400 90"
+        viewBox="0 -20 400 110"
         fill="none"
         className="w-full max-w-[440px] lg:max-w-full"
         aria-label="Car and airplane travel scene"
         style={{ overflow: "hidden" }}
       >
         {/* Sky */}
-        <rect x="0" y="0" width="400" height="62" fill="white" />
+        <rect x="0" y="-20" width="400" height="82" fill="white" />
 
         {/* Rolling hills */}
         <path
@@ -149,8 +149,8 @@ const TravelStoryScene = ({ className = "" }: { className?: string }) => {
 
         {/* ── AIRPLANE — flies right→left, opposite to car ── */}
         <motion.g
-          initial={{ x: 420, y: 8 }}
-          animate={{ x: -100, y: 8 }}
+          initial={{ x: 420, y: -12 }}
+          animate={{ x: -100, y: -12 }}
           transition={{
             x: {
               duration: LOOP_S,
