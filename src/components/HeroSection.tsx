@@ -1,12 +1,16 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Bus, Train, Plane, Hotel, MapPin, Calendar, Users, ArrowLeftRight, ChevronDown, ArrowRight,
-  Home, Sparkles, Shuffle, Loader2,
+  Home, Shuffle, Loader2, Navigation, Search, X,
 } from "lucide-react";
 import TravelStoryScene from "@/components/TravelStoryScene";
 import { useUser } from "@/context/UserContext";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarPicker } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import type { DateRange } from "react-day-picker";
 
 /* ─────────────────────────────────────────────────────────────────
    CATEGORY TABS
@@ -186,9 +190,17 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
 /* ─────────────────────────────────────────────────────────────────
    DURATION / BUDGET / STYLE OPTIONS
 ───────────────────────────────────────────────────────────────── */
-const DURATION_OPTS = ["2–3 days", "4–5 days", "1 week", "Custom"];
+const DURATION_OPTS = ["2–3 days", "4–5 days", "1 week", "Custom"] as const;
 const BUDGET_OPTS   = ["Budget", "Balanced", "Premium"] as const;
-const STYLE_OPTS    = ["Weekend", "Relaxed", "Adventure", "Backpacking"] as const;
+const STYLE_OPTS    = ["Weekend", "Relaxed", "Adventure", "Backpacking", "Cultural", "Foodie"] as const;
+
+const GENERATING_MESSAGES = [
+  "Scanning the best local spots…",
+  "Optimizing your route…",
+  "Matching hidden gems…",
+  "Crafting day-by-day itinerary…",
+  "Almost ready…",
+];
 
 const SURPRISE_PROMPTS = [
   "Plan a 4-day offbeat trip to Meghalaya for a solo nature lover",
@@ -197,6 +209,66 @@ const SURPRISE_PROMPTS = [
   "Plan a 6-day family trip to Kerala backwaters, premium comfort",
   "Weekend adventure itinerary to Rishikesh including river rafting",
 ];
+
+/* ── Smart Location Input ────────────────────────────────────── */
+const LocationInput = ({
+  value,
+  onChange,
+  placeholder,
+  showCurrentLocation = false,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  showCurrentLocation?: boolean;
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [focused, setFocused] = useState(false);
+
+  const handleCurrentLocation = () => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      () => onChange("Current Location"),
+      () => {}
+    );
+  };
+
+  return (
+    <motion.div
+      animate={{ boxShadow: focused ? "0 0 0 2px hsla(347,77%,50%,0.18)" : "0 0 0 0px transparent" }}
+      transition={{ duration: 0.2 }}
+      className="flex items-center gap-2 rounded-xl bg-secondary/40 px-3 py-2.5 cursor-text"
+      onClick={() => inputRef.current?.focus()}
+    >
+      <Search size={13} className={`shrink-0 transition-colors duration-200 ${focused ? "text-primary" : "text-muted-foreground/60"}`} />
+      <input
+        ref={inputRef}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder={placeholder}
+        className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/45 outline-none min-w-0"
+      />
+      {value ? (
+        <button
+          onClick={(e) => { e.stopPropagation(); onChange(""); }}
+          className="shrink-0 text-muted-foreground/40 hover:text-muted-foreground transition-colors"
+        >
+          <X size={11} />
+        </button>
+      ) : showCurrentLocation ? (
+        <button
+          onClick={(e) => { e.stopPropagation(); handleCurrentLocation(); }}
+          title="Use current location"
+          className="shrink-0 text-primary/60 hover:text-primary transition-colors"
+        >
+          <Navigation size={12} />
+        </button>
+      ) : null}
+    </motion.div>
+  );
+};
 
 /* ─────────────────────────────────────────────────────────────────
    AI ITINERARY CARD
@@ -207,22 +279,37 @@ const AIItineraryCard = () => {
 
   const [from, setFrom] = useState(user?.preferences?.location ?? "");
   const [destination, setDestination] = useState("");
-  const [duration, setDuration] = useState(DURATION_OPTS[0]);
+  const [duration, setDuration] = useState<typeof DURATION_OPTS[number]>(DURATION_OPTS[0]);
+  const [customDateRange, setCustomDateRange] = useState<DateRange | undefined>();
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [budget, setBudget] = useState<typeof BUDGET_OPTS[number]>("Balanced");
-  const [tripStyle, setTripStyle] = useState<typeof STYLE_OPTS[number]>("Adventure");
+  const [tripStyles, setTripStyles] = useState<Set<typeof STYLE_OPTS[number]>>(new Set(["Adventure"]));
   const [isGenerating, setIsGenerating] = useState(false);
+  const [genMsgIdx, setGenMsgIdx] = useState(0);
 
   const isReady = destination.trim().length > 0;
 
-  const buildPrompt = () =>
-    `Plan a ${duration} trip to ${destination || "India"}${from ? ` starting from ${from}` : ""}. Budget: ${budget}. Trip style: ${tripStyle}. Provide a detailed day-by-day itinerary.`;
+  /* Cycle generating messages */
+  useEffect(() => {
+    if (!isGenerating) { setGenMsgIdx(0); return; }
+    const id = setInterval(() => setGenMsgIdx((i) => (i + 1) % GENERATING_MESSAGES.length), 900);
+    return () => clearInterval(id);
+  }, [isGenerating]);
+
+  const buildPrompt = () => {
+    const dur = duration === "Custom" && customDateRange?.from && customDateRange?.to
+      ? `${format(customDateRange.from, "d MMM")} – ${format(customDateRange.to, "d MMM")}`
+      : duration;
+    const styles = [...tripStyles].join(" & ");
+    return `Plan a ${dur} trip to ${destination || "India"}${from ? ` starting from ${from}` : ""}. Budget: ${budget}. Trip style: ${styles}. Provide a detailed day-by-day itinerary.`;
+  };
 
   const handleGenerate = () => {
     if (!destination.trim()) return;
     setIsGenerating(true);
     setTimeout(() => {
       navigate("/plan", { state: { prompt: buildPrompt() } });
-    }, 1200);
+    }, 2200);
   };
 
   const handleSurprise = () => {
@@ -230,16 +317,29 @@ const AIItineraryCard = () => {
     setIsGenerating(true);
     setTimeout(() => {
       navigate("/plan", { state: { prompt: pick } });
-    }, 1200);
+    }, 2200);
   };
 
-  /* Shared pill classes */
+  const toggleStyle = (s: typeof STYLE_OPTS[number]) => {
+    setTripStyles((prev) => {
+      const next = new Set(prev);
+      if (next.has(s)) { if (next.size > 1) next.delete(s); }
+      else next.add(s);
+      return next;
+    });
+  };
+
   const pill = (active: boolean) =>
-    `relative px-3 py-1 text-xs font-medium rounded-lg transition-all duration-200 ${
+    `relative px-2.5 py-[5px] text-[11px] font-medium rounded-md transition-colors duration-150 select-none ${
       active
         ? "bg-primary/10 text-primary"
-        : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+        : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
     }`;
+
+  const durationLabel =
+    duration === "Custom" && customDateRange?.from && customDateRange?.to
+      ? `${format(customDateRange.from, "d MMM")} – ${format(customDateRange.to, "d MMM")}`
+      : duration;
 
   return (
     <motion.div
@@ -249,121 +349,152 @@ const AIItineraryCard = () => {
       animate="center"
       exit="exit"
       transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
-      className="w-full rounded-2xl bg-white shadow-[0_2px_24px_rgba(0,0,0,0.06)] overflow-hidden border border-border/50"
+      className="relative w-full rounded-2xl bg-white shadow-[0_4px_32px_rgba(0,0,0,0.08),0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden border border-border/40"
     >
       {/* Header */}
-      <div className="px-5 pt-5 pb-4">
-        <h3 className="text-base font-bold text-foreground leading-snug">Plan Your Trip</h3>
-        <p className="text-xs text-muted-foreground mt-0.5">AI-powered day-by-day itinerary</p>
+      <div className="px-5 pt-5 pb-3">
+        <h3 className="text-[15px] font-bold text-foreground tracking-tight">Plan Your Trip</h3>
+        <p className="text-[11px] text-muted-foreground mt-0.5">AI-powered day-by-day itinerary</p>
       </div>
 
-      {/* From + Destination — side by side on desktop */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 px-5 pb-3">
-        {/* From */}
-        <div className="group pr-0 sm:pr-3">
-          <p className="text-[11px] font-medium text-muted-foreground mb-1">From</p>
-          <div className="flex items-center gap-2 rounded-xl bg-secondary/40 px-3 py-2.5 transition-colors focus-within:bg-secondary/60">
-            <MapPin size={13} className="text-primary shrink-0" />
-            <input
+      <div className="px-5 space-y-4 pb-2">
+        {/* From + Destination row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <p className="text-[11px] font-medium text-muted-foreground mb-1.5 flex items-center gap-1">
+              <MapPin size={10} className="text-primary" /> From
+            </p>
+            <LocationInput
               value={from}
-              onChange={(e) => setFrom(e.target.value)}
+              onChange={setFrom}
               placeholder="Your city"
-              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 outline-none min-w-0"
+              showCurrentLocation
             />
           </div>
-        </div>
-
-        {/* Destination */}
-        <div className="mt-2.5 sm:mt-0 sm:pl-3 sm:border-l sm:border-border/40">
-          <p className="text-[11px] font-medium text-muted-foreground mb-1">Destination</p>
-          <div className="flex items-center gap-2 rounded-xl bg-secondary/40 px-3 py-2.5 transition-colors focus-within:bg-secondary/60">
-            <MapPin size={13} className="text-primary shrink-0" strokeWidth={2.5} />
-            <input
+          <div>
+            <p className="text-[11px] font-medium text-muted-foreground mb-1.5 flex items-center gap-1">
+              <MapPin size={10} className="text-primary" /> Destination
+            </p>
+            <LocationInput
               value={destination}
-              onChange={(e) => setDestination(e.target.value)}
+              onChange={setDestination}
               placeholder="Where to?"
-              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 outline-none min-w-0"
             />
           </div>
         </div>
-      </div>
 
-      {/* Duration + Budget — side by side */}
-      <div className="grid grid-cols-2 gap-0 px-5 py-3">
-        {/* Duration */}
-        <div className="pr-3">
-          <p className="text-[11px] font-medium text-muted-foreground mb-2">Duration</p>
-          <div className="flex flex-wrap gap-1">
-            {DURATION_OPTS.map((d) => (
-              <button key={d} onClick={() => setDuration(d)} className={pill(duration === d)}>
-                {duration === d && (
-                  <motion.span
-                    layoutId="duration-pill"
-                    className="absolute inset-0 rounded-lg bg-primary/10"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span className="relative">{d}</span>
-              </button>
-            ))}
+        {/* Duration + Budget row */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <p className="text-[11px] font-medium text-muted-foreground mb-1.5">Duration</p>
+            <div className="flex flex-wrap gap-1">
+              {DURATION_OPTS.map((d) => (
+                d === "Custom" ? (
+                  <Popover key={d} open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        onClick={() => { setDuration("Custom"); setDatePickerOpen(true); }}
+                        className={pill(duration === "Custom")}
+                      >
+                        {duration === "Custom" && (
+                          <motion.span layoutId="duration-pill" className="absolute inset-0 rounded-md bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
+                        )}
+                        <span className="relative flex items-center gap-1">
+                          <Calendar size={9} />
+                          {duration === "Custom" && customDateRange?.from && customDateRange?.to
+                            ? durationLabel
+                            : "Custom"}
+                        </span>
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarPicker
+                        mode="range"
+                        selected={customDateRange}
+                        onSelect={(r) => { setCustomDateRange(r); if (r?.from && r?.to) setDatePickerOpen(false); }}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                        className="p-3 pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <button key={d} onClick={() => setDuration(d)} className={pill(duration === d)}>
+                    {duration === d && (
+                      <motion.span layoutId="duration-pill" className="absolute inset-0 rounded-md bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
+                    )}
+                    <span className="relative">{d}</span>
+                  </button>
+                )
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[11px] font-medium text-muted-foreground mb-1.5">Budget</p>
+            <div className="flex flex-wrap gap-1">
+              {BUDGET_OPTS.map((b) => (
+                <button key={b} onClick={() => setBudget(b)} className={pill(budget === b)}>
+                  {budget === b && (
+                    <motion.span layoutId="budget-pill" className="absolute inset-0 rounded-md bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
+                  )}
+                  <span className="relative">{b}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Budget */}
-        <div className="pl-3 border-l border-border/40">
-          <p className="text-[11px] font-medium text-muted-foreground mb-2">Budget</p>
+        {/* Trip Style — multi-select */}
+        <div>
+          <p className="text-[11px] font-medium text-muted-foreground mb-1.5">
+            Trip Style <span className="text-muted-foreground/50 font-normal">(multi-select)</span>
+          </p>
           <div className="flex flex-wrap gap-1">
-            {BUDGET_OPTS.map((b) => (
-              <button key={b} onClick={() => setBudget(b)} className={pill(budget === b)}>
-                {budget === b && (
-                  <motion.span
-                    layoutId="budget-pill"
-                    className="absolute inset-0 rounded-lg bg-primary/10"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
+            {STYLE_OPTS.map((s) => (
+              <button key={s} onClick={() => toggleStyle(s)} className={pill(tripStyles.has(s))}>
+                {tripStyles.has(s) && (
+                  <motion.span layoutId={`style-pill-${s}`} className="absolute inset-0 rounded-md bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
                 )}
-                <span className="relative">{b}</span>
+                <span className="relative">{s}</span>
               </button>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Trip Style */}
-      <div className="px-5 py-3">
-        <p className="text-[11px] font-medium text-muted-foreground mb-2">Trip Style</p>
-        <div className="flex flex-wrap gap-1">
-          {STYLE_OPTS.map((s) => (
-            <button key={s} onClick={() => setTripStyle(s)} className={pill(tripStyle === s)}>
-              {tripStyle === s && (
-                <motion.span
-                  layoutId="style-pill"
-                  className="absolute inset-0 rounded-lg bg-primary/10"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                />
-              )}
-              <span className="relative">{s}</span>
-            </button>
-          ))}
         </div>
       </div>
 
       {/* CTA */}
-      <div className="px-5 pt-2 pb-5">
-        <div className="flex items-center gap-2.5">
+      <div className="px-5 pt-4 pb-5">
+        <div className="flex items-center gap-2">
           <motion.button
             onClick={handleGenerate}
             disabled={isGenerating || !isReady}
-            whileHover={isGenerating || !isReady ? {} : { scale: 1.018 }}
-            whileTap={isGenerating || !isReady ? {} : { scale: 0.982 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white shadow-[0_4px_16px_hsla(347,77%,50%,0.28)] transition-shadow hover:shadow-[0_6px_22px_hsla(347,77%,50%,0.38)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
-            style={{ background: "linear-gradient(135deg, hsl(347,77%,50%) 0%, hsl(350,80%,58%) 100%)" }}
+            whileHover={isGenerating || !isReady ? {} : { scale: 1.015 }}
+            whileTap={isGenerating || !isReady ? {} : { scale: 0.985 }}
+            transition={{ type: "spring", stiffness: 420, damping: 26 }}
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              background: isGenerating || !isReady
+                ? "hsl(347,77%,60%)"
+                : "linear-gradient(135deg, hsl(347,77%,48%) 0%, hsl(352,82%,56%) 100%)",
+              boxShadow: isGenerating || !isReady ? "none" : "0 4px_18px_hsla(347,77%,50%,0.30)",
+            }}
           >
             {isGenerating ? (
               <>
-                <Loader2 size={14} className="animate-spin" />
-                <span>Crafting itinerary…</span>
+                <Loader2 size={13} className="animate-spin shrink-0" />
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={genMsgIdx}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.22 }}
+                    className="text-[13px]"
+                  >
+                    {GENERATING_MESSAGES[genMsgIdx]}
+                  </motion.span>
+                </AnimatePresence>
               </>
             ) : (
               <span>Generate My Trip</span>
@@ -375,43 +506,60 @@ const AIItineraryCard = () => {
             disabled={isGenerating}
             whileHover={isGenerating ? {} : { scale: 1.06 }}
             whileTap={isGenerating ? {} : { scale: 0.94 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            transition={{ type: "spring", stiffness: 420, damping: 26 }}
             title="Surprise Me"
-            className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border border-border/60 bg-white text-muted-foreground shadow-sm transition-colors hover:border-primary/30 hover:text-primary disabled:opacity-50"
+            className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl border border-border/60 bg-white text-muted-foreground shadow-sm transition-colors hover:border-primary/30 hover:text-primary disabled:opacity-50"
           >
-            <Shuffle size={15} />
+            <Shuffle size={14} />
           </motion.button>
         </div>
 
-        {/* Status text */}
+        {/* Status / progress */}
         <AnimatePresence mode="wait">
-          <motion.p
-            key={isGenerating ? "gen" : isReady ? "ready" : "idle"}
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.2 }}
-            className="mt-2 text-center text-[10px] text-muted-foreground/70"
-          >
-            {isGenerating
-              ? "✦ Building your perfect itinerary…"
-              : isReady
-              ? "✦ Ready to generate"
-              : "Enter a destination to get started"}
-          </motion.p>
+          {isGenerating ? (
+            <motion.div
+              key="progress"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="mt-2.5"
+            >
+              <div className="h-[3px] w-full rounded-full bg-secondary overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{ background: "linear-gradient(90deg, hsl(347,77%,50%), hsl(352,82%,62%))" }}
+                  initial={{ width: "0%" }}
+                  animate={{ width: "90%" }}
+                  transition={{ duration: 2.0, ease: "easeInOut" }}
+                />
+              </div>
+            </motion.div>
+          ) : (
+            <motion.p
+              key={isReady ? "ready" : "idle"}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="mt-2 text-center text-[10px] text-muted-foreground/60"
+            >
+              {isReady ? "✦ Ready to generate" : "Enter a destination to get started"}
+            </motion.p>
+          )}
         </AnimatePresence>
       </div>
 
-      {/* Generating overlay shimmer */}
+      {/* Subtle overlay shimmer while generating */}
       <AnimatePresence>
         {isGenerating && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.3 }}
             className="absolute inset-0 rounded-2xl pointer-events-none"
-            style={{ background: "linear-gradient(135deg, transparent 0%, hsla(347,77%,50%,0.03) 100%)" }}
+            style={{ background: "linear-gradient(135deg, transparent 60%, hsla(347,77%,50%,0.04) 100%)" }}
           />
         )}
       </AnimatePresence>
