@@ -79,17 +79,18 @@ const LogoIntro = ({ onComplete }: LogoIntroProps) => {
               {/* Icon SVG */}
               <svg
                 width="36"
-                height="36"
-                viewBox="0 0 24 24"
+                height="28"
+                viewBox="0 0 100 80"
                 fill="none"
                 stroke="white"
-                strokeWidth="2"
+                strokeWidth="7"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
+                <path d="M14 47 L14 56 Q14 60 18 60 L82 60 Q86 60 86 56 L86 47 Z" />
+                <path d="M28 47 L33 33 Q35 29 40 29 L60 29 Q65 29 67 33 L72 47 Z" />
+                <circle cx="28" cy="60" r="7" />
+                <circle cx="72" cy="60" r="7" />
               </svg>
 
               {/* Sweep shimmer overlay on icon */}

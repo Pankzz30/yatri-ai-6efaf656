@@ -21,10 +21,11 @@ const LogoComponent = ({ size = "md", showTagline = false }: LogoProps) => {
           transition={{ type: "spring", stiffness: 300 }}
           className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/30"
         >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            <path d="M2 17l10 5 10-5"/>
-            <path d="M2 12l10 5 10-5"/>
+          <svg width="22" height="16" viewBox="0 0 100 80" fill="none" stroke="white" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 47 L14 56 Q14 60 18 60 L82 60 Q86 60 86 56 L86 47 Z" />
+            <path d="M28 47 L33 33 Q35 29 40 29 L60 29 Q65 29 67 33 L72 47 Z" />
+            <circle cx="28" cy="60" r="7" />
+            <circle cx="72" cy="60" r="7" />
           </svg>
         </motion.div>
 

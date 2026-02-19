@@ -23,8 +23,15 @@ const fadeUp = {
 const Index = () => {
   const { isAuthenticated, user } = useUser();
   const showOnboarding = isAuthenticated && user?.isFirstLogin;
-  // Plays every visit to this page
+
+  // First-ever visit this session → full cinematic. Return visits → fast.
+  const isFirstVisit = !sessionStorage.getItem("yatri_visited");
   const [introComplete, setIntroComplete] = useState(false);
+
+  const handleIntroComplete = () => {
+    sessionStorage.setItem("yatri_visited", "1");
+    setIntroComplete(true);
+  };
 
   const trending = destinations
     .slice()
@@ -51,9 +58,9 @@ const Index = () => {
 
   return (
     <>
-      {/* Intro plays every time this page mounts */}
+      {/* Intro plays every mount; fast mode after first session visit */}
       {!introComplete && (
-        <AnimatedLogoIntro onComplete={() => setIntroComplete(true)} />
+        <AnimatedLogoIntro fast={!isFirstVisit} onComplete={handleIntroComplete} />
       )}
 
       <motion.div
@@ -219,11 +226,12 @@ const Index = () => {
           <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-6 md:flex-row">
             <div className="flex items-center gap-2">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                  <path d="M2 17l10 5 10-5"/>
-                  <path d="M2 12l10 5 10-5"/>
-                </svg>
+              <svg width="16" height="12" viewBox="0 0 100 80" fill="none" stroke="white" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 47 L14 56 Q14 60 18 60 L82 60 Q86 60 86 56 L86 47 Z"/>
+                <path d="M28 47 L33 33 Q35 29 40 29 L60 29 Q65 29 67 33 L72 47 Z"/>
+                <circle cx="28" cy="60" r="7"/>
+                <circle cx="72" cy="60" r="7"/>
+              </svg>
               </div>
               <span className="text-sm font-bold text-foreground">Yatri <span className="text-primary">AI</span></span>
             </div>

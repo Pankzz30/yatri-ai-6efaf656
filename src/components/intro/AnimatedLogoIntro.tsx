@@ -4,18 +4,21 @@ import ParticleField from "./ParticleField";
 import SvgLogo from "./SvgLogo";
 
 type Stage =
-  | "particles-build"   // 0–2s   particles drift in
-  | "particles-form"    // 2–3s   particles cluster toward logo
-  | "svg-stroke"        // 3–4.5s SVG strokes draw
-  | "svg-fill"          // 4.5–5.5s logo fills + shimmer
-  | "exit"              // 5.5–6s  scale-down, fade content in
-  | "done";             // 6s+    hidden
+  | "particles-build"
+  | "particles-form"
+  | "svg-stroke"
+  | "svg-fill"
+  | "exit"
+  | "done";
 
 interface AnimatedLogoIntroProps {
   onComplete: () => void;
+  /** Fast mode: no particles, just logo fade-in + shimmer → out (~1.8s) */
+  fast?: boolean;
 }
 
-const STAGE_TIMINGS: Record<Stage, number> = {
+// Full cinematic: 5–6s
+const FULL_TIMINGS: Record<Stage, number> = {
   "particles-build": 0,
   "particles-form": 2000,
   "svg-stroke": 3000,
@@ -24,8 +27,19 @@ const STAGE_TIMINGS: Record<Stage, number> = {
   "done": 6200,
 };
 
-const AnimatedLogoIntro = ({ onComplete }: AnimatedLogoIntroProps) => {
-  const [stage, setStage] = useState<Stage>("particles-build");
+// Fast return: 1.8s total — skip particles, straight to fill
+const FAST_TIMINGS: Record<Stage, number> = {
+  "particles-build": 0,
+  "particles-form": 0,
+  "svg-stroke": 0,
+  "svg-fill": 400,
+  "exit": 1200,
+  "done": 1800,
+};
+
+const AnimatedLogoIntro = ({ onComplete, fast = false }: AnimatedLogoIntroProps) => {
+  const timings = fast ? FAST_TIMINGS : FULL_TIMINGS;
+  const [stage, setStage] = useState<Stage>(fast ? "svg-stroke" : "particles-build");
   const [dims, setDims] = useState({ w: window.innerWidth, h: window.innerHeight });
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -36,7 +50,6 @@ const AnimatedLogoIntro = ({ onComplete }: AnimatedLogoIntroProps) => {
   }, []);
 
   useEffect(() => {
-    // Clear any previous timers
     timers.current.forEach(clearTimeout);
     timers.current = [];
 
@@ -45,22 +58,24 @@ const AnimatedLogoIntro = ({ onComplete }: AnimatedLogoIntroProps) => {
       timers.current.push(t);
     };
 
-    schedule(() => setStage("particles-form"), STAGE_TIMINGS["particles-form"]);
-    schedule(() => setStage("svg-stroke"), STAGE_TIMINGS["svg-stroke"]);
-    schedule(() => setStage("svg-fill"), STAGE_TIMINGS["svg-fill"]);
-    schedule(() => setStage("exit"), STAGE_TIMINGS["exit"]);
+    if (!fast) {
+      schedule(() => setStage("particles-form"), timings["particles-form"]);
+      schedule(() => setStage("svg-stroke"), timings["svg-stroke"]);
+    }
+    schedule(() => setStage("svg-fill"), timings["svg-fill"]);
+    schedule(() => setStage("exit"), timings["exit"]);
     schedule(() => {
       setStage("done");
       onComplete();
-    }, STAGE_TIMINGS["done"]);
+    }, timings["done"]);
 
     return () => timers.current.forEach(clearTimeout);
-  }, [onComplete]);
+  }, [onComplete, fast]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const particleStage =
-    stage === "particles-build"
+    !fast && stage === "particles-build"
       ? "build"
-      : stage === "particles-form"
+      : !fast && stage === "particles-form"
       ? "form"
       : stage === "svg-stroke" || stage === "svg-fill"
       ? "dissolve"
@@ -83,7 +98,7 @@ const AnimatedLogoIntro = ({ onComplete }: AnimatedLogoIntroProps) => {
         style={{ background: "hsl(0,0%,100%)" }}
         initial={{ opacity: 1 }}
         animate={stage === "exit" ? { opacity: 0 } : { opacity: 1 }}
-        transition={{ duration: 0.7, ease: "easeInOut" }}
+        transition={{ duration: fast ? 0.45 : 0.7, ease: "easeInOut" }}
       >
         {/* Subtle mesh glow bg */}
         <motion.div
@@ -102,31 +117,32 @@ const AnimatedLogoIntro = ({ onComplete }: AnimatedLogoIntroProps) => {
                     "radial-gradient(ellipse at 50% 50%, hsla(347,77%,50%,0.03) 0%, transparent 70%)",
                 }
           }
-          transition={{ duration: 1.2, ease: "easeInOut" }}
+          transition={{ duration: fast ? 0.5 : 1.2, ease: "easeInOut" }}
         />
 
-        {/* Particle canvas */}
-        <ParticleField
-          stage={particleStage}
-          width={dims.w}
-          height={dims.h}
-        />
+        {/* Particles — only in full mode */}
+        {!fast && (
+          <ParticleField stage={particleStage} width={dims.w} height={dims.h} />
+        )}
 
-        {/* Logo — scales down on exit */}
+        {/* Logo */}
         <motion.div
+          initial={fast ? { opacity: 0, scale: 0.92 } : { opacity: 1, scale: 1 }}
           animate={
             stage === "exit"
               ? { scale: 0.35, y: -(dims.h / 2 - 36), opacity: 0 }
+              : fast
+              ? { opacity: 1, scale: 1 }
               : { scale: 1, y: 0, opacity: 1 }
           }
           transition={
             stage === "exit"
-              ? { duration: 0.65, ease: [0.4, 0, 0.2, 1] }
-              : { duration: 0.5, ease: "easeOut" }
+              ? { duration: fast ? 0.4 : 0.65, ease: [0.4, 0, 0.2, 1] }
+              : { duration: fast ? 0.4 : 0.5, ease: "easeOut" }
           }
           className="relative z-10"
         >
-          <SvgLogo stage={logoStage} />
+          <SvgLogo stage={logoStage} fast={fast} />
         </motion.div>
       </motion.div>
     </AnimatePresence>
