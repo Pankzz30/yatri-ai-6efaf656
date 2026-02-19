@@ -226,11 +226,12 @@ const Index = () => {
           <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-6 md:flex-row">
             <div className="flex items-center gap-2">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-              <svg width="16" height="12" viewBox="0 0 100 80" fill="none" stroke="white" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 47 L14 56 Q14 60 18 60 L82 60 Q86 60 86 56 L86 47 Z"/>
-                <path d="M28 47 L33 33 Q35 29 40 29 L60 29 Q65 29 67 33 L72 47 Z"/>
-                <circle cx="28" cy="60" r="7"/>
-                <circle cx="72" cy="60" r="7"/>
+              <svg width="18" height="11" viewBox="0 0 120 72" fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 46 L10 54 Q10 58 14 58 L106 58 Q110 58 110 54 L110 46 Z" strokeWidth="9"/>
+                <path d="M24 46 C26 38 32 26 42 22 L78 22 C88 22 94 30 96 38 L100 46" strokeWidth="9"/>
+                <path d="M96 38 L106 46" strokeWidth="9"/>
+                <circle cx="30" cy="58" r="9" strokeWidth="8"/>
+                <circle cx="90" cy="58" r="9" strokeWidth="8"/>
               </svg>
               </div>
               <span className="text-sm font-bold text-foreground">Yatri <span className="text-primary">AI</span></span>
