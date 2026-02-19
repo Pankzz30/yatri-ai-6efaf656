@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Heart, Map, MessageCircle } from "lucide-react";
+import { Home, Heart, Map, Sparkles } from "lucide-react";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home },
+  { to: "/plan", label: "AI Plan", icon: Sparkles },
   { to: "/wishlist", label: "Wishlist", icon: Heart },
   { to: "/my-trips", label: "My Trips", icon: Map },
-  { to: "/contact", label: "Help", icon: MessageCircle },
 ];
 
 const MobileBottomNav = () => {

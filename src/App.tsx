@@ -16,6 +16,7 @@ import Contact from "./pages/Contact";
 import MyTrips from "./pages/MyTrips";
 import Wishlist from "./pages/Wishlist";
 import Profile from "./pages/Profile";
+import Plan from "./pages/Plan";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => {
               <Route path="/my-trips" element={<MyTrips />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/plan" element={<Plan />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

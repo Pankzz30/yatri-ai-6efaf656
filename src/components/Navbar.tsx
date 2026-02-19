@@ -111,9 +111,9 @@ const Navbar = () => {
 
   const navLinks = [
     { to: "/", label: "Home" },
+    { to: "/plan", label: "AI Planner" },
     { to: "/my-trips", label: "My Trips" },
     { to: "/wishlist", label: "Wishlist" },
-    { to: "/about", label: "About" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
