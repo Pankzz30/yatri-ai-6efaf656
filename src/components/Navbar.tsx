@@ -1,17 +1,104 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
-import { Menu, X, User, LogOut, Sparkles } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Sparkles, User, LogOut, ChevronDown, Info } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import LogoComponent from "./LogoComponent";
 import AnimatedButton from "./AnimatedButton";
 
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
 
+interface ProfileDropdownProps {
+  isAuthenticated: boolean;
+  user: { name: string; email: string } | null;
+  logout: () => void;
+}
+
+const ProfileDropdown = ({ isAuthenticated, user, logout }: ProfileDropdownProps) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <motion.button
+        whileTap={{ scale: 0.93 }}
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-1.5 rounded-full p-0.5 transition-all hover:ring-2 hover:ring-primary/30"
+        aria-label="Profile menu"
+      >
+        <div className="flex h-8 w-8 items-center justify-center rounded-full gradient-primary">
+          <User size={14} className="text-white" />
+        </div>
+        <ChevronDown
+          size={13}
+          className="text-muted-foreground transition-transform duration-200"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        />
+      </motion.button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.97 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="absolute right-0 top-full mt-2 w-48 overflow-hidden rounded-2xl border border-border bg-white shadow-xl shadow-black/10 z-50"
+          >
+            {isAuthenticated && user && (
+              <div className="border-b border-border/60 px-4 py-3">
+                <p className="text-[13px] font-semibold text-foreground truncate">{user.name}</p>
+                <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
+              </div>
+            )}
+            <div className="py-1">
+              <Link
+                to="/profile"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-medium text-foreground hover:bg-accent/60 transition-colors"
+              >
+                <User size={14} className="text-muted-foreground" />
+                View Profile
+              </Link>
+              <Link
+                to="/about"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-[13px] font-medium text-foreground hover:bg-accent/60 transition-colors"
+              >
+                <Info size={14} className="text-muted-foreground" />
+                About Us
+              </Link>
+              {isAuthenticated && (
+                <>
+                  <div className="mx-4 my-1 h-px bg-border/60" />
+                  <button
+                    onClick={() => { logout(); setOpen(false); }}
+                    className="flex w-full items-center gap-2.5 px-4 py-2.5 text-[13px] font-medium text-destructive hover:bg-destructive/5 transition-colors"
+                  >
+                    <LogOut size={14} />
+                    Log out
+                  </button>
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const Navbar = () => {
   const { isAuthenticated, user, logout } = useUser();
   const location = useLocation();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -22,7 +109,6 @@ const Navbar = () => {
 
   if (AUTH_ROUTES.includes(location.pathname)) return null;
 
-
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/my-trips", label: "My Trips" },
@@ -31,6 +117,8 @@ const Navbar = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const profileProps = { isAuthenticated, user, logout };
 
   return (
     <nav
@@ -43,7 +131,7 @@ const Navbar = () => {
           <LogoComponent size="sm" />
         </Link>
 
-        {/* Desktop Nav */}
+        {/* Desktop Nav Links */}
         <div className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
             <Link
@@ -67,27 +155,10 @@ const Navbar = () => {
           ))}
         </div>
 
+        {/* Desktop right side */}
         <div className="hidden items-center gap-3 md:flex">
           {isAuthenticated ? (
-            <>
-              <Link
-                to="/profile"
-                className="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-accent"
-              >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full gradient-primary">
-                  <User size={14} className="text-white" />
-                </div>
-                {user?.name}
-              </Link>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={logout}
-                className="rounded-xl p-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-accent"
-              >
-                <LogOut size={16} />
-              </motion.button>
-            </>
+            <ProfileDropdown {...profileProps} />
           ) : (
             <>
               <Link
@@ -104,102 +175,20 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile toggle */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="rounded-xl p-2 text-foreground md:hidden hover:bg-accent"
-        >
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-        </motion.button>
+        {/* Mobile right side — profile icon only */}
+        <div className="flex items-center md:hidden">
+          {isAuthenticated ? (
+            <ProfileDropdown {...profileProps} />
+          ) : (
+            <Link
+              to="/login"
+              className="rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition-all hover:text-foreground"
+            >
+              Log in
+            </Link>
+          )}
+        </div>
       </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden border-t border-border glass px-6 pb-6 md:hidden"
-          >
-            <div className="pt-4 space-y-1">
-              {navLinks.map((link, i) => (
-                <motion.div
-                  key={link.to}
-                  initial={{ opacity: 0, x: -16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <Link
-                    to={link.to}
-                    onClick={() => setMobileOpen(false)}
-                    className={`block rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-                      isActive(link.to)
-                        ? "bg-accent text-primary"
-                        : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-            {isAuthenticated ? (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-4 space-y-2 border-t border-border pt-4"
-              >
-                <Link
-                  to="/profile"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl bg-accent px-4 py-3"
-                >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full gradient-primary">
-                    <User size={15} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">{user?.name}</p>
-                    <p className="text-xs text-muted-foreground">View profile</p>
-                  </div>
-                </Link>
-                <button
-                  onClick={() => { logout(); setMobileOpen(false); }}
-                  className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-colors"
-                >
-                  <LogOut size={16} />
-                  Log out
-                </button>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-4 flex gap-3"
-              >
-                <Link
-                  to="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex-1 rounded-2xl border border-border py-3 text-center text-sm font-medium text-foreground"
-                >
-                  Log in
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex-1 rounded-2xl gradient-primary py-3 text-center text-sm font-semibold text-white"
-                >
-                  Sign up
-                </Link>
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
     </nav>
   );
 };

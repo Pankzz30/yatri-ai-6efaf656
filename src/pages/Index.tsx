@@ -64,7 +64,7 @@ const Index = () => {
       )}
 
       <motion.div
-        className="min-h-screen bg-background"
+        className="min-h-screen bg-background pb-16 md:pb-0"
         variants={container}
         initial="hidden"
         animate={introComplete ? "visible" : "hidden"}
