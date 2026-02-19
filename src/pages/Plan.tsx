@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Sparkles, RotateCcw, MapPin, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -127,6 +128,7 @@ const Cursor = () => (
    PLAN PAGE
 ═══════════════════════════════════════════════════ */
 const Plan = () => {
+  const location = useLocation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -134,11 +136,24 @@ const Plan = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
+  const autoSentRef = useRef(false);
 
   /* auto-scroll */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  /* auto-send prompt coming from hero form */
+  useEffect(() => {
+    const navPrompt = (location.state as { prompt?: string } | null)?.prompt;
+    if (navPrompt && !autoSentRef.current) {
+      autoSentRef.current = true;
+      // small delay so the page renders first
+      const t = setTimeout(() => send(navPrompt), 300);
+      return () => clearTimeout(t);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const send = useCallback(async (text: string) => {
     const trimmed = text.trim();

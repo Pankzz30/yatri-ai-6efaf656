@@ -1,17 +1,20 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   Bus, Train, Plane, Hotel, MapPin, Calendar, Users, ArrowLeftRight, ChevronDown, ArrowRight,
+  Home, Sparkles, Shuffle, Loader2,
 } from "lucide-react";
 import TravelStoryScene from "@/components/TravelStoryScene";
+import { useUser } from "@/context/UserContext";
 
 /* ─────────────────────────────────────────────────────────────────
    CATEGORY TABS
 ───────────────────────────────────────────────────────────────── */
-type Category = "bus" | "train" | "flight" | "hotels";
+type Category = "home" | "bus" | "train" | "flight" | "hotels";
 
 const CATEGORIES: { id: Category; label: string; Icon: React.ElementType }[] = [
+  { id: "home",   label: "Home",   Icon: Home  },
   { id: "bus",    label: "Bus",    Icon: Bus   },
   { id: "train",  label: "Train",  Icon: Train  },
   { id: "flight", label: "Flight", Icon: Plane  },
@@ -56,7 +59,7 @@ const slideVariants = {
   exit: { opacity: 0, x: -14 },
 };
 
-const BookingCard = ({ category }: { category: Category }) => {
+const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   const [swapped, setSwapped] = useState(false);
 
   const fromLabel = swapped ? "To" : "From";
@@ -181,6 +184,240 @@ const BookingCard = ({ category }: { category: Category }) => {
 };
 
 /* ─────────────────────────────────────────────────────────────────
+   DURATION / BUDGET / STYLE OPTIONS
+───────────────────────────────────────────────────────────────── */
+const DURATION_OPTS = ["2–3 days", "4–5 days", "1 week", "Custom"];
+const BUDGET_OPTS   = ["Budget", "Balanced", "Premium"] as const;
+const STYLE_OPTS    = ["Weekend", "Relaxed", "Adventure", "Backpacking"] as const;
+
+const SURPRISE_PROMPTS = [
+  "Plan a 4-day offbeat trip to Meghalaya for a solo nature lover",
+  "Design a 5-day royal heritage tour of Rajputana on a balanced budget",
+  "Craft a 3-day coastal escape to Gokarna, backpacking style",
+  "Plan a 6-day family trip to Kerala backwaters, premium comfort",
+  "Weekend adventure itinerary to Rishikesh including river rafting",
+];
+
+/* ─────────────────────────────────────────────────────────────────
+   AI ITINERARY CARD
+───────────────────────────────────────────────────────────────── */
+const AIItineraryCard = () => {
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+  const [from, setFrom] = useState(user?.preferences?.location ?? "");
+  const [destination, setDestination] = useState("");
+  const [duration, setDuration] = useState(DURATION_OPTS[0]);
+  const [budget, setBudget] = useState<typeof BUDGET_OPTS[number]>("Balanced");
+  const [tripStyle, setTripStyle] = useState<typeof STYLE_OPTS[number]>("Adventure");
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const buildPrompt = () =>
+    `Plan a ${duration} trip to ${destination || "India"}${from ? ` starting from ${from}` : ""}. Budget: ${budget}. Trip style: ${tripStyle}. Provide a detailed day-by-day itinerary.`;
+
+  const handleGenerate = () => {
+    if (!destination.trim()) return;
+    setIsGenerating(true);
+    setTimeout(() => {
+      navigate("/plan", { state: { prompt: buildPrompt() } });
+    }, 1200);
+  };
+
+  const handleSurprise = () => {
+    const pick = SURPRISE_PROMPTS[Math.floor(Math.random() * SURPRISE_PROMPTS.length)];
+    setIsGenerating(true);
+    setTimeout(() => {
+      navigate("/plan", { state: { prompt: pick } });
+    }, 1200);
+  };
+
+  return (
+    <motion.div
+      key="home-card"
+      variants={slideVariants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
+      className="w-full rounded-2xl border border-border/70 bg-white shadow-[0_4px_32px_rgba(0,0,0,0.07)] overflow-hidden"
+    >
+      {/* Header */}
+      <div className="px-5 pt-5 pb-3">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">AI Itinerary</p>
+        <h3 className="mt-0.5 text-base font-bold text-foreground leading-snug">Plan Your Perfect Journey</h3>
+      </div>
+
+      <div className="mx-5 border-t border-border/60" />
+
+      {/* From */}
+      <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+          <MapPin size={16} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">From</p>
+          <input
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            placeholder="Your city (auto-filled)"
+            className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="mx-5 border-t border-border/60" />
+
+      {/* Destination */}
+      <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+          <MapPin size={16} strokeWidth={2.5} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Destination</p>
+          <input
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            placeholder="Where do you want to go?"
+            className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="mx-5 border-t border-border/60" />
+
+      {/* Duration */}
+      <div className="flex items-center gap-4 px-5 py-3.5">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+          <Calendar size={16} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">Duration</p>
+          <div className="flex flex-wrap gap-1.5">
+            {DURATION_OPTS.map((d) => (
+              <button
+                key={d}
+                onClick={() => setDuration(d)}
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
+                  duration === d
+                    ? "bg-primary text-white shadow-sm"
+                    : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
+                }`}
+              >
+                {d}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-5 border-t border-border/60" />
+
+      {/* Budget */}
+      <div className="flex items-center gap-4 px-5 py-3.5">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+          <span className="text-xs font-black">₹</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">Budget</p>
+          <div className="flex gap-1.5">
+            {BUDGET_OPTS.map((b) => (
+              <button
+                key={b}
+                onClick={() => setBudget(b)}
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
+                  budget === b
+                    ? "bg-primary text-white shadow-sm"
+                    : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
+                }`}
+              >
+                {b}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-5 border-t border-border/60" />
+
+      {/* Trip Style */}
+      <div className="flex items-center gap-4 px-5 py-3.5">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+          <Sparkles size={15} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">Trip Style</p>
+          <div className="flex flex-wrap gap-1.5">
+            {STYLE_OPTS.map((s) => (
+              <button
+                key={s}
+                onClick={() => setTripStyle(s)}
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
+                  tripStyle === s
+                    ? "bg-primary text-white shadow-sm"
+                    : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* CTAs */}
+      <div className="px-5 py-4 flex gap-2.5">
+        <motion.button
+          onClick={handleGenerate}
+          disabled={isGenerating}
+          whileHover={isGenerating ? {} : { scale: 1.025 }}
+          whileTap={isGenerating ? {} : { scale: 0.975 }}
+          transition={{ type: "tween", duration: 0.18 }}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition-shadow hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 size={15} className="animate-spin" />
+              <span>Crafting your itinerary…</span>
+            </>
+          ) : (
+            <>
+              <Sparkles size={15} />
+              Generate My Trip
+            </>
+          )}
+        </motion.button>
+
+        <motion.button
+          onClick={handleSurprise}
+          disabled={isGenerating}
+          whileHover={isGenerating ? {} : { scale: 1.05 }}
+          whileTap={isGenerating ? {} : { scale: 0.95 }}
+          transition={{ type: "tween", duration: 0.18 }}
+          title="Surprise Me"
+          className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-xl border border-border bg-white text-muted-foreground shadow-sm transition-colors hover:border-primary/40 hover:text-primary disabled:opacity-50"
+        >
+          <Shuffle size={16} />
+        </motion.button>
+      </div>
+
+      {/* Generating overlay shimmer */}
+      <AnimatePresence>
+        {isGenerating && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="absolute inset-0 rounded-2xl pointer-events-none"
+            style={{ background: "linear-gradient(135deg, transparent 0%, hsla(347,77%,50%,0.03) 100%)" }}
+          />
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────────
    CATEGORY TABS BAR
 ───────────────────────────────────────────────────────────────── */
 const CategoryTabs = ({
@@ -190,7 +427,7 @@ const CategoryTabs = ({
   active: Category;
   onChange: (c: Category) => void;
 }) => (
-  <div className="grid grid-cols-4">
+  <div className="grid grid-cols-5">
     {CATEGORIES.map(({ id, label, Icon }) => {
       const isActive = id === active;
       return (
@@ -220,7 +457,7 @@ const CategoryTabs = ({
    HERO SECTION
 ───────────────────────────────────────────────────────────────── */
 const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: boolean; sceneStartSignal?: boolean }) => {
-  const [category, setCategory] = useState<Category>("bus");
+  const [category, setCategory] = useState<Category>("home");
 
   return (
     <>
@@ -308,14 +545,20 @@ const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: b
               )}
             </motion.div>
 
-            {/* RIGHT — Booking form */}
+            {/* RIGHT — Booking form / AI card */}
             <motion.div
-              className="mt-8 w-full lg:mt-0 lg:w-[500px] lg:justify-self-end"
+              className="relative mt-8 w-full lg:mt-0 lg:w-[500px] lg:justify-self-end"
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, ease: "easeOut", delay: 0.8 }}
             >
-              <BookingCard category={category} />
+              <AnimatePresence mode="wait" initial={false}>
+                {category === "home" ? (
+                  <AIItineraryCard key="home" />
+                ) : (
+                  <BookingCard key={category} category={category} />
+                )}
+              </AnimatePresence>
             </motion.div>
 
           </div>
