@@ -348,7 +348,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
 
         {/* 2. Tagline */}
         <motion.h1
-          className="text-[2.6rem] sm:text-[3.4rem] lg:text-[4rem] font-extrabold leading-[1.1] tracking-tight text-foreground"
+          className="text-[2rem] sm:text-[2.6rem] font-extrabold leading-tight tracking-tight text-foreground whitespace-nowrap"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, ease: "easeOut", delay: 0.5 }}
@@ -356,7 +356,6 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
           Har Safar,{" "}
           <span className="relative inline-block text-primary">
             Ab Smart.
-            {/* Red underline animates left → right */}
             <motion.span
               className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full bg-primary"
               initial={{ scaleX: 0 }}
@@ -366,16 +365,6 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
             />
           </span>
         </motion.h1>
-
-        {/* 3. Subheading */}
-        <motion.p
-          className="mt-5 text-base sm:text-lg text-muted-foreground max-w-sm"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: "easeOut", delay: 0.75 }}
-        >
-          Every journey, now smarter.
-        </motion.p>
 
         {/* 4. Search bar */}
         <motion.div
