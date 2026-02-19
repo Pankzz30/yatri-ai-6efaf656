@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Heart, Map, Sparkles } from "lucide-react";
+import { Home, Heart, Map, MessageCircle } from "lucide-react";
 
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
 
@@ -8,7 +8,7 @@ const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/my-trips", label: "My Trips", icon: Map },
   { to: "/wishlist", label: "Wishlist", icon: Heart },
-  { to: "/plan", label: "AI Plan", icon: Sparkles },
+  { to: "/contact", label: "Help", icon: MessageCircle },
 ];
 
 const MobileBottomNav = () => {
