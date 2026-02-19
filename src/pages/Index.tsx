@@ -2,12 +2,12 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
 import { useState } from "react";
-import HeroSearch from "@/components/HeroSearch";
 import DestinationCard from "@/components/DestinationCard";
 import OnboardingModal from "@/components/OnboardingModal";
 import AnimatedLogoIntro from "@/components/intro/AnimatedLogoIntro";
+import HeroSection from "@/components/HeroSection";
 import { destinations } from "@/data/mockData";
-import { Sparkles, Brain, Wallet, Compass, ArrowRight } from "lucide-react";
+import { Sparkles, Brain, Wallet, Compass } from "lucide-react";
 
 // Cinematic stagger entrance — runs after intro overlay fades
 const container = {
@@ -72,80 +72,7 @@ const Index = () => {
         {showOnboarding && <OnboardingModal />}
 
         {/* ── HERO ── */}
-        <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-24 pb-16">
-          {/* Soft background blobs */}
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute -top-32 left-1/4 h-96 w-96 rounded-full bg-secondary/60 blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-accent/40 blur-3xl" />
-          </div>
-
-          {/* Dot grid */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.025]"
-            style={{
-              backgroundImage: "radial-gradient(circle, hsl(347,77%,50%) 1px, transparent 1px)",
-              backgroundSize: "32px 32px",
-            }}
-          />
-
-          <div className="relative z-10 w-full max-w-3xl text-center">
-            {/* Badge */}
-            <motion.div variants={fadeUp}>
-              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary">
-                <Sparkles size={12} />
-                AI-Powered Indian Trip Planner
-              </span>
-            </motion.div>
-
-            {/* Headline */}
-            <motion.h1
-              variants={fadeUp}
-              className="mb-5 text-5xl font-bold leading-[1.1] tracking-tight text-foreground md:text-6xl"
-            >
-              Plan smarter.{" "}
-              <span className="text-gradient">Travel better.</span>
-            </motion.h1>
-
-            {/* Subtext */}
-            <motion.p
-              variants={fadeUp}
-              className="mx-auto mb-10 max-w-md text-base text-muted-foreground"
-            >
-              Discover India's most beautiful destinations with personalized AI itineraries, budget planning, and insider tips.
-            </motion.p>
-
-            {/* Search */}
-            <motion.div variants={fadeUp} className="mb-8">
-              <HeroSearch />
-            </motion.div>
-
-            {/* CTA links */}
-            <motion.div
-              variants={fadeUp}
-              className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center"
-            >
-              {!isAuthenticated && (
-                <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:scale-[1.03] hover:shadow-primary/35"
-                >
-                  <Sparkles size={15} />
-                  Get started free
-                </Link>
-              )}
-              <a
-                href="#destinations"
-                className="inline-flex items-center gap-1.5 rounded-2xl border border-border px-7 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-primary/30 hover:text-foreground"
-              >
-                Browse destinations
-                <ArrowRight size={14} />
-              </a>
-            </motion.div>
-          </div>
-
-          {/* Bottom fade */}
-          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
-        </section>
+        <HeroSection isAuthenticated={isAuthenticated} />
 
         {/* ── WHY YATRI AI ── */}
         <motion.section variants={fadeUp} className="bg-[hsl(350,80%,98%)] py-20">
