@@ -3,7 +3,7 @@ import { useRef, useState, useCallback } from "react";
 import { MapPin, Clock, Shuffle, ChevronRight, Sparkles } from "lucide-react";
 import { destinations } from "@/data/mockData";
 import { useUser } from "@/context/UserContext";
-import IndiaMapSection from "@/components/IndiaMapSection";
+import DiscoveryFeed from "@/components/DiscoveryFeed";
 
 /* ─────────────────────────────────────────────────────────────────
    ANIMATION VARIANTS
@@ -377,9 +377,9 @@ export default function BelowHeroSections() {
         </div>
       </Section>
 
-      {/* ── 6. INTERACTIVE INDIA MAP ── */}
+      {/* ── 6. AI DISCOVERY FEED ── */}
       <Section className="py-16">
-        <IndiaMapSection />
+        <DiscoveryFeed />
       </Section>
 
       {/* ── FOOTER CTA ── */}
