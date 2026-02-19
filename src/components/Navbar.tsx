@@ -146,7 +146,35 @@ const Navbar = () => {
                 </motion.div>
               ))}
             </div>
-            {!isAuthenticated && (
+            {isAuthenticated ? (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mt-4 space-y-2 border-t border-border pt-4"
+              >
+                <Link
+                  to="/profile"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 rounded-2xl bg-accent px-4 py-3"
+                >
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full gradient-primary">
+                    <User size={15} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{user?.name}</p>
+                    <p className="text-xs text-muted-foreground">View profile</p>
+                  </div>
+                </Link>
+                <button
+                  onClick={() => { logout(); setMobileOpen(false); }}
+                  className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-colors"
+                >
+                  <LogOut size={16} />
+                  Log out
+                </button>
+              </motion.div>
+            ) : (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
