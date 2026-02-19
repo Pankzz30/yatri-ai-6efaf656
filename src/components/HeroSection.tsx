@@ -325,31 +325,29 @@ const CategoryTabs = ({
   active: Category;
   onChange: (c: Category) => void;
 }) => (
-  <div className="w-full rounded-2xl border border-border/60 bg-white shadow-sm overflow-hidden mb-3">
-    <div className="grid grid-cols-4">
-      {CATEGORIES.map(({ id, label, Icon }) => {
-        const isActive = id === active;
-        return (
-          <button
-            key={id}
-            onClick={() => onChange(id)}
-            className={`relative flex flex-col items-center justify-center gap-1.5 py-4 text-xs font-semibold transition-all hover:scale-[1.04] ${
-              isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
-            <span>{label}</span>
-            {isActive && (
-              <motion.span
-                layoutId="tab-underline"
-                className="absolute bottom-0 left-3 right-3 h-[2.5px] rounded-full bg-primary"
-                transition={{ type: "spring", stiffness: 380, damping: 34 }}
-              />
-            )}
-          </button>
-        );
-      })}
-    </div>
+  <div className="grid grid-cols-4">
+    {CATEGORIES.map(({ id, label, Icon }) => {
+      const isActive = id === active;
+      return (
+        <button
+          key={id}
+          onClick={() => onChange(id)}
+          className={`relative flex flex-col items-center justify-center gap-1.5 py-4 text-xs font-semibold transition-all hover:scale-[1.04] ${
+            isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
+          <span>{label}</span>
+          {isActive && (
+            <motion.span
+              layoutId="tab-underline"
+              className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-full bg-primary"
+              transition={{ type: "spring", stiffness: 380, damping: 34 }}
+            />
+          )}
+        </button>
+      );
+    })}
   </div>
 );
 
@@ -362,8 +360,8 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
     <>
       {/* ── Sticky category tabs — fixed below navbar ── */}
-      <div className="fixed top-16 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-border/60 shadow-sm">
-        <div className="mx-auto max-w-md px-4">
+      <div className="fixed top-16 left-0 right-0 z-40 bg-white border-b border-border/60">
+        <div className="container mx-auto px-6">
           <CategoryTabs active={category} onChange={setCategory} />
         </div>
       </div>
