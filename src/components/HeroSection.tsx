@@ -670,7 +670,7 @@ const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: b
         </div>
       </div>
 
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 pt-36 pb-20 lg:pt-28 lg:pb-16">
+      <section className="relative flex flex-col items-center justify-center overflow-hidden bg-background px-4 pt-36 pb-6 lg:pt-28 lg:pb-6">
 
         {/* Dot grid */}
         <div
@@ -784,22 +784,6 @@ const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: b
           )}
         </div>
 
-      {/* Scroll indicator */}
-      <motion.a
-        href="#features"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.2, duration: 0.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-muted-foreground/35 transition-colors hover:text-primary/60"
-        aria-label="Scroll down"
-      >
-        <span className="text-[9px] font-medium uppercase tracking-widest">Scroll</span>
-        <motion.div animate={{ y: [0, 4, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
-          <ChevronDown size={14} />
-        </motion.div>
-      </motion.a>
-
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
     </section>
     </>
   );
