@@ -5,9 +5,8 @@ import {
   Bus, Train, Plane, Hotel, MapPin, Calendar, Users, ArrowLeftRight, ChevronDown, ArrowRight,
   Home, Shuffle, Loader2, Navigation, Search, X,
 } from "lucide-react";
+import TravelStoryScene from "@/components/TravelStoryScene";
 import { useUser } from "@/context/UserContext";
-import heroVideo from "@/assets/hero-video.mp4";
-import heroBg from "@/assets/hero-bg.jpg";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { format } from "date-fns";
@@ -664,124 +663,62 @@ const CategoryTabs = ({
 );
 
 /* ─────────────────────────────────────────────────────────────────
-   CINEMATIC HERO SECTION
+   HERO SECTION
 ───────────────────────────────────────────────────────────────── */
-const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean; sceneStartSignal?: boolean }) => {
+const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: boolean; sceneStartSignal?: boolean }) => {
   const [category, setCategory] = useState<Category>("home");
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <>
-      {/* ── Sticky category tabs ── */}
+      {/* ── Sticky category tabs — fixed below navbar ── */}
       <div className="fixed top-16 left-0 right-0 z-40 bg-white border-b border-border/60">
         <div className="container mx-auto px-6">
           <CategoryTabs active={category} onChange={setCategory} />
         </div>
       </div>
 
-      <section className="relative flex flex-col items-center justify-center overflow-hidden px-4 pt-36 pb-10 lg:pt-28 lg:pb-10 min-h-[90vh] lg:min-h-[85vh]">
+      <section className="relative flex flex-col items-center justify-center overflow-hidden bg-background px-4 pt-36 pb-6 lg:pt-28 lg:pb-6">
 
-        {/* ── VIDEO BACKGROUND ── */}
-        <div className="absolute inset-0 z-0">
-          {/* Fallback image */}
-          <img
-            src={heroBg}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          {/* Video with Ken Burns slow zoom */}
-          <motion.video
-            ref={videoRef}
-            src={heroVideo}
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover will-change-transform"
-            initial={{ scale: 1.0 }}
-            animate={{ scale: 1.08 }}
-            transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
-            style={{ filter: "blur(1.5px)" }}
-          />
+        {/* Dot grid */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.012]"
+          aria-hidden="true"
+          style={{
+            backgroundImage: "radial-gradient(circle, hsl(347,77%,50%) 1px, transparent 1px)",
+            backgroundSize: "36px 36px",
+          }}
+        />
 
-          {/* Dark gradient overlay (60% opacity) */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/75" />
+        {/* Ambient blobs */}
+        <div className="pointer-events-none absolute -top-56 -left-44 h-[480px] w-[480px] rounded-full bg-primary/[0.022] blur-[120px]" />
+        <div className="pointer-events-none absolute -bottom-44 -right-44 h-[400px] w-[400px] rounded-full bg-primary/[0.022] blur-[100px]" />
 
-          {/* Vignette */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ boxShadow: "inset 0 0 200px 80px rgba(0,0,0,0.4)" }}
-          />
-
-          {/* Film grain overlay */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-[0.035] mix-blend-overlay"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-              backgroundSize: "128px 128px",
-            }}
-          />
-
-          {/* Light leak animation */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            animate={{
-              background: [
-                "radial-gradient(ellipse at 20% 30%, hsla(40,100%,70%,0.06) 0%, transparent 60%)",
-                "radial-gradient(ellipse at 80% 40%, hsla(30,100%,65%,0.08) 0%, transparent 55%)",
-                "radial-gradient(ellipse at 50% 60%, hsla(347,77%,60%,0.05) 0%, transparent 50%)",
-                "radial-gradient(ellipse at 20% 30%, hsla(40,100%,70%,0.06) 0%, transparent 60%)",
-              ],
-            }}
-            transition={{ duration: 12, ease: "easeInOut", repeat: Infinity }}
-          />
-
-          {/* Atmospheric mist */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none opacity-20"
-            animate={{
-              background: [
-                "radial-gradient(ellipse at 30% 80%, hsla(0,0%,100%,0.15) 0%, transparent 50%)",
-                "radial-gradient(ellipse at 70% 70%, hsla(0,0%,100%,0.1) 0%, transparent 55%)",
-                "radial-gradient(ellipse at 30% 80%, hsla(0,0%,100%,0.15) 0%, transparent 50%)",
-              ],
-            }}
-            transition={{ duration: 8, ease: "easeInOut", repeat: Infinity }}
-          />
-        </div>
-
-        {/* ── CONTENT ── */}
+        {/* ── Content ── */}
         <div className="relative z-10 mx-auto w-full max-w-md lg:max-w-6xl">
+
+          {/* MOBILE: stacked | DESKTOP: split 2-col grid */}
           <div className="flex flex-col items-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-16">
 
-            {/* LEFT — Cinematic headline */}
+            {/* LEFT — Travel scene + tagline */}
             <motion.div
               className="flex flex-col items-center text-center lg:items-start lg:text-left"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
             >
-              <motion.p
-                className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/60 mb-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-              >
-                Your Journey Begins Here
-              </motion.p>
+              <TravelStoryScene className="w-full h-44 sm:h-52 lg:h-60 max-w-md lg:max-w-none" />
 
               <motion.h1
-                className="text-[2rem] sm:text-[2.8rem] lg:text-[3.5rem] font-extrabold leading-[1.08] tracking-tight text-white"
-                initial={{ opacity: 0, y: 30, letterSpacing: "0.06em" }}
-                animate={{ opacity: 1, y: 0, letterSpacing: "-0.02em" }}
-                transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.6 }}
-                style={{ textShadow: "0 4px 30px rgba(0,0,0,0.4)" }}
+                className="mt-3 text-[1.7rem] sm:text-[2.1rem] lg:text-[2.6rem] font-extrabold leading-tight tracking-tight text-foreground"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.9 }}
               >
                 Smart Yatri.{" "}
                 <span className="relative inline-block text-primary">
                   Smart Safar.
                   <motion.span
-                    className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full bg-primary"
+                    className="absolute -bottom-1 left-0 right-0 h-[2.5px] rounded-full bg-primary"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ duration: 0.65, ease: "easeOut", delay: 1.3 }}
@@ -791,25 +728,24 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean; sceneStart
               </motion.h1>
 
               <motion.p
-                className="mt-5 text-sm sm:text-base text-white/65 leading-relaxed max-w-md lg:max-w-sm"
-                initial={{ opacity: 0, y: 16 }}
+                className="mt-4 hidden lg:block text-sm text-muted-foreground leading-relaxed max-w-sm"
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: "easeOut", delay: 1.0 }}
-                style={{ textShadow: "0 2px 12px rgba(0,0,0,0.3)" }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 1.1 }}
               >
-                Every journey, now smarter. Plan buses, trains, flights and hotels — all in one place.
+                Every journey, now smarter. Plan buses, trains, flights and hotels in one place.
               </motion.p>
 
               {!isAuthenticated && (
                 <motion.div
-                  className="mt-8 hidden lg:flex"
-                  initial={{ opacity: 0, y: 12 }}
+                  className="mt-6 hidden lg:flex"
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, ease: "easeOut", delay: 1.3 }}
                 >
                   <Link
                     to="/register"
-                    className="group inline-flex items-center gap-2 rounded-2xl border border-white/20 px-6 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10"
+                    className="group inline-flex items-center gap-2 rounded-2xl border border-primary/25 px-6 py-2.5 text-sm font-semibold text-primary transition-all hover:border-primary/45 hover:bg-primary/5"
                   >
                     Explore Destinations
                     <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
@@ -846,7 +782,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean; sceneStart
             >
               <Link
                 to="/register"
-                className="group inline-flex items-center gap-2 rounded-2xl border border-white/20 px-6 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10"
+                className="group inline-flex items-center gap-2 rounded-2xl border border-primary/25 px-6 py-2.5 text-sm font-semibold text-primary transition-all hover:border-primary/45 hover:bg-primary/5"
               >
                 Explore Destinations
                 <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
@@ -855,7 +791,7 @@ const HeroSection = ({ isAuthenticated }: { isAuthenticated: boolean; sceneStart
           )}
         </div>
 
-      </section>
+    </section>
     </>
   );
 };
