@@ -47,63 +47,48 @@ function DiscoveryCard({ d, index }: { d: Destination; index: number }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 12 }}
       transition={{ delay: index * 0.06, duration: 0.35, ease: "easeOut" as const }}
-      className="group rounded-2xl border border-border/40 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-250"
+      className="group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-250 h-72 sm:h-80 cursor-pointer"
     >
-      {/* Image */}
-      <div className="relative h-48 overflow-hidden">
-        <motion.img
-          src={d.image}
-          alt={d.name}
-          className="w-full h-full object-cover"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.35, ease: "easeOut" as const }}
+      {/* Cinematic Image */}
+      <motion.img
+        src={d.image}
+        alt={d.name}
+        className="absolute inset-0 w-full h-full object-cover"
+        whileHover={{ scale: 1.05 }}
+        transition={{ duration: 0.35, ease: "easeOut" as const }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
+
+      {/* Save icon */}
+      <button
+        onClick={(e) => { e.stopPropagation(); setSaved(!saved); }}
+        className="absolute top-3 right-3 z-10 h-8 w-8 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-sm transition-transform duration-200 hover:scale-110"
+      >
+        <Heart
+          size={14}
+          className={saved ? "fill-primary text-primary" : "text-muted-foreground"}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+      </button>
 
-        {/* Save icon */}
-        <button
-          onClick={(e) => { e.stopPropagation(); setSaved(!saved); }}
-          className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-sm transition-transform duration-200 hover:scale-110"
-        >
-          <Heart
-            size={14}
-            className={saved ? "fill-primary text-primary" : "text-muted-foreground"}
-          />
-        </button>
+      {/* Bottom content */}
+      <div className="absolute bottom-0 inset-x-0 p-5">
+        <h3 className="text-lg font-bold text-white leading-tight mb-0.5">{d.name}</h3>
+        <p className="text-white/70 text-xs mb-3 line-clamp-1">{d.description}</p>
 
-        {/* Badges */}
-        <div className="absolute bottom-3 left-3 flex gap-1.5">
-          <span className="flex items-center gap-1 text-[10px] font-semibold bg-white/90 backdrop-blur text-foreground px-2 py-1 rounded-full shadow-sm">
-            <Wallet size={10} className="text-primary" />
+        <div className="flex items-center gap-2 mb-3">
+          <span className="flex items-center gap-1 text-[10px] font-semibold bg-white/20 backdrop-blur text-white px-2.5 py-1 rounded-full">
+            <Wallet size={10} />
             {d.budgetRange.split(" - ")[0]}+
           </span>
-          <span className="flex items-center gap-1 text-[10px] font-semibold bg-white/90 backdrop-blur text-foreground px-2 py-1 rounded-full shadow-sm">
-            <Clock size={10} className="text-primary" />
+          <span className="flex items-center gap-1 text-[10px] font-semibold bg-white/20 backdrop-blur text-white px-2.5 py-1 rounded-full">
+            <Clock size={10} />
             {Math.round(d.distance / 80)}–{Math.round(d.distance / 50)} days
           </span>
         </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-1.5">
-          <div>
-            <h3 className="text-sm font-bold text-foreground leading-tight">{d.name}</h3>
-            <p className="text-[11px] text-muted-foreground">{d.state}</p>
-          </div>
-          <span className="text-[10px] bg-primary/10 text-primary font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">
-            {d.category[0]}
-          </span>
-        </div>
-
-        <p className="text-xs text-muted-foreground leading-relaxed mb-3 line-clamp-2">
-          {d.description}
-        </p>
 
         <Link
           to="/plan"
-          className="flex items-center justify-center gap-1.5 w-full text-[11px] font-bold text-white rounded-xl py-2 transition-all duration-200 hover:opacity-90"
-          style={{ background: "linear-gradient(135deg, #E11D48 0%, #be123c 100%)" }}
+          className="flex items-center justify-center gap-1.5 w-full text-[11px] font-bold text-primary-foreground rounded-xl py-2 gradient-cta transition-all duration-200 hover:opacity-90"
         >
           View Itinerary
           <ArrowRight size={12} />
