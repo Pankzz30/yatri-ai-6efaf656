@@ -308,7 +308,14 @@ const AIItineraryCard = () => {
     if (!destination.trim()) return;
     setIsGenerating(true);
     setTimeout(() => {
-      navigate("/plan", { state: { prompt: buildPrompt() } });
+      navigate("/itinerary", {
+        state: {
+          destination: destination.trim(),
+          duration: durationLabel,
+          budget,
+          styles: [...tripStyles].join(" & "),
+        },
+      });
     }, 2200);
   };
 
