@@ -329,8 +329,11 @@ const AIItineraryCard = () => {
     });
   };
 
+  const [openSection, setOpenSection] = useState<string | null>(null);
+  const toggleSection = (s: string) => setOpenSection(prev => prev === s ? null : s);
+
   const pill = (active: boolean) =>
-    `relative px-2.5 py-[5px] text-[11px] font-medium rounded-md transition-colors duration-150 select-none ${
+    `relative px-2 py-1 text-[11px] font-medium rounded transition-colors duration-150 select-none ${
       active
         ? "bg-primary/10 text-primary"
         : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
@@ -349,15 +352,15 @@ const AIItineraryCard = () => {
       animate="center"
       exit="exit"
       transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
-      className="relative w-full rounded-2xl bg-white shadow-[0_4px_32px_rgba(0,0,0,0.08),0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden border border-border/40"
+      className="relative w-full rounded-2xl bg-white shadow-[0_4px_32px_rgba(0,0,0,0.06)] overflow-hidden border border-border/30"
     >
       {/* Header */}
-      <div className="px-5 pt-5 pb-3">
+      <div className="px-5 pt-5 pb-4">
         <h3 className="text-[15px] font-bold text-foreground tracking-tight">Plan Your Trip</h3>
         <p className="text-[11px] text-muted-foreground mt-0.5">AI-powered day-by-day itinerary</p>
       </div>
 
-      <div className="px-5 space-y-4 pb-2">
+      <div className="px-5 space-y-6 pb-2">
         {/* From + Destination row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
@@ -383,109 +386,163 @@ const AIItineraryCard = () => {
           </div>
         </div>
 
-        {/* Duration + Budget row */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Duration + Budget — collapsible, merged row on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Duration */}
           <div>
-            <p className="text-[12px] font-bold text-foreground mb-2 flex items-center gap-1.5">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-              Duration
-            </p>
-            <div className="flex flex-wrap gap-1">
-              {DURATION_OPTS.map((d) => (
-                d === "Custom" ? (
-                  <Popover key={d} open={datePickerOpen} onOpenChange={setDatePickerOpen}>
-                    <PopoverTrigger asChild>
-                      <button
-                        onClick={() => { setDuration("Custom"); setDatePickerOpen(true); }}
-                        className={pill(duration === "Custom")}
-                      >
-                        {duration === "Custom" && (
-                          <motion.span layoutId="duration-pill" className="absolute inset-0 rounded-md bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
-                        )}
-                        <span className="relative flex items-center gap-1">
-                          <Calendar size={9} />
-                          {duration === "Custom" && customDateRange?.from && customDateRange?.to
-                            ? durationLabel
-                            : "Custom"}
-                        </span>
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <CalendarPicker
-                        mode="range"
-                        selected={customDateRange}
-                        onSelect={(r) => { setCustomDateRange(r); if (r?.from && r?.to) setDatePickerOpen(false); }}
-                        disabled={(date) => date < new Date()}
-                        initialFocus
-                        className="p-3 pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                ) : (
-                  <button key={d} onClick={() => setDuration(d)} className={pill(duration === d)}>
-                    {duration === d && (
-                      <motion.span layoutId="duration-pill" className="absolute inset-0 rounded-md bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
-                    )}
-                    <span className="relative">{d}</span>
-                  </button>
-                )
-              ))}
-            </div>
+            <button
+              onClick={() => toggleSection("duration")}
+              className="w-full flex items-center justify-between text-[12px] font-semibold text-foreground"
+            >
+              <span>Duration</span>
+              <span className="text-[10px] font-normal text-muted-foreground flex items-center gap-0.5">
+                {durationLabel}
+                <ChevronDown size={10} className={`transition-transform duration-200 ${openSection === "duration" ? "rotate-180" : ""}`} />
+              </span>
+            </button>
+            <AnimatePresence initial={false}>
+              {openSection === "duration" && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex flex-wrap gap-1 pt-2.5">
+                    {DURATION_OPTS.map((d) => (
+                      d === "Custom" ? (
+                        <Popover key={d} open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                          <PopoverTrigger asChild>
+                            <button
+                              onClick={() => { setDuration("Custom"); setDatePickerOpen(true); }}
+                              className={pill(duration === "Custom")}
+                            >
+                              {duration === "Custom" && (
+                                <motion.span layoutId="duration-pill" className="absolute inset-0 rounded bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
+                              )}
+                              <span className="relative flex items-center gap-1">
+                                <Calendar size={9} />
+                                {duration === "Custom" && customDateRange?.from && customDateRange?.to
+                                  ? durationLabel
+                                  : "Custom"}
+                              </span>
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <CalendarPicker
+                              mode="range"
+                              selected={customDateRange}
+                              onSelect={(r) => { setCustomDateRange(r); if (r?.from && r?.to) setDatePickerOpen(false); }}
+                              disabled={(date) => date < new Date()}
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      ) : (
+                        <button key={d} onClick={() => setDuration(d)} className={pill(duration === d)}>
+                          {duration === d && (
+                            <motion.span layoutId="duration-pill" className="absolute inset-0 rounded bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
+                          )}
+                          <span className="relative">{d}</span>
+                        </button>
+                      )
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
+          {/* Budget */}
           <div>
-            <p className="text-[12px] font-bold text-foreground mb-2 flex items-center gap-1.5">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-              Budget
-            </p>
-            <div className="flex flex-wrap gap-1">
-              {BUDGET_OPTS.map((b) => (
-                <button key={b} onClick={() => setBudget(b)} className={pill(budget === b)}>
-                  {budget === b && (
-                    <motion.span layoutId="budget-pill" className="absolute inset-0 rounded-md bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
-                  )}
-                  <span className="relative">{b}</span>
-                </button>
-              ))}
-            </div>
+            <button
+              onClick={() => toggleSection("budget")}
+              className="w-full flex items-center justify-between text-[12px] font-semibold text-foreground"
+            >
+              <span>Budget</span>
+              <span className="text-[10px] font-normal text-muted-foreground flex items-center gap-0.5">
+                {budget}
+                <ChevronDown size={10} className={`transition-transform duration-200 ${openSection === "budget" ? "rotate-180" : ""}`} />
+              </span>
+            </button>
+            <AnimatePresence initial={false}>
+              {openSection === "budget" && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex flex-wrap gap-1 pt-2.5">
+                    {BUDGET_OPTS.map((b) => (
+                      <button key={b} onClick={() => setBudget(b)} className={pill(budget === b)}>
+                        {budget === b && (
+                          <motion.span layoutId="budget-pill" className="absolute inset-0 rounded bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
+                        )}
+                        <span className="relative">{b}</span>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
-        {/* Trip Style — multi-select */}
+        {/* Style — collapsible */}
         <div>
-          <p className="text-[12px] font-bold text-foreground mb-2 flex items-center gap-1.5">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-            Trip Style
-            <span className="text-[10px] font-normal text-muted-foreground/60 ml-0.5">· multi-select</span>
-          </p>
-          <div className="flex flex-wrap gap-1">
-            {STYLE_OPTS.map((s) => (
-              <button key={s} onClick={() => toggleStyle(s)} className={pill(tripStyles.has(s))}>
-                {tripStyles.has(s) && (
-                  <motion.span layoutId={`style-pill-${s}`} className="absolute inset-0 rounded-md bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
-                )}
-                <span className="relative">{s}</span>
-              </button>
-            ))}
-          </div>
+          <button
+            onClick={() => toggleSection("style")}
+            className="w-full flex items-center justify-between text-[12px] font-semibold text-foreground"
+          >
+            <span>Style</span>
+            <span className="text-[10px] font-normal text-muted-foreground flex items-center gap-0.5">
+              {[...tripStyles].join(", ")}
+              <ChevronDown size={10} className={`transition-transform duration-200 ${openSection === "style" ? "rotate-180" : ""}`} />
+            </span>
+          </button>
+          <AnimatePresence initial={false}>
+            {openSection === "style" && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="flex flex-wrap gap-1 pt-2.5">
+                  {STYLE_OPTS.map((s) => (
+                    <button key={s} onClick={() => toggleStyle(s)} className={pill(tripStyles.has(s))}>
+                      {tripStyles.has(s) && (
+                        <motion.span layoutId={`style-pill-${s}`} className="absolute inset-0 rounded bg-primary/10" transition={{ type: "spring", stiffness: 420, damping: 32 }} />
+                      )}
+                      <span className="relative">{s}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
       {/* CTA */}
-      <div className="px-5 pt-4 pb-5">
+      <div className="px-5 pt-6 pb-5">
         <div className="flex items-center gap-2">
           <motion.button
             onClick={handleGenerate}
             disabled={isGenerating || !isReady}
-            whileHover={isGenerating || !isReady ? {} : { scale: 1.015 }}
-            whileTap={isGenerating || !isReady ? {} : { scale: 0.985 }}
-            transition={{ type: "spring", stiffness: 420, damping: 26 }}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+            whileHover={isGenerating || !isReady ? {} : { scale: 1.01 }}
+            whileTap={isGenerating || !isReady ? {} : { scale: 0.99 }}
+            transition={{ duration: 0.15 }}
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: isGenerating || !isReady
-                ? "hsl(347,77%,60%)"
-                : "linear-gradient(135deg, hsl(347,77%,48%) 0%, hsl(352,82%,56%) 100%)",
-              boxShadow: isGenerating || !isReady ? "none" : "0 4px_18px_hsla(347,77%,50%,0.30)",
+                ? "hsl(347 77% 60%)"
+                : "linear-gradient(135deg, hsl(347 77% 48%) 0%, hsl(352 82% 56%) 100%)",
             }}
           >
             {isGenerating ? (
@@ -512,48 +569,35 @@ const AIItineraryCard = () => {
           <motion.button
             onClick={handleSurprise}
             disabled={isGenerating}
-            whileHover={isGenerating ? {} : { scale: 1.06 }}
-            whileTap={isGenerating ? {} : { scale: 0.94 }}
-            transition={{ type: "spring", stiffness: 420, damping: 26 }}
+            whileHover={isGenerating ? {} : { scale: 1.04 }}
+            whileTap={isGenerating ? {} : { scale: 0.96 }}
+            transition={{ duration: 0.15 }}
             title="Surprise Me"
-            className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl border border-border/60 bg-white text-muted-foreground shadow-sm transition-colors hover:border-primary/30 hover:text-primary disabled:opacity-50"
+            className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-lg border border-border/40 bg-white text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary disabled:opacity-50"
           >
             <Shuffle size={14} />
           </motion.button>
         </div>
 
-        {/* Status / progress */}
-        <AnimatePresence mode="wait">
-          {isGenerating ? (
+        {/* Progress bar only during generation */}
+        <AnimatePresence>
+          {isGenerating && (
             <motion.div
-              key="progress"
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="mt-2.5"
+              className="mt-3"
             >
-              <div className="h-[3px] w-full rounded-full bg-secondary overflow-hidden">
+              <div className="h-[2px] w-full rounded-full bg-secondary overflow-hidden">
                 <motion.div
-                  className="h-full rounded-full"
-                  style={{ background: "linear-gradient(90deg, hsl(347,77%,50%), hsl(352,82%,62%))" }}
+                  className="h-full rounded-full bg-primary"
                   initial={{ width: "0%" }}
                   animate={{ width: "90%" }}
                   transition={{ duration: 2.0, ease: "easeInOut" }}
                 />
               </div>
             </motion.div>
-          ) : (
-            <motion.p
-              key={isReady ? "ready" : "idle"}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="mt-2 text-center text-[10px] text-muted-foreground/60"
-            >
-              {isReady ? "✦ Ready to generate" : "Enter a destination to get started"}
-            </motion.p>
           )}
         </AnimatePresence>
       </div>
