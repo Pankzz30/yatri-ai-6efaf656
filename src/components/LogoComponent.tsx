@@ -19,14 +19,30 @@ const LogoComponent = ({ size = "md", showTagline = false }: LogoProps) => {
 
   return (
     <div className="flex flex-col items-start gap-1">
-      <div className="flex items-center gap-2.5">
+      <motion.div
+        className="flex items-center gap-2.5"
+        whileHover={{ scale: 1.03 }}
+        transition={{ type: "spring", stiffness: 400, damping: 20 }}
+      >
         {/* Icon mark — premium sports car */}
         <motion.div
-          whileHover={{ rotate: 3, scale: 1.08 }}
-          transition={{ type: "spring", stiffness: 300 }}
-          className="flex items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/30 overflow-hidden"
-          style={{ width: s, height: s }}
+          whileHover={{ rotate: 2, scale: 1.06 }}
+          whileTap={{ scale: 0.96 }}
+          transition={{ type: "spring", stiffness: 350, damping: 18 }}
+          className="relative flex items-center justify-center rounded-xl bg-primary overflow-hidden"
+          style={{
+            width: s,
+            height: s,
+            boxShadow: "0 4px 20px hsla(347,77%,50%,0.35), 0 1px 4px hsla(347,77%,50%,0.2)",
+          }}
         >
+          {/* Subtle inner shine */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 50%, rgba(0,0,0,0.08) 100%)",
+            }}
+          />
           <svg
             width={Math.round(120 * sc)}
             height={Math.round(72 * sc)}
@@ -35,61 +51,38 @@ const LogoComponent = ({ size = "md", showTagline = false }: LogoProps) => {
             stroke="white"
             strokeLinecap="round"
             strokeLinejoin="round"
+            className="relative z-10"
           >
-            {/* Chassis */}
             <path d="M10 46 L10 54 Q10 58 14 58 L106 58 Q110 58 110 54 L110 46 Z" strokeWidth="4.5" />
-            {/* Roofline */}
             <path d="M24 46 C26 38 32 26 42 22 L78 22 C88 22 94 30 96 38 L100 46" strokeWidth="4.5" />
-            {/* Hood */}
             <path d="M96 38 L106 46" strokeWidth="4.5" />
-            {/* Door crease */}
             <line x1="62" y1="46" x2="58" y2="28" strokeWidth="2.5" stroke="rgba(255,255,255,0.55)" />
-            {/* Rear window */}
             <path d="M28 45 C30 38 35 28 42 24 L56 24 L54 45 Z" strokeWidth="2.5" stroke="rgba(255,255,255,0.7)" />
-            {/* Front window */}
             <path d="M64 45 L66 24 L78 24 C87 24 92 32 94 40 L92 45 Z" strokeWidth="2.5" stroke="rgba(255,255,255,0.7)" />
-            {/* Rear wheel */}
             <circle cx="30" cy="58" r="9" strokeWidth="4.5" />
             <circle cx="30" cy="58" r="4" strokeWidth="2.5" />
             {[0, 60, 120].map((deg) => (
-              <line
-                key={deg}
-                x1={30 + 4 * Math.cos((deg * Math.PI) / 180)}
-                y1={58 + 4 * Math.sin((deg * Math.PI) / 180)}
-                x2={30 + 8.2 * Math.cos((deg * Math.PI) / 180)}
-                y2={58 + 8.2 * Math.sin((deg * Math.PI) / 180)}
-                strokeWidth="2"
-              />
+              <line key={deg} x1={30 + 4 * Math.cos((deg * Math.PI) / 180)} y1={58 + 4 * Math.sin((deg * Math.PI) / 180)} x2={30 + 8.2 * Math.cos((deg * Math.PI) / 180)} y2={58 + 8.2 * Math.sin((deg * Math.PI) / 180)} strokeWidth="2" />
             ))}
-            {/* Front wheel */}
             <circle cx="90" cy="58" r="9" strokeWidth="4.5" />
             <circle cx="90" cy="58" r="4" strokeWidth="2.5" />
             {[0, 60, 120].map((deg) => (
-              <line
-                key={deg}
-                x1={90 + 4 * Math.cos((deg * Math.PI) / 180)}
-                y1={58 + 4 * Math.sin((deg * Math.PI) / 180)}
-                x2={90 + 8.2 * Math.cos((deg * Math.PI) / 180)}
-                y2={58 + 8.2 * Math.sin((deg * Math.PI) / 180)}
-                strokeWidth="2"
-              />
+              <line key={deg} x1={90 + 4 * Math.cos((deg * Math.PI) / 180)} y1={58 + 4 * Math.sin((deg * Math.PI) / 180)} x2={90 + 8.2 * Math.cos((deg * Math.PI) / 180)} y2={58 + 8.2 * Math.sin((deg * Math.PI) / 180)} strokeWidth="2" />
             ))}
-            {/* Headlight */}
             <ellipse cx="108" cy="50" rx="4.5" ry="3" stroke="rgba(255,248,200,0.9)" strokeWidth="1.5" />
-            {/* Tail light */}
             <ellipse cx="12" cy="50" rx="4" ry="2.8" stroke="rgba(255,100,100,0.85)" strokeWidth="1.5" />
           </svg>
         </motion.div>
 
-        {/* Wordmark */}
-        <span className={`font-bold tracking-tight ${textSizes[size]}`}>
+        {/* Wordmark with premium weight */}
+        <span className={`font-extrabold tracking-tight ${textSizes[size]}`} style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
           <span className="text-foreground">Yatri</span>
-          <span className="text-primary"> AI</span>
+          <span className="text-primary" style={{ textShadow: size === "lg" ? "0 0 24px hsla(347,77%,50%,0.25)" : "none" }}> AI</span>
         </span>
-      </div>
+      </motion.div>
 
       {showTagline && (
-        <p className="text-xs text-muted-foreground pl-10">Intelligent Indian Trip Planner</p>
+        <p className="text-xs text-muted-foreground pl-10 tracking-wider">Intelligent Indian Trip Planner</p>
       )}
     </div>
   );
