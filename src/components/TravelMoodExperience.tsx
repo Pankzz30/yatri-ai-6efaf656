@@ -274,47 +274,6 @@ export default function TravelMoodExperience() {
           )}
         </AnimatePresence>
 
-        {/* ── Section 2: Dynamic Filters ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.25, ease: "easeInOut", delay: 0.1 }}
-          className="mb-8"
-        >
-          <div className="flex flex-wrap gap-4">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                Duration
-              </p>
-              <div className="flex gap-1.5">
-                {DURATIONS.map((d) => (
-                  <Chip
-                    key={d.id}
-                    label={d.label}
-                    isActive={duration === d.id}
-                    onClick={() => setDuration(d.id)}
-                  />
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                Budget
-              </p>
-              <div className="flex gap-1.5">
-                {BUDGETS.map((b) => (
-                  <Chip
-                    key={b.id}
-                    label={b.label}
-                    isActive={budget === b.id}
-                    onClick={() => setBudget(b.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </motion.div>
 
         {/* ── Section 3: Smart Destination Carousel ── */}
         <motion.div
