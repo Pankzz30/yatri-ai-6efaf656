@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import flightHeroVideo from "@/assets/flight-hero.mp4";
+import heroBusCinematic from "@/assets/hero-bus-cinematic.jpg";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { ArrowRight, MapPin, Calendar, Users, Clock, Plane, Briefcase } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -294,6 +295,12 @@ export default function FlightResults() {
 
       {/* ── Hero Section ── */}
       <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
+        {/* Fallback poster image shown instantly while video loads */}
+        <div
+          className="absolute inset-0 bg-cover bg-center brightness-[0.5]"
+          style={{ backgroundImage: `url(${heroBusCinematic})` }}
+        />
+
         {/* Background video with slow zoom */}
         <motion.div
           className="absolute inset-0"
@@ -306,6 +313,7 @@ export default function FlightResults() {
             loop
             muted
             playsInline
+            preload="auto"
             className="h-full w-full object-cover brightness-[0.5]"
             src={flightHeroVideo}
           />
