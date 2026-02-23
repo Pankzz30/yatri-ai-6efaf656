@@ -341,7 +341,7 @@ const Plan = () => {
       </div>
 
       {/* ── Input bar (fixed) ── */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-white/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] md:pb-0">
+      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 border-t border-border bg-white/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] md:pb-0">
         <div className="container mx-auto max-w-3xl px-4 py-3">
           <div className={`flex items-end gap-3 rounded-2xl border-2 bg-white px-4 py-3 transition-all duration-200 ${
             loading ? "border-primary/30 shadow-[0_0_0_3px_hsla(347,77%,50%,0.07)]" : "border-border focus-within:border-primary/40 focus-within:shadow-[0_0_0_3px_hsla(347,77%,50%,0.07)]"
