@@ -15,11 +15,7 @@ function InspirationCard({
   const days = `${Math.round(d.distance / 80)}–${Math.round(d.distance / 50)} days`;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ delay: index * 0.08, duration: 0.45, ease: "easeOut" }}
+    <div
       className="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-250 h-[420px] cursor-pointer"
     >
       {/* Image */}
@@ -78,7 +74,7 @@ function InspirationCard({
           <ArrowRight size={13} />
         </Link>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
