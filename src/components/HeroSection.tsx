@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import SearchTransition from "@/components/SearchTransition";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import {
@@ -66,6 +67,8 @@ const slideVariants = {
 const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   const [swapped, setSwapped] = useState(false);
   const navigate = useNavigate();
+  const [showTransition, setShowTransition] = useState(false);
+  const [pendingNav, setPendingNav] = useState<{ path: string; state: any } | null>(null);
 
   // Bus form state
   const [busFrom, setBusFrom] = useState("");
@@ -94,56 +97,60 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   const fromLabel = swapped ? "To" : "From";
   const toLabel   = swapped ? "From" : "To";
 
+  const triggerSearch = (path: string, state: any) => {
+    setPendingNav({ path, state });
+    setShowTransition(true);
+  };
+
+  const handleTransitionComplete = () => {
+    setShowTransition(false);
+    if (pendingNav) {
+      navigate(pendingNav.path, { state: pendingNav.state });
+    }
+  };
+
   const handleSearch = () => {
     if (category === "bus") {
       const from = swapped ? busTo : busFrom;
       const to = swapped ? busFrom : busTo;
-      navigate("/bus-results", {
-        state: {
-          from: from || "Delhi",
-          to: to || "Jaipur",
-          date: busDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
-          passengers: busPassengers,
-        },
+      triggerSearch("/bus-results", {
+        from: from || "Delhi",
+        to: to || "Jaipur",
+        date: busDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+        passengers: busPassengers,
       });
       return;
     }
     if (category === "train") {
       const from = swapped ? trainTo : trainFrom;
       const to = swapped ? trainFrom : trainTo;
-      navigate("/train-results", {
-        state: {
-          from: from || "New Delhi",
-          to: to || "Mumbai",
-          date: trainDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
-          passengers: 1,
-          classType: trainClass || "All Classes",
-        },
+      triggerSearch("/train-results", {
+        from: from || "New Delhi",
+        to: to || "Mumbai",
+        date: trainDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+        passengers: 1,
+        classType: trainClass || "All Classes",
       });
       return;
     }
     if (category === "flight") {
       const from = swapped ? flightTo : flightFrom;
       const to = swapped ? flightFrom : flightTo;
-      navigate("/flight-results", {
-        state: {
-          from: from || "Delhi",
-          to: to || "Dubai",
-          date: flightDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
-          passengers: parseInt(flightPassengers) || 1,
-        },
+      triggerSearch("/flight-results", {
+        from: from || "Delhi",
+        to: to || "Dubai",
+        date: flightDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+        passengers: parseInt(flightPassengers) || 1,
       });
       return;
     }
     if (category === "hotels") {
-      navigate("/hotel-results", {
-        state: {
-          destination: hotelCity || "Jaipur",
-          checkIn: hotelCheckIn || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
-          checkOut: hotelCheckOut || new Date(Date.now() + 3 * 86400000).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
-          guests: parseInt(hotelGuests) || 2,
-          rooms: 1,
-        },
+      triggerSearch("/hotel-results", {
+        destination: hotelCity || "Jaipur",
+        checkIn: hotelCheckIn || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+        checkOut: hotelCheckOut || new Date(Date.now() + 3 * 86400000).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+        guests: parseInt(hotelGuests) || 2,
+        rooms: 1,
       });
       return;
     }
@@ -388,34 +395,41 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
     );
   };
 
-  return (
-    <div className="w-full rounded-2xl border border-border/70 bg-card shadow-[0_4px_32px_rgba(0,0,0,0.07)] overflow-hidden">
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={category}
-          variants={slideVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
-        >
-          {renderFields()}
+    return (
+    <>
+      <SearchTransition
+        active={showTransition}
+        type={category}
+        onComplete={handleTransitionComplete}
+      />
+      <div className="w-full rounded-2xl border border-border/70 bg-card shadow-[0_4px_32px_rgba(0,0,0,0.07)] overflow-hidden">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={category}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
+          >
+            {renderFields()}
 
-          {/* CTA */}
-          <div className="px-5 py-4">
-            <button
-              onClick={handleSearch}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:scale-[1.03] hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] active:scale-[0.98]"
-            >
-              {category === "bus" && "Search Buses"}
-              {category === "train" && "Search Trains"}
-              {category === "flight" && "Search Flights"}
-              {category === "hotels" && "Search Hotels"}
-            </button>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-    </div>
+            {/* CTA */}
+            <div className="px-5 py-4">
+              <button
+                onClick={handleSearch}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:scale-[1.03] hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] active:scale-[0.98]"
+              >
+                {category === "bus" && "Search Buses"}
+                {category === "train" && "Search Trains"}
+                {category === "flight" && "Search Flights"}
+                {category === "hotels" && "Search Hotels"}
+              </button>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </>
   );
 };
 
