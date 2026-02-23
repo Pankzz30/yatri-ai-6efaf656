@@ -73,6 +73,12 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   const [busDate, setBusDate] = useState("");
   const [busPassengers] = useState(1);
 
+  // Flight form state
+  const [flightFrom, setFlightFrom] = useState("");
+  const [flightTo, setFlightTo] = useState("");
+  const [flightDate, setFlightDate] = useState("");
+  const [flightPassengers, setFlightPassengers] = useState("1");
+
   const fromLabel = swapped ? "To" : "From";
   const toLabel   = swapped ? "From" : "To";
 
@@ -86,6 +92,19 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
           to: to || "Jaipur",
           date: busDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
           passengers: busPassengers,
+        },
+      });
+      return;
+    }
+    if (category === "flight") {
+      const from = swapped ? flightTo : flightFrom;
+      const to = swapped ? flightFrom : flightTo;
+      navigate("/flight-results", {
+        state: {
+          from: from || "Delhi",
+          to: to || "Dubai",
+          date: flightDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+          passengers: parseInt(flightPassengers) || 1,
         },
       });
       return;
@@ -179,7 +198,20 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
     if (category === "flight") {
       return (
         <>
-          <FieldRow icon={MapPin} label={swapped ? "To" : "From"} placeholder="Origin airport" />
+          <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+              <MapPin size={16} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{swapped ? "To" : "From"}</p>
+              <input
+                value={flightFrom}
+                onChange={(e) => setFlightFrom(e.target.value)}
+                placeholder="Origin airport"
+                className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+              />
+            </div>
+          </div>
           <div className="relative mx-5 flex items-center">
             <div className="flex-1 border-t border-border/60" />
             <button
@@ -190,16 +222,56 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
             </button>
             <div className="flex-1 border-t border-border/60" />
           </div>
-          <FieldRow icon={MapPin} label={swapped ? "From" : "To"} placeholder="Destination airport" />
+          <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+              <MapPin size={16} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{swapped ? "From" : "To"}</p>
+              <input
+                value={flightTo}
+                onChange={(e) => setFlightTo(e.target.value)}
+                placeholder="Destination airport"
+                className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+              />
+            </div>
+          </div>
           <div className="mx-5 border-t border-border/60" />
           <div className="grid grid-cols-2">
             <div className="border-r border-border/60">
-              <FieldRow icon={Calendar} label="Departure" placeholder="Select date" type="date" />
+              <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+                  <Calendar size={16} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Departure</p>
+                  <input
+                    type="date"
+                    value={flightDate}
+                    onChange={(e) => setFlightDate(e.target.value)}
+                    placeholder="Select date"
+                    className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+                  />
+                </div>
+              </div>
             </div>
             <FieldRow icon={Calendar} label="Return" placeholder="Optional" type="date" />
           </div>
           <div className="mx-5 border-t border-border/60" />
-          <FieldRow icon={Users} label="Passengers" placeholder="1 Adult" />
+          <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+              <Users size={16} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Passengers</p>
+              <input
+                value={flightPassengers}
+                onChange={(e) => setFlightPassengers(e.target.value)}
+                placeholder="1 Adult"
+                className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+              />
+            </div>
+          </div>
         </>
       );
     }
