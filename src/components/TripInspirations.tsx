@@ -36,7 +36,7 @@ function InspirationCard({
           e.stopPropagation();
           setSaved(!saved);
         }}
-        className="absolute top-4 right-4 z-10 h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-transform duration-200 hover:scale-110"
+        className="absolute top-4 right-4 z-10 h-9 w-9 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-transform duration-200 hover:scale-110"
       >
         <Heart
           size={15}
