@@ -20,7 +20,6 @@ const FLIGHTS = [
     price: 14999,
     originalPrice: 22499,
     cabin: "Economy",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Air_India_Logo.svg/200px-Air_India_Logo.svg.png",
   },
   {
     id: 2,
@@ -36,7 +35,6 @@ const FLIGHTS = [
     price: 24599,
     originalPrice: 32999,
     cabin: "Business",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/200px-Emirates_logo.svg.png",
   },
   {
     id: 3,
@@ -52,7 +50,6 @@ const FLIGHTS = [
     price: 11299,
     originalPrice: 16499,
     cabin: "Economy",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IndiGo_Airlines_logo.svg/200px-IndiGo_Airlines_logo.svg.png",
   },
   {
     id: 4,
@@ -68,7 +65,6 @@ const FLIGHTS = [
     price: 18750,
     originalPrice: 25999,
     cabin: "Premium Economy",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Vistara_Logo.svg/200px-Vistara_Logo.svg.png",
   },
   {
     id: 5,
@@ -84,7 +80,6 @@ const FLIGHTS = [
     price: 9499,
     originalPrice: 14299,
     cabin: "Economy",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/SpiceJet_logo.svg/200px-SpiceJet_logo.svg.png",
   },
 ];
 
@@ -93,7 +88,7 @@ const grainStyle: React.CSSProperties = {
   position: "absolute",
   inset: 0,
   pointerEvents: "none",
-  opacity: 0.03,
+  opacity: 0.04,
   backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
   backgroundSize: "128px 128px",
 };
@@ -116,7 +111,7 @@ function AnimatedPrice({ price }: { price: number }) {
   return <span>₹{display.toLocaleString("en-IN")}</span>;
 }
 
-/* ── Select Flight Button ── */
+/* ── Select Flight Button (Yatri red theme) ── */
 function SelectFlightButton({ onClick }: { onClick?: () => void }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -134,7 +129,7 @@ function SelectFlightButton({ onClick }: { onClick?: () => void }) {
       onMouseLeave={() => { x.set(0); y.set(0); }}
       onClick={onClick}
       whileTap={{ scale: 0.95 }}
-      className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-[hsl(205,85%,50%)] to-[hsl(210,90%,58%)] px-6 py-3 text-sm font-bold text-white shadow-[0_0_30px_hsla(205,85%,50%,0.35)] transition-shadow duration-300 hover:shadow-[0_0_50px_hsla(205,85%,50%,0.55)]"
+      className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-[hsl(347,77%,50%)] to-[hsl(355,90%,55%)] px-6 py-3 text-sm font-bold text-white shadow-[0_0_30px_hsla(347,77%,50%,0.4)] transition-shadow duration-300 hover:shadow-[0_0_50px_hsla(347,77%,50%,0.6)]"
     >
       <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
       <span className="relative flex items-center gap-2">
@@ -145,12 +140,17 @@ function SelectFlightButton({ onClick }: { onClick?: () => void }) {
   );
 }
 
-/* ── Flight Card ── */
+/* ── Flight Card (dark theme matching BusResults) ── */
 function FlightCard({ flight, index }: { flight: (typeof FLIGHTS)[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [20, -20]);
+
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const springRotateX = useSpring(rotateX, { stiffness: 200, damping: 20 });
+  const springRotateY = useSpring(rotateY, { stiffness: 200, damping: 20 });
 
   return (
     <motion.div
@@ -162,60 +162,73 @@ function FlightCard({ flight, index }: { flight: (typeof FLIGHTS)[0]; index: num
       className="w-full"
     >
       <motion.div
-        style={{ y }}
-        className="group relative overflow-hidden rounded-2xl border border-[hsl(210,30%,92%)] bg-white shadow-[0_4px_24px_hsla(210,50%,70%,0.08)] transition-all duration-500 hover:border-[hsla(205,85%,50%,0.3)] hover:shadow-[0_20px_60px_hsla(205,85%,50%,0.12)]"
+        style={{
+          y,
+          rotateX: springRotateX,
+          rotateY: springRotateY,
+          transformPerspective: 1200,
+        }}
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const cx = (e.clientX - rect.left) / rect.width - 0.5;
+          const cy = (e.clientY - rect.top) / rect.height - 0.5;
+          rotateX.set(cy * -6);
+          rotateY.set(cx * 6);
+        }}
+        onMouseLeave={() => { rotateX.set(0); rotateY.set(0); }}
+        className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[hsl(0,0%,12%)] to-[hsl(0,0%,8%)] shadow-2xl transition-all duration-500 hover:border-[hsla(347,77%,50%,0.2)] hover:shadow-[0_0_80px_hsla(347,77%,50%,0.12)]"
       >
-        {/* Hover sweep */}
-        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[hsla(205,85%,55%,0.04)] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+        {/* Light sweep effect */}
+        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
 
         <div className="flex flex-col lg:flex-row items-stretch">
           {/* Airline Info - Left */}
-          <div className="flex items-center gap-4 border-b lg:border-b-0 lg:border-r border-[hsl(210,30%,94%)] p-5 lg:p-6 lg:w-[200px] flex-shrink-0">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[hsl(210,40%,97%)] p-2 flex-shrink-0">
-              <span className="text-lg font-black text-[hsl(205,85%,45%)]">{flight.airlineCode}</span>
+          <div className="flex items-center gap-4 border-b lg:border-b-0 lg:border-r border-white/[0.06] p-5 lg:p-6 lg:w-[200px] flex-shrink-0">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)] p-2 flex-shrink-0">
+              <span className="text-lg font-black text-[hsl(347,77%,55%)]">{flight.airlineCode}</span>
             </div>
             <div>
-              <p className="text-sm font-bold text-[hsl(220,14%,10%)]">{flight.airline}</p>
-              <p className="text-xs text-[hsl(220,9%,46%)]">{flight.flightNo}</p>
+              <p className="text-sm font-bold text-white">{flight.airline}</p>
+              <p className="text-xs text-white/40">{flight.flightNo}</p>
             </div>
           </div>
 
           {/* Schedule - Center */}
           <div className="flex flex-1 items-center justify-between p-5 lg:p-6">
             <div className="text-center">
-              <p className="text-2xl font-black tracking-tight text-[hsl(220,14%,10%)]">{flight.departure}</p>
-              <p className="text-xs font-semibold text-[hsl(205,85%,50%)]">{flight.depCity}</p>
+              <p className="text-2xl font-black tracking-tight text-white">{flight.departure}</p>
+              <p className="text-xs font-semibold text-[hsl(347,77%,55%)]">{flight.depCity}</p>
             </div>
 
             <div className="flex flex-1 items-center gap-2 mx-4">
-              <div className="h-px flex-1 bg-gradient-to-r from-[hsl(210,30%,90%)] via-[hsl(205,85%,70%)] to-[hsl(210,30%,90%)]" />
+              <div className="h-px flex-1 bg-gradient-to-r from-white/20 via-[hsl(347,77%,50%)] to-white/20" />
               <div className="flex flex-col items-center gap-0.5">
-                <Plane className="h-4 w-4 text-[hsl(205,85%,50%)] rotate-45" />
-                <span className="text-[10px] font-medium text-[hsl(220,9%,46%)]">{flight.duration}</span>
-                <span className="text-[10px] text-[hsl(220,9%,56%)]">{flight.stops}</span>
+                <Plane className="h-4 w-4 text-[hsl(347,77%,55%)] rotate-45" />
+                <span className="text-[10px] font-medium text-white/60">{flight.duration}</span>
+                <span className="text-[10px] text-white/40">{flight.stops}</span>
               </div>
-              <div className="h-px flex-1 bg-gradient-to-r from-[hsl(210,30%,90%)] via-[hsl(205,85%,70%)] to-[hsl(210,30%,90%)]" />
+              <div className="h-px flex-1 bg-gradient-to-r from-white/20 via-[hsl(347,77%,50%)] to-white/20" />
             </div>
 
             <div className="text-center">
-              <p className="text-2xl font-black tracking-tight text-[hsl(220,14%,10%)]">{flight.arrival}</p>
-              <p className="text-xs font-semibold text-[hsl(205,85%,50%)]">{flight.arrCity}</p>
+              <p className="text-2xl font-black tracking-tight text-white">{flight.arrival}</p>
+              <p className="text-xs font-semibold text-[hsl(347,77%,55%)]">{flight.arrCity}</p>
             </div>
           </div>
 
           {/* Price & CTA - Right */}
-          <div className="flex items-center justify-between gap-4 border-t lg:border-t-0 lg:border-l border-[hsl(210,30%,94%)] p-5 lg:p-6 lg:w-[240px] flex-shrink-0">
+          <div className="flex items-center justify-between gap-4 border-t lg:border-t-0 lg:border-l border-white/[0.06] p-5 lg:p-6 lg:w-[240px] flex-shrink-0">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.15 + index * 0.05 }}
               viewport={{ once: true }}
             >
-              <p className="text-xs text-[hsl(220,9%,56%)] line-through">₹{flight.originalPrice.toLocaleString("en-IN")}</p>
-              <p className="text-2xl font-black tracking-tight text-[hsl(220,14%,10%)]">
+              <p className="text-xs text-white/40 line-through">₹{flight.originalPrice.toLocaleString("en-IN")}</p>
+              <p className="text-2xl font-black tracking-tight text-white">
                 <AnimatedPrice price={flight.price} />
               </p>
-              <p className="text-[10px] font-medium text-[hsl(205,85%,50%)]">{flight.cabin}</p>
+              <p className="text-[10px] font-medium text-[hsl(347,77%,55%)]">{flight.cabin}</p>
             </motion.div>
 
             <SelectFlightButton onClick={() => navigate("/plan")} />
@@ -246,24 +259,32 @@ export default function FlightResults() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[hsl(210,40%,98%)]">
+    <div className="min-h-screen bg-[hsl(0,0%,6%)] text-white">
       {/* ── Cinematic entrance ── */}
       <AnimatePresence>
         {!entered && (
           <motion.div
-            className="fixed inset-0 z-[100] bg-[hsl(210,50%,10%)]"
+            className="fixed inset-0 z-[100] bg-black"
             exit={{ opacity: 0 }}
             transition={{ duration: 1, ease: "easeInOut" }}
           >
             <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-              {[...Array(6)].map((_, i) => (
+              {[...Array(8)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute h-[1px] bg-gradient-to-r from-transparent via-[hsl(205,85%,60%)] to-transparent"
-                  style={{ width: "120%", top: `${25 + i * 10}%`, opacity: 0.4 }}
+                  className="absolute h-[1px] bg-gradient-to-r from-transparent via-[hsl(347,77%,50%)] to-transparent"
+                  style={{
+                    width: "120%",
+                    top: `${20 + i * 8}%`,
+                    opacity: 0.3 + Math.random() * 0.3,
+                  }}
                   initial={{ x: "-100%" }}
                   animate={{ x: "100%" }}
-                  transition={{ duration: 0.5 + i * 0.08, delay: i * 0.04, ease: "easeOut" }}
+                  transition={{
+                    duration: 0.6 + Math.random() * 0.4,
+                    delay: i * 0.05,
+                    ease: "easeOut",
+                  }}
                 />
               ))}
             </div>
@@ -277,34 +298,65 @@ export default function FlightResults() {
         <motion.div
           className="absolute inset-0"
           initial={{ scale: 1 }}
-          animate={{ scale: 1.1 }}
-          transition={{ duration: 25, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+          animate={{ scale: 1.12 }}
+          transition={{ duration: 30, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
         >
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="h-full w-full object-cover brightness-[0.7]"
+            className="h-full w-full object-cover brightness-[0.5]"
             src={flightHeroVideo}
           />
         </motion.div>
 
-        {/* Soft white + sky gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[hsla(210,50%,10%,0.3)] via-transparent to-[hsl(210,40%,98%)]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsla(210,50%,15%,0.2)] via-transparent to-[hsla(210,50%,15%,0.1)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(210,40%,98%)] via-transparent to-transparent" />
+        {/* Multi-layer dark cinematic overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[hsl(0,0%,6%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(0,0%,6%)] via-transparent to-transparent" />
 
         {/* Grain */}
         <div style={grainStyle} />
 
-        {/* Ambient sky glow */}
+        {/* Vignette */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-40"
+          className="absolute inset-0 pointer-events-none"
+          style={{ boxShadow: "inset 0 0 200px 80px rgba(0,0,0,0.6)" }}
+        />
+
+        {/* Animated headlight streaks */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(7)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute h-[1px]"
+              style={{
+                width: `${40 + i * 8}%`,
+                top: `${25 + i * 8}%`,
+                left: "-20%",
+                background: i % 2 === 0
+                  ? `linear-gradient(90deg, transparent 0%, hsla(347,77%,50%,${0.08 + i * 0.02}) 40%, hsla(347,77%,55%,${0.15 + i * 0.02}) 60%, transparent 100%)`
+                  : `linear-gradient(90deg, transparent 0%, hsla(0,0%,100%,${0.03 + i * 0.01}) 40%, hsla(0,0%,100%,${0.06 + i * 0.01}) 60%, transparent 100%)`,
+              }}
+              animate={{ x: ["-120%", "250%"] }}
+              transition={{
+                duration: 3 + i * 0.7,
+                repeat: Infinity,
+                ease: "linear",
+                delay: i * 0.6,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Soft red ambient glow */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-30"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 30%, hsla(35,90%,60%,0.12) 0%, transparent 50%), " +
-              "radial-gradient(ellipse at 70% 70%, hsla(205,85%,55%,0.08) 0%, transparent 40%)",
+              "radial-gradient(ellipse at 20% 80%, hsla(347,77%,50%,0.15) 0%, transparent 50%), " +
+              "radial-gradient(ellipse at 80% 20%, hsla(347,77%,40%,0.08) 0%, transparent 40%)",
           }}
         />
 
@@ -315,10 +367,10 @@ export default function FlightResults() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
-            className="mb-5 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 backdrop-blur-md"
+            className="mb-5 flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-1.5 backdrop-blur-sm"
           >
-            <Plane className="h-3 w-3 text-white" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/80">
+            <div className="h-1.5 w-1.5 rounded-full bg-[hsl(347,77%,50%)] animate-pulse" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
               Yatri Premium Flights
             </span>
           </motion.div>
@@ -330,7 +382,7 @@ export default function FlightResults() {
               animate={{ opacity: 1, filter: "blur(0px)" }}
               transition={{ delay: 0.6, duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="text-4xl sm:text-6xl lg:text-8xl font-black tracking-tighter text-white"
-              style={{ textShadow: "0 4px 40px rgba(0,0,0,0.3)" }}
+              style={{ textShadow: "0 4px 40px rgba(0,0,0,0.5)" }}
             >
               {from}
             </motion.span>
@@ -339,8 +391,8 @@ export default function FlightResults() {
               initial={{ opacity: 0, x: -30, scale: 0.5 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ delay: 0.9, duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="text-2xl sm:text-4xl lg:text-5xl font-light text-[hsl(205,85%,65%)]"
-              style={{ textShadow: "0 0 30px hsla(205,85%,50%,0.4)" }}
+              className="text-2xl sm:text-4xl lg:text-5xl font-light text-[hsl(347,77%,50%)]"
+              style={{ textShadow: "0 0 30px hsla(347,77%,50%,0.4)" }}
             >
               →
             </motion.span>
@@ -350,7 +402,7 @@ export default function FlightResults() {
               animate={{ opacity: 1, filter: "blur(0px)" }}
               transition={{ delay: 0.8, duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="text-4xl sm:text-6xl lg:text-8xl font-black tracking-tighter text-white"
-              style={{ textShadow: "0 4px 40px rgba(0,0,0,0.3)" }}
+              style={{ textShadow: "0 4px 40px rgba(0,0,0,0.5)" }}
             >
               {to}
             </motion.span>
@@ -361,9 +413,9 @@ export default function FlightResults() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.7, ease: "easeOut" }}
-            className="mt-4 text-sm sm:text-base text-white/60 font-medium tracking-wide"
+            className="mt-4 text-sm sm:text-base text-white/35 font-medium tracking-wide"
           >
-            <span className="text-[hsl(205,85%,70%)] font-semibold">{FLIGHTS.length}</span> premium flights found · Best fares guaranteed
+            <span className="text-[hsl(347,77%,55%)] font-semibold">{FLIGHTS.length}</span> premium flights found · Best fares guaranteed
           </motion.p>
 
           {/* Decorative line */}
@@ -371,70 +423,70 @@ export default function FlightResults() {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ delay: 1.4, duration: 0.8, ease: "easeOut" }}
-            className="mt-6 h-[1px] w-32 origin-center bg-gradient-to-r from-transparent via-[hsl(205,85%,60%)] to-transparent"
+            className="mt-6 h-[1px] w-32 origin-center bg-gradient-to-r from-transparent via-[hsl(347,77%,50%)] to-transparent"
           />
         </div>
       </div>
 
-      {/* ── Floating Glass Search Summary ── */}
+      {/* ── Floating Glass Search Summary (dark glass) ── */}
       <div className="relative z-10 -mt-10 px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.7 }}
-          className="mx-auto max-w-4xl rounded-2xl border border-[hsl(210,30%,90%)] bg-white/80 p-5 backdrop-blur-xl shadow-[0_8px_40px_hsla(210,50%,70%,0.12)]"
+          className="mx-auto max-w-4xl rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 backdrop-blur-xl shadow-[0_8px_60px_hsla(0,0%,0%,0.5)]"
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(205,85%,95%)]">
-                <MapPin className="h-5 w-5 text-[hsl(205,85%,50%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
+                <MapPin className="h-5 w-5 text-[hsl(347,77%,55%)]" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(220,9%,56%)]">Route</p>
-                <p className="text-sm font-bold text-[hsl(220,14%,10%)]">{from} → {to}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Route</p>
+                <p className="text-sm font-bold text-white">{from} → {to}</p>
               </div>
             </div>
 
-            <div className="h-8 w-px bg-[hsl(210,30%,92%)] hidden sm:block" />
+            <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
 
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(205,85%,95%)]">
-                <Calendar className="h-5 w-5 text-[hsl(205,85%,50%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
+                <Calendar className="h-5 w-5 text-[hsl(347,77%,55%)]" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(220,9%,56%)]">Date</p>
-                <p className="text-sm font-bold text-[hsl(220,14%,10%)]">{date}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Date</p>
+                <p className="text-sm font-bold text-white">{date}</p>
               </div>
             </div>
 
-            <div className="h-8 w-px bg-[hsl(210,30%,92%)] hidden sm:block" />
+            <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
 
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(205,85%,95%)]">
-                <Users className="h-5 w-5 text-[hsl(205,85%,50%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
+                <Users className="h-5 w-5 text-[hsl(347,77%,55%)]" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(220,9%,56%)]">Passengers</p>
-                <p className="text-sm font-bold text-[hsl(220,14%,10%)]">{passengers} Traveller{passengers > 1 ? "s" : ""}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Passengers</p>
+                <p className="text-sm font-bold text-white">{passengers} Traveller{passengers > 1 ? "s" : ""}</p>
               </div>
             </div>
 
-            <div className="h-8 w-px bg-[hsl(210,30%,92%)] hidden sm:block" />
+            <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
 
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(205,85%,95%)]">
-                <Briefcase className="h-5 w-5 text-[hsl(205,85%,50%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
+                <Briefcase className="h-5 w-5 text-[hsl(347,77%,55%)]" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[hsl(220,9%,56%)]">Cabin</p>
-                <p className="text-sm font-bold text-[hsl(220,14%,10%)]">{cabin}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Cabin</p>
+                <p className="text-sm font-bold text-white">{cabin}</p>
               </div>
             </div>
 
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="rounded-xl border border-[hsl(210,30%,90%)] bg-[hsl(210,40%,97%)] px-5 py-2.5 text-xs font-semibold text-[hsl(220,14%,30%)] transition-all hover:bg-[hsl(205,85%,95%)] hover:text-[hsl(205,85%,45%)]"
+              className="rounded-xl border border-white/10 bg-white/[0.06] px-5 py-2.5 text-xs font-semibold text-white/70 transition-all hover:bg-white/[0.1] hover:text-white"
             >
               Modify Search
             </motion.button>
@@ -451,14 +503,14 @@ export default function FlightResults() {
           className="mb-10 flex items-center justify-between"
         >
           <div>
-            <h2 className="text-2xl font-black tracking-tight text-[hsl(220,14%,10%)]">Available Flights</h2>
-            <p className="mt-1 text-sm text-[hsl(220,9%,56%)]">Sorted by price · {FLIGHTS.length} results</p>
+            <h2 className="text-2xl font-black tracking-tight">Available Flights</h2>
+            <p className="mt-1 text-sm text-white/40">Sorted by price · {FLIGHTS.length} results</p>
           </div>
           <div className="flex gap-2">
             {["Price", "Duration", "Departure"].map((f) => (
               <button
                 key={f}
-                className="rounded-lg border border-[hsl(210,30%,90%)] bg-white px-4 py-2 text-xs font-medium text-[hsl(220,9%,46%)] transition-all hover:border-[hsl(205,85%,70%)] hover:bg-[hsl(205,85%,97%)] hover:text-[hsl(205,85%,45%)]"
+                className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/50 transition-all hover:border-[hsla(347,77%,50%,0.3)] hover:bg-white/[0.06] hover:text-white"
               >
                 {f}
               </button>
@@ -466,7 +518,7 @@ export default function FlightResults() {
           </div>
         </motion.div>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {FLIGHTS.map((flight, i) => (
             <FlightCard key={flight.id} flight={flight} index={i} />
           ))}
@@ -474,7 +526,7 @@ export default function FlightResults() {
       </div>
 
       {/* ── Subtle ambient glow at bottom ── */}
-      <div className="pointer-events-none fixed bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[hsla(205,85%,50%,0.04)] to-transparent" />
+      <div className="pointer-events-none fixed bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[hsla(347,77%,50%,0.05)] to-transparent" />
     </div>
   );
 }
