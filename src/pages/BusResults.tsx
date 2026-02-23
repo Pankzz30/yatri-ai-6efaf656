@@ -376,13 +376,13 @@ export default function BusResults() {
           transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
         >
           <video
-            src="https://videos.pexels.com/video-files/2795382/2795382-hd_1920_1080_30fps.mp4"
+            src="https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_30fps.mp4"
             autoPlay
             loop
             muted
             playsInline
-            className="h-full w-full object-cover"
-            poster="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1600"
+            className="h-full w-full object-cover brightness-[0.4]"
+            poster="https://images.unsplash.com/photo-1477587458883-47145ed94245?w=1600&q=80"
           />
         </motion.div>
 
