@@ -380,7 +380,7 @@ export default function BusResults() {
           <img
             src={heroBusCinematic}
             alt="Cinematic bus hero"
-            className="h-full w-full object-cover object-center brightness-[0.45]"
+            className="h-full w-full object-cover object-center brightness-[0.65]"
           />
         </motion.div>
 
