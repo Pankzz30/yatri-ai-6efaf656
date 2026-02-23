@@ -21,6 +21,7 @@ import Plan from "./pages/Plan";
 import Itinerary from "./pages/Itinerary";
 import BusResults from "./pages/BusResults";
 import FlightResults from "./pages/FlightResults";
+import TrainResults from "./pages/TrainResults";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => {
                 <Route path="/itinerary" element={<Itinerary />} />
                 <Route path="/bus-results" element={<BusResults />} />
                 <Route path="/flight-results" element={<FlightResults />} />
+                <Route path="/train-results" element={<TrainResults />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
