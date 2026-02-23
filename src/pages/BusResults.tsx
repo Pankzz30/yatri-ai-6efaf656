@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import heroBusCinematic from "@/assets/hero-bus-cinematic.jpg";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { ArrowRight, MapPin, Calendar, Users, Clock, Star, Wifi, Zap, Shield } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -376,14 +377,10 @@ export default function BusResults() {
           animate={{ scale: 1.12 }}
           transition={{ duration: 30, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
         >
-          <video
-            src="https://videos.pexels.com/video-files/2795382/2795382-hd_1920_1080_30fps.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="h-full w-full object-cover"
-            poster="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1600&q=80"
+          <img
+            src={heroBusCinematic}
+            alt="Cinematic bus hero"
+            className="h-full w-full object-cover object-center brightness-[0.45]"
           />
         </motion.div>
 
