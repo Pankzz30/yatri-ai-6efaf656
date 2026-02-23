@@ -31,19 +31,17 @@ const InputField = ({
 
   return (
     <div className="relative">
-      {/* Floating label */}
       <label
         className={`pointer-events-none absolute left-11 z-10 origin-left transition-all duration-200 ${
           focused || hasValue
-            ? "-top-2.5 scale-[0.78] bg-white px-1 font-semibold text-[#E11D48]"
-            : "top-3.5 scale-100 text-[#9CA3AF]"
+            ? "-top-2.5 scale-[0.78] bg-card px-1 font-semibold text-primary"
+            : "top-3.5 scale-100 text-muted-foreground"
         } text-sm`}
       >
         {label}
       </label>
 
-      {/* Icon */}
-      <div className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${focused ? "text-[#E11D48]" : "text-[#9CA3AF]"}`}>
+      <div className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-200 ${focused ? "text-primary" : "text-muted-foreground"}`}>
         {icon}
       </div>
 
@@ -55,32 +53,30 @@ const InputField = ({
         onBlur={() => setFocused(false)}
         required={required}
         autoComplete={autoComplete}
-        className={`w-full rounded-2xl border bg-white py-3.5 pl-11 pr-${isPassword ? "11" : "4"} text-sm text-[#111827] outline-none transition-all duration-200 ${
+        className={`w-full rounded-2xl border bg-card py-3.5 pl-11 pr-${isPassword ? "11" : "4"} text-sm text-foreground outline-none transition-all duration-200 ${
           error
-            ? "border-red-400 ring-2 ring-red-100"
+            ? "border-destructive ring-2 ring-destructive/20"
             : focused
-            ? "border-[#E11D48] ring-2 ring-red-100 shadow-sm"
-            : "border-[#E5E7EB] hover:border-[#D1D5DB]"
+            ? "border-primary ring-2 ring-primary/15 shadow-sm"
+            : "border-border hover:border-muted-foreground/30"
         }`}
       />
 
-      {/* Show/hide toggle */}
       {isPassword && (
         <button
           type="button"
           onClick={() => setShowPwd(!showPwd)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
         >
           {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
         </button>
       )}
 
-      {/* Inline error */}
       {error && (
         <motion.p
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-1.5 text-xs text-red-500"
+          className="mt-1.5 text-xs text-destructive"
         >
           {error}
         </motion.p>

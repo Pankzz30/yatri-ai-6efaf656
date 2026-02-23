@@ -39,19 +39,17 @@ const Login = () => {
         <>
           Plan smarter.
           <br />
-          <span className="text-[#E11D48]">Travel better.</span>
+          <span className="text-primary">Travel better.</span>
         </>
       }
       subtext="Join thousands of travellers who plan their perfect India trips with AI."
       features={features}
     >
-      {/* Heading */}
       <div className="mb-8">
-        <h1 className="text-[1.85rem] font-bold text-[#111827] leading-tight">Welcome back</h1>
-        <p className="mt-1.5 text-sm text-[#6B7280]">Sign in to continue your adventure</p>
+        <h1 className="text-[1.85rem] font-bold text-foreground leading-tight">Welcome back</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">Sign in to continue your adventure</p>
       </div>
 
-      {/* Social */}
       <SocialLoginButton
         onClick={async () => {
           const { error } = await lovable.auth.signInWithOAuth("google", {
@@ -61,41 +59,22 @@ const Login = () => {
         }}
       />
 
-      {/* Divider */}
       <div className="my-6 flex items-center gap-3">
-        <div className="h-px flex-1 bg-[#F3F4F6]" />
-        <span className="text-xs text-[#9CA3AF]">or continue with email</span>
-        <div className="h-px flex-1 bg-[#F3F4F6]" />
+        <div className="h-px flex-1 bg-border" />
+        <span className="text-xs text-muted-foreground">or continue with email</span>
+        <div className="h-px flex-1 bg-border" />
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <InputField
-          label="Email address"
-          type="email"
-          value={email}
-          onChange={setEmail}
-          required
-          autoComplete="email"
-          icon={<Mail size={16} />}
-        />
-        <InputField
-          label="Password"
-          type="password"
-          value={password}
-          onChange={setPassword}
-          required
-          autoComplete="current-password"
-          icon={<Lock size={16} />}
-        />
+        <InputField label="Email address" type="email" value={email} onChange={setEmail} required autoComplete="email" icon={<Mail size={16} />} />
+        <InputField label="Password" type="password" value={password} onChange={setPassword} required autoComplete="current-password" icon={<Lock size={16} />} />
 
-        {/* Remember + Forgot */}
         <div className="flex items-center justify-between pt-0.5">
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <div
               onClick={() => setRemember(!remember)}
               className={`h-4 w-4 rounded border-2 flex items-center justify-center transition-all cursor-pointer ${
-                remember ? "border-[#E11D48] bg-[#E11D48]" : "border-[#D1D5DB] bg-white"
+                remember ? "border-primary bg-primary" : "border-border bg-card"
               }`}
             >
               {remember && (
@@ -104,26 +83,21 @@ const Login = () => {
                 </svg>
               )}
             </div>
-            <span className="text-xs text-[#6B7280]">Remember me</span>
+            <span className="text-xs text-muted-foreground">Remember me</span>
           </label>
-          <Link to="/forgot-password" className="text-xs font-semibold text-[#E11D48] hover:text-[#BE123C] transition-colors">
+          <Link to="/forgot-password" className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors">
             Forgot password?
           </Link>
         </div>
 
         <div className="pt-1">
-          <AuthButton loading={loading} loadingText="Signing in...">
-            Sign in
-          </AuthButton>
+          <AuthButton loading={loading} loadingText="Signing in...">Sign in</AuthButton>
         </div>
       </form>
 
-      {/* Footer */}
-      <p className="mt-7 text-center text-sm text-[#6B7280]">
+      <p className="mt-7 text-center text-sm text-muted-foreground">
         Don't have an account?{" "}
-        <Link to="/register" className="font-semibold text-[#E11D48] hover:text-[#BE123C] transition-colors">
-          Create one free
-        </Link>
+        <Link to="/register" className="font-semibold text-primary hover:text-primary/80 transition-colors">Create one free</Link>
       </p>
     </AuthLayout>
   );

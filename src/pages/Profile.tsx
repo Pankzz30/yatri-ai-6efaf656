@@ -178,7 +178,7 @@ const Profile = () => {
               <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-gradient-to-br from-primary to-[hsl(355,90%,60%)] text-xl font-bold text-white shadow-[0_8px_28px_hsla(347,77%,50%,0.28)]">
                 {initials}
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-white bg-[hsl(142,72%,50%)]" />
+              <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-card bg-[hsl(142,72%,50%)]" />
             </div>
 
             {/* Identity */}
@@ -216,7 +216,7 @@ const Profile = () => {
             <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
               Travel Personality
             </p>
-            <div className="flex items-center gap-4 rounded-2xl border border-primary/15 bg-gradient-to-r from-accent via-[hsl(350,80%,97%)] to-white px-5 py-4 shadow-[0_0_0_1px_hsla(347,77%,50%,0.06)]">
+            <div className="flex items-center gap-4 rounded-2xl border border-primary/15 bg-gradient-to-r from-accent via-secondary to-card px-5 py-4 shadow-[0_0_0_1px_hsla(347,77%,50%,0.06)]">
               <span className="text-3xl leading-none">{badge.emoji}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-foreground">{badge.label}</p>
@@ -331,7 +331,7 @@ const Profile = () => {
               <Link
                 key={label}
                 to={to}
-                className="flex items-center gap-4 rounded-2xl border border-border bg-white px-4 py-3.5 transition-all duration-200 hover:border-primary/20 hover:bg-accent hover:shadow-[0_4px_16px_hsla(347,77%,50%,0.08)] group"
+                className="flex items-center gap-4 rounded-2xl border border-border bg-card px-4 py-3.5 transition-all duration-200 hover:border-primary/20 hover:bg-accent hover:shadow-[0_4px_16px_hsla(347,77%,50%,0.08)] group"
               >
                 <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-accent">
                   {icon}
@@ -347,7 +347,7 @@ const Profile = () => {
             {/* Edit Preferences — opens sheet */}
             <button
               onClick={() => setEditOpen(true)}
-              className="flex w-full items-center gap-4 rounded-2xl border border-border bg-white px-4 py-3.5 text-left transition-all duration-200 hover:border-primary/20 hover:bg-accent hover:shadow-[0_4px_16px_hsla(347,77%,50%,0.08)] group"
+              className="flex w-full items-center gap-4 rounded-2xl border border-border bg-card px-4 py-3.5 text-left transition-all duration-200 hover:border-primary/20 hover:bg-accent hover:shadow-[0_4px_16px_hsla(347,77%,50%,0.08)] group"
             >
               <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-accent">
                 <Settings size={17} className="text-muted-foreground" />
