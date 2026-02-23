@@ -199,7 +199,7 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
           rotateY.set(cx * 8);
         }}
         onMouseLeave={() => { rotateX.set(0); rotateY.set(0); }}
-        className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[hsl(0,0%,12%)] to-[hsl(0,0%,8%)] shadow-2xl transition-all duration-500 hover:border-[hsla(347,77%,50%,0.2)] hover:shadow-[0_0_80px_hsla(347,77%,50%,0.12)]"
+        className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-2xl transition-all duration-500 hover:border-primary/20 hover:shadow-[0_0_80px_hsla(347,77%,50%,0.12)]"
       >
         {/* Light sweep effect */}
         <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
@@ -216,12 +216,12 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
               transition={{ duration: 1.2, ease: "easeOut" }}
               viewport={{ once: true }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[hsl(0,0%,10%)]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(0,0%,10%)] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-card" />
+            <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
 
             {/* Type badge */}
             <div className="absolute top-4 left-4">
-              <span className="rounded-lg bg-[hsla(347,77%,50%,0.9)] px-3 py-1 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-sm">
+              <span className="rounded-lg bg-primary/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground backdrop-blur-sm">
                 {bus.type}
               </span>
             </div>
@@ -238,38 +238,38 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
                   transition={{ duration: 0.6, delay: index * 0.05 }}
                   viewport={{ once: true }}
                 >
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[hsl(347,77%,55%)]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
                     {bus.operator}
                   </p>
-                  <h3 className="mt-1 text-xl font-bold tracking-tight text-white lg:text-2xl">
+                  <h3 className="mt-1 text-xl font-bold tracking-tight text-foreground lg:text-2xl">
                     {bus.name}
                   </h3>
                 </motion.div>
 
-                <div className="flex items-center gap-1.5 rounded-lg bg-white/[0.06] px-3 py-1.5">
+                <div className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5">
                   <Star className="h-3.5 w-3.5 fill-[hsl(45,93%,55%)] text-[hsl(45,93%,55%)]" />
-                  <span className="text-sm font-bold text-white">{bus.rating}</span>
-                  <span className="text-xs text-white/40">({bus.reviews.toLocaleString()})</span>
+                  <span className="text-sm font-bold text-foreground">{bus.rating}</span>
+                  <span className="text-xs text-muted-foreground">({bus.reviews.toLocaleString()})</span>
                 </div>
               </div>
 
               {/* Schedule */}
               <div className="mb-5 flex items-center gap-4">
                 <div className="text-center">
-                  <p className="text-2xl font-black tracking-tight text-white">{bus.departure}</p>
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-white/40">Departure</p>
+                  <p className="text-2xl font-black tracking-tight text-foreground">{bus.departure}</p>
+                  <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Departure</p>
                 </div>
                 <div className="flex flex-1 items-center gap-2">
-                  <div className="h-px flex-1 bg-gradient-to-r from-white/20 via-[hsl(347,77%,50%)] to-white/20" />
-                  <div className="flex items-center gap-1 rounded-full bg-white/[0.06] px-3 py-1">
-                    <Clock className="h-3 w-3 text-white/50" />
-                    <span className="text-xs font-medium text-white/60">{bus.duration}</span>
+                  <div className="h-px flex-1 bg-gradient-to-r from-border via-primary to-border" />
+                  <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1">
+                    <Clock className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-xs font-medium text-muted-foreground">{bus.duration}</span>
                   </div>
-                  <div className="h-px flex-1 bg-gradient-to-r from-white/20 via-[hsl(347,77%,50%)] to-white/20" />
+                  <div className="h-px flex-1 bg-gradient-to-r from-border via-primary to-border" />
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-black tracking-tight text-white">{bus.arrival}</p>
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-white/40">Arrival</p>
+                  <p className="text-2xl font-black tracking-tight text-foreground">{bus.arrival}</p>
+                  <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Arrival</p>
                 </div>
               </div>
 
@@ -280,9 +280,9 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
                   if (!item) return null;
                   const Icon = item.icon;
                   return (
-                    <div key={a} className="flex items-center gap-1.5 rounded-lg bg-white/[0.04] px-3 py-1.5">
-                      <Icon className="h-3.5 w-3.5 text-white/40" />
-                      <span className="text-xs text-white/50">{item.label}</span>
+                    <div key={a} className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5">
+                      <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">{item.label}</span>
                     </div>
                   );
                 })}
@@ -290,18 +290,18 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
             </div>
 
             {/* Price & CTA */}
-            <div className="mt-6 flex items-end justify-between border-t border-white/[0.06] pt-5">
+            <div className="mt-6 flex items-end justify-between border-t border-border pt-5">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 + index * 0.05 }}
                 viewport={{ once: true }}
               >
-                <p className="text-xs text-white/40 line-through">₹{bus.originalPrice.toLocaleString("en-IN")}</p>
-                <p className="text-3xl font-black tracking-tight text-white">
+                <p className="text-xs text-muted-foreground line-through">₹{bus.originalPrice.toLocaleString("en-IN")}</p>
+                <p className="text-3xl font-black tracking-tight text-foreground">
                   <AnimatedPrice price={bus.price} />
                 </p>
-                <p className="text-xs text-white/40">{bus.seats} seats left</p>
+                <p className="text-xs text-muted-foreground">{bus.seats} seats left</p>
               </motion.div>
 
               <MagneticButton onClick={() => navigate("/plan")}>
@@ -334,7 +334,7 @@ export default function BusResults() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[hsl(0,0%,6%)] text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* ── Cinematic entrance ── */}
       <AnimatePresence>
         {!entered && (
@@ -507,47 +507,47 @@ export default function BusResults() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.7 }}
-          className="mx-auto max-w-4xl rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 backdrop-blur-xl shadow-[0_8px_60px_hsla(0,0%,0%,0.5)]"
+          className="glass mx-auto max-w-4xl rounded-2xl p-5"
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
-                <MapPin className="h-5 w-5 text-[hsl(347,77%,55%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <MapPin className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Route</p>
-                <p className="text-sm font-bold text-white">{from} → {to}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Route</p>
+                <p className="text-sm font-bold text-foreground">{from} → {to}</p>
               </div>
             </div>
 
-            <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
+            <div className="h-8 w-px bg-border hidden sm:block" />
 
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
-                <Calendar className="h-5 w-5 text-[hsl(347,77%,55%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Date</p>
-                <p className="text-sm font-bold text-white">{date}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Date</p>
+                <p className="text-sm font-bold text-foreground">{date}</p>
               </div>
             </div>
 
-            <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
+            <div className="h-8 w-px bg-border hidden sm:block" />
 
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
-                <Users className="h-5 w-5 text-[hsl(347,77%,55%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <Users className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Passengers</p>
-                <p className="text-sm font-bold text-white">{passengers} Traveller{passengers > 1 ? "s" : ""}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Passengers</p>
+                <p className="text-sm font-bold text-foreground">{passengers} Traveller{passengers > 1 ? "s" : ""}</p>
               </div>
             </div>
 
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="rounded-xl border border-white/10 bg-white/[0.06] px-5 py-2.5 text-xs font-semibold text-white/70 transition-all hover:bg-white/[0.1] hover:text-white"
+              className="rounded-xl border border-border bg-muted/50 px-5 py-2.5 text-xs font-semibold text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
             >
               Modify Search
             </motion.button>
@@ -565,13 +565,13 @@ export default function BusResults() {
         >
           <div>
             <h2 className="text-2xl font-black tracking-tight">Available Buses</h2>
-            <p className="mt-1 text-sm text-white/40">Sorted by popularity · {BUSES.length} results</p>
+            <p className="mt-1 text-sm text-muted-foreground">Sorted by popularity · {BUSES.length} results</p>
           </div>
           <div className="flex gap-2">
             {["Price", "Rating", "Departure"].map((f) => (
               <button
                 key={f}
-                className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/50 transition-all hover:border-[hsla(347,77%,50%,0.3)] hover:bg-white/[0.06] hover:text-white"
+                className="rounded-lg border border-border bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground transition-all hover:border-primary/30 hover:bg-muted hover:text-foreground"
               >
                 {f}
               </button>
