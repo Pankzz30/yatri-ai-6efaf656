@@ -128,8 +128,8 @@ function VideoSection({
       {/* Content */}
       <div className="absolute inset-0 flex flex-col items-start justify-end p-8 sm:p-14 lg:p-20">
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
           className="text-sm sm:text-base text-white/70 tracking-widest uppercase mb-3"
@@ -138,22 +138,22 @@ function VideoSection({
         </motion.p>
 
         <motion.h2
-          initial={{ opacity: 0, y: 40, letterSpacing: "0.08em" }}
-          whileInView={{ opacity: 1, y: 0, letterSpacing: "0.01em" }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{
             duration: 1,
             delay: 0.3,
             ease: [0.25, 0.46, 0.45, 0.94],
           }}
-          className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white max-w-2xl leading-[1.08] drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)] mb-6"
+          className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white max-w-2xl leading-[1.08] tracking-tight drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)] mb-6"
         >
           {section.headline}
         </motion.h2>
 
         <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
           onClick={() => navigate("/plan", { state: { prompt: section.prompt } })}
