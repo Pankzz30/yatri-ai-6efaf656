@@ -76,7 +76,7 @@ const LogoComponent = ({ size = "md", showTagline = false }: LogoProps) => {
 
         {/* Wordmark with premium weight */}
         <span className={`font-extrabold tracking-tight ${textSizes[size]}`} style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-          <span className="text-foreground">Yatri</span>
+          <span className="text-primary">Yatri</span>
           <span className="text-primary" style={{ textShadow: size === "lg" ? "0 0 24px hsla(347,77%,50%,0.25)" : "none" }}> AI</span>
         </span>
       </motion.div>
