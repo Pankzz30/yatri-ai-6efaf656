@@ -73,6 +73,12 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   const [busDate, setBusDate] = useState("");
   const [busPassengers] = useState(1);
 
+  // Train form state
+  const [trainFrom, setTrainFrom] = useState("");
+  const [trainTo, setTrainTo] = useState("");
+  const [trainDate, setTrainDate] = useState("");
+  const [trainClass, setTrainClass] = useState("");
+
   // Flight form state
   const [flightFrom, setFlightFrom] = useState("");
   const [flightTo, setFlightTo] = useState("");
@@ -92,6 +98,20 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
           to: to || "Jaipur",
           date: busDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
           passengers: busPassengers,
+        },
+      });
+      return;
+    }
+    if (category === "train") {
+      const from = swapped ? trainTo : trainFrom;
+      const to = swapped ? trainFrom : trainTo;
+      navigate("/train-results", {
+        state: {
+          from: from || "New Delhi",
+          to: to || "Mumbai",
+          date: trainDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+          passengers: 1,
+          classType: trainClass || "All Classes",
         },
       });
       return;
@@ -124,8 +144,8 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{fromLabel}</p>
               <input
-                value={category === "bus" ? busFrom : undefined}
-                onChange={category === "bus" ? (e) => setBusFrom(e.target.value) : undefined}
+                value={category === "bus" ? busFrom : category === "train" ? trainFrom : undefined}
+                onChange={category === "bus" ? (e) => setBusFrom(e.target.value) : category === "train" ? (e) => setTrainFrom(e.target.value) : undefined}
                 placeholder="Origin city"
                 className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
               />
@@ -148,8 +168,8 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{toLabel}</p>
               <input
-                value={category === "bus" ? busTo : undefined}
-                onChange={category === "bus" ? (e) => setBusTo(e.target.value) : undefined}
+                value={category === "bus" ? busTo : category === "train" ? trainTo : undefined}
+                onChange={category === "bus" ? (e) => setBusTo(e.target.value) : category === "train" ? (e) => setTrainTo(e.target.value) : undefined}
                 placeholder="Destination city"
                 className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
               />
@@ -164,8 +184,8 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Date</p>
               <input
                 type="date"
-                value={category === "bus" ? busDate : undefined}
-                onChange={category === "bus" ? (e) => setBusDate(e.target.value) : undefined}
+                value={category === "bus" ? busDate : category === "train" ? trainDate : undefined}
+                onChange={category === "bus" ? (e) => setBusDate(e.target.value) : category === "train" ? (e) => setTrainDate(e.target.value) : undefined}
                 placeholder="Select date"
                 className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
               />
@@ -180,12 +200,16 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
                 </div>
                 <div className="flex-1">
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Class</p>
-                  <select className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground outline-none cursor-pointer appearance-none">
-                    <option value="">Select class</option>
-                    <option>Sleeper (SL)</option>
-                    <option>3rd AC (3A)</option>
-                    <option>2nd AC (2A)</option>
-                    <option>1st AC (1A)</option>
+                  <select
+                    value={trainClass}
+                    onChange={(e) => setTrainClass(e.target.value)}
+                    className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground outline-none cursor-pointer appearance-none"
+                  >
+                    <option value="">All Classes</option>
+                    <option value="Sleeper (SL)">Sleeper (SL)</option>
+                    <option value="3rd AC (3A)">3rd AC (3A)</option>
+                    <option value="2nd AC (2A)">2nd AC (2A)</option>
+                    <option value="1st AC (1A)">1st AC (1A)</option>
                   </select>
                 </div>
               </div>
