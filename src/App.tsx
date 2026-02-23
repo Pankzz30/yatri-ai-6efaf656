@@ -18,6 +18,7 @@ import Wishlist from "./pages/Wishlist";
 import Profile from "./pages/Profile";
 import Plan from "./pages/Plan";
 import Itinerary from "./pages/Itinerary";
+import BusResults from "./pages/BusResults";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => {
               <Route path="/profile" element={<Profile />} />
               <Route path="/plan" element={<Plan />} />
               <Route path="/itinerary" element={<Itinerary />} />
+              <Route path="/bus-results" element={<BusResults />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
