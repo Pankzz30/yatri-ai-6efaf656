@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 
 const About = () => (
-  <div className="min-h-screen bg-background pt-24">
+  <div className="min-h-screen bg-background pt-24 pb-24 md:pb-8">
     <div className="container mx-auto max-w-3xl px-4">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-3xl font-bold text-foreground">About Yatri AI</h1>
