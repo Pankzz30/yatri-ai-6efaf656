@@ -368,84 +368,139 @@ export default function BusResults() {
       </AnimatePresence>
 
       {/* ── Hero / Video Background ── */}
-      <div className="relative h-[60vh] min-h-[400px] overflow-hidden">
-        {/* Background video */}
+      <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
+        {/* Background video with slow zoom */}
         <motion.div
           className="absolute inset-0"
-          animate={{ scale: [1, 1.05] }}
-          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.12 }}
+          transition={{ duration: 30, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
         >
           <video
-            src="https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_30fps.mp4"
+            src="https://videos.pexels.com/video-files/2795382/2795382-hd_1920_1080_30fps.mp4"
             autoPlay
             loop
             muted
             playsInline
-            className="h-full w-full object-cover brightness-[0.4]"
-            poster="https://images.unsplash.com/photo-1477587458883-47145ed94245?w=1600&q=80"
+            className="h-full w-full object-cover"
+            poster="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1600&q=80"
           />
         </motion.div>
 
-        {/* Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(0,0%,6%)]/60 via-[hsl(0,0%,6%)]/40 to-[hsl(0,0%,6%)]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(0,0%,6%)]/50 to-transparent" />
+        {/* Multi-layer dark cinematic overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[hsl(0,0%,6%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(0,0%,6%)] via-transparent to-transparent" />
+
+        {/* Animated grain texture */}
         <div style={grainStyle} />
 
-        {/* Animated motion blur streaks in background */}
+        {/* Vignette */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ boxShadow: "inset 0 0 200px 80px rgba(0,0,0,0.6)" }}
+        />
+
+        {/* Animated headlight streaks */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(7)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute h-[1px]"
               style={{
-                width: "60%",
-                top: `${30 + i * 10}%`,
-                left: "-10%",
-                background: `linear-gradient(90deg, transparent, hsla(347,77%,50%,${0.1 + i * 0.03}), transparent)`,
+                width: `${40 + i * 8}%`,
+                top: `${25 + i * 8}%`,
+                left: "-20%",
+                background: i % 2 === 0
+                  ? `linear-gradient(90deg, transparent 0%, hsla(347,77%,50%,${0.08 + i * 0.02}) 40%, hsla(347,77%,55%,${0.15 + i * 0.02}) 60%, transparent 100%)`
+                  : `linear-gradient(90deg, transparent 0%, hsla(0,0%,100%,${0.03 + i * 0.01}) 40%, hsla(0,0%,100%,${0.06 + i * 0.01}) 60%, transparent 100%)`,
               }}
-              animate={{ x: ["-100%", "200%"] }}
+              animate={{ x: ["-120%", "250%"] }}
               transition={{
-                duration: 4 + i * 0.5,
+                duration: 3 + i * 0.7,
                 repeat: Infinity,
                 ease: "linear",
-                delay: i * 0.8,
+                delay: i * 0.6,
               }}
             />
           ))}
         </div>
 
+        {/* Soft red ambient glow */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-30"
+          style={{
+            background:
+              "radial-gradient(ellipse at 20% 80%, hsla(347,77%,50%,0.15) 0%, transparent 50%), " +
+              "radial-gradient(ellipse at 80% 20%, hsla(347,77%,40%,0.08) 0%, transparent 40%)",
+          }}
+        />
+
         {/* Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-end pb-20 px-4">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-xs font-semibold uppercase tracking-[0.3em] text-[hsl(347,77%,55%)] mb-3"
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-16 sm:pb-20 px-4">
+          {/* Brand badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
+            className="mb-5 flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-1.5 backdrop-blur-sm"
           >
-            Yatri Premium Buses
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="text-center text-4xl font-black tracking-tight sm:text-5xl lg:text-7xl"
-          >
-            <span className="bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent">
+            <div className="h-1.5 w-1.5 rounded-full bg-[hsl(347,77%,50%)] animate-pulse" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
+              Yatri Premium Buses
+            </span>
+          </motion.div>
+
+          {/* Route heading — blur-to-clear effect */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            <motion.span
+              initial={{ opacity: 0, filter: "blur(20px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{ delay: 0.6, duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="text-4xl sm:text-6xl lg:text-8xl font-black tracking-tighter text-white"
+              style={{ textShadow: "0 4px 40px rgba(0,0,0,0.5)" }}
+            >
               {from}
-            </span>
-            <span className="mx-3 inline-block text-[hsl(347,77%,50%)]">→</span>
-            <span className="bg-gradient-to-r from-white/60 via-white to-white bg-clip-text text-transparent">
+            </motion.span>
+
+            <motion.span
+              initial={{ opacity: 0, x: -30, scale: 0.5 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ delay: 0.9, duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="text-2xl sm:text-4xl lg:text-5xl font-light text-[hsl(347,77%,50%)]"
+              style={{ textShadow: "0 0 30px hsla(347,77%,50%,0.4)" }}
+            >
+              →
+            </motion.span>
+
+            <motion.span
+              initial={{ opacity: 0, filter: "blur(20px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{ delay: 0.8, duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="text-4xl sm:text-6xl lg:text-8xl font-black tracking-tighter text-white"
+              style={{ textShadow: "0 4px 40px rgba(0,0,0,0.5)" }}
+            >
               {to}
-            </span>
-          </motion.h1>
+            </motion.span>
+          </div>
+
+          {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.6 }}
-            className="mt-3 text-sm text-white/40"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.7, ease: "easeOut" }}
+            className="mt-4 text-sm sm:text-base text-white/35 font-medium tracking-wide"
           >
-            {BUSES.length} premium buses found · Best prices guaranteed
+            <span className="text-[hsl(347,77%,55%)] font-semibold">{BUSES.length}</span> premium buses found · Best prices guaranteed
           </motion.p>
+
+          {/* Decorative line */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 1.4, duration: 0.8, ease: "easeOut" }}
+            className="mt-6 h-[1px] w-32 origin-center bg-gradient-to-r from-transparent via-[hsl(347,77%,50%)] to-transparent"
+          />
         </div>
       </div>
 
