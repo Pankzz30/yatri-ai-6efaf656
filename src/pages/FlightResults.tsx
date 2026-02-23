@@ -177,59 +177,59 @@ function FlightCard({ flight, index }: { flight: (typeof FLIGHTS)[0]; index: num
           rotateY.set(cx * 6);
         }}
         onMouseLeave={() => { rotateX.set(0); rotateY.set(0); }}
-        className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-[hsl(0,0%,12%)] to-[hsl(0,0%,8%)] shadow-2xl transition-all duration-500 hover:border-[hsla(347,77%,50%,0.2)] hover:shadow-[0_0_80px_hsla(347,77%,50%,0.12)]"
+        className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-2xl transition-all duration-500 hover:border-primary/20 hover:shadow-[0_0_80px_hsla(347,77%,50%,0.12)]"
       >
         {/* Light sweep effect */}
-        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-primary/[0.03] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
 
         <div className="flex flex-col lg:flex-row items-stretch">
           {/* Airline Info - Left */}
-          <div className="flex items-center gap-4 border-b lg:border-b-0 lg:border-r border-white/[0.06] p-5 lg:p-6 lg:w-[200px] flex-shrink-0">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)] p-2 flex-shrink-0">
-              <span className="text-lg font-black text-[hsl(347,77%,55%)]">{flight.airlineCode}</span>
+          <div className="flex items-center gap-4 border-b lg:border-b-0 lg:border-r border-border p-5 lg:p-6 lg:w-[200px] flex-shrink-0">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 p-2 flex-shrink-0">
+              <span className="text-lg font-black text-primary">{flight.airlineCode}</span>
             </div>
             <div>
-              <p className="text-sm font-bold text-white">{flight.airline}</p>
-              <p className="text-xs text-white/40">{flight.flightNo}</p>
+              <p className="text-sm font-bold text-foreground">{flight.airline}</p>
+              <p className="text-xs text-muted-foreground">{flight.flightNo}</p>
             </div>
           </div>
 
           {/* Schedule - Center */}
           <div className="flex flex-1 items-center justify-between p-5 lg:p-6">
             <div className="text-center">
-              <p className="text-2xl font-black tracking-tight text-white">{flight.departure}</p>
-              <p className="text-xs font-semibold text-[hsl(347,77%,55%)]">{flight.depCity}</p>
+              <p className="text-2xl font-black tracking-tight text-foreground">{flight.departure}</p>
+              <p className="text-xs font-semibold text-primary">{flight.depCity}</p>
             </div>
 
             <div className="flex flex-1 items-center gap-2 mx-4">
-              <div className="h-px flex-1 bg-gradient-to-r from-white/20 via-[hsl(347,77%,50%)] to-white/20" />
+              <div className="h-px flex-1 bg-gradient-to-r from-border via-primary to-border" />
               <div className="flex flex-col items-center gap-0.5">
-                <Plane className="h-4 w-4 text-[hsl(347,77%,55%)] rotate-45" />
-                <span className="text-[10px] font-medium text-white/60">{flight.duration}</span>
-                <span className="text-[10px] text-white/40">{flight.stops}</span>
+                <Plane className="h-4 w-4 text-primary rotate-45" />
+                <span className="text-[10px] font-medium text-muted-foreground">{flight.duration}</span>
+                <span className="text-[10px] text-muted-foreground">{flight.stops}</span>
               </div>
-              <div className="h-px flex-1 bg-gradient-to-r from-white/20 via-[hsl(347,77%,50%)] to-white/20" />
+              <div className="h-px flex-1 bg-gradient-to-r from-border via-primary to-border" />
             </div>
 
             <div className="text-center">
-              <p className="text-2xl font-black tracking-tight text-white">{flight.arrival}</p>
-              <p className="text-xs font-semibold text-[hsl(347,77%,55%)]">{flight.arrCity}</p>
+              <p className="text-2xl font-black tracking-tight text-foreground">{flight.arrival}</p>
+              <p className="text-xs font-semibold text-primary">{flight.arrCity}</p>
             </div>
           </div>
 
           {/* Price & CTA - Right */}
-          <div className="flex items-center justify-between gap-4 border-t lg:border-t-0 lg:border-l border-white/[0.06] p-5 lg:p-6 lg:w-[240px] flex-shrink-0">
+          <div className="flex items-center justify-between gap-4 border-t lg:border-t-0 lg:border-l border-border p-5 lg:p-6 lg:w-[240px] flex-shrink-0">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.15 + index * 0.05 }}
               viewport={{ once: true }}
             >
-              <p className="text-xs text-white/40 line-through">₹{flight.originalPrice.toLocaleString("en-IN")}</p>
-              <p className="text-2xl font-black tracking-tight text-white">
+              <p className="text-xs text-muted-foreground line-through">₹{flight.originalPrice.toLocaleString("en-IN")}</p>
+              <p className="text-2xl font-black tracking-tight text-foreground">
                 <AnimatedPrice price={flight.price} />
               </p>
-              <p className="text-[10px] font-medium text-[hsl(347,77%,55%)]">{flight.cabin}</p>
+              <p className="text-[10px] font-medium text-primary">{flight.cabin}</p>
             </motion.div>
 
             <SelectFlightButton onClick={() => navigate("/plan")} />
@@ -260,7 +260,7 @@ export default function FlightResults() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[hsl(0,0%,6%)] text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* ── Cinematic entrance ── */}
       <AnimatePresence>
         {!entered && (
@@ -442,59 +442,59 @@ export default function FlightResults() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.7 }}
-          className="mx-auto max-w-4xl rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 backdrop-blur-xl shadow-[0_8px_60px_hsla(0,0%,0%,0.5)]"
+          className="glass mx-auto max-w-4xl rounded-2xl p-5"
         >
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
-                <MapPin className="h-5 w-5 text-[hsl(347,77%,55%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <MapPin className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Route</p>
-                <p className="text-sm font-bold text-white">{from} → {to}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Route</p>
+                <p className="text-sm font-bold text-foreground">{from} → {to}</p>
               </div>
             </div>
 
-            <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
+            <div className="h-8 w-px bg-border hidden sm:block" />
 
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
-                <Calendar className="h-5 w-5 text-[hsl(347,77%,55%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Date</p>
-                <p className="text-sm font-bold text-white">{date}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Date</p>
+                <p className="text-sm font-bold text-foreground">{date}</p>
               </div>
             </div>
 
-            <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
+            <div className="h-8 w-px bg-border hidden sm:block" />
 
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
-                <Users className="h-5 w-5 text-[hsl(347,77%,55%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <Users className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Passengers</p>
-                <p className="text-sm font-bold text-white">{passengers} Traveller{passengers > 1 ? "s" : ""}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Passengers</p>
+                <p className="text-sm font-bold text-foreground">{passengers} Traveller{passengers > 1 ? "s" : ""}</p>
               </div>
             </div>
 
-            <div className="h-8 w-px bg-white/[0.08] hidden sm:block" />
+            <div className="h-8 w-px bg-border hidden sm:block" />
 
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsla(347,77%,50%,0.15)]">
-                <Briefcase className="h-5 w-5 text-[hsl(347,77%,55%)]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <Briefcase className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">Cabin</p>
-                <p className="text-sm font-bold text-white">{cabin}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Cabin</p>
+                <p className="text-sm font-bold text-foreground">{cabin}</p>
               </div>
             </div>
 
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="rounded-xl border border-white/10 bg-white/[0.06] px-5 py-2.5 text-xs font-semibold text-white/70 transition-all hover:bg-white/[0.1] hover:text-white"
+              className="rounded-xl border border-border bg-muted/50 px-5 py-2.5 text-xs font-semibold text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
             >
               Modify Search
             </motion.button>
@@ -512,13 +512,13 @@ export default function FlightResults() {
         >
           <div>
             <h2 className="text-2xl font-black tracking-tight">Available Flights</h2>
-            <p className="mt-1 text-sm text-white/40">Sorted by price · {FLIGHTS.length} results</p>
+            <p className="mt-1 text-sm text-muted-foreground">Sorted by price · {FLIGHTS.length} results</p>
           </div>
           <div className="flex gap-2">
             {["Price", "Duration", "Departure"].map((f) => (
               <button
                 key={f}
-                className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-xs font-medium text-white/50 transition-all hover:border-[hsla(347,77%,50%,0.3)] hover:bg-white/[0.06] hover:text-white"
+                className="rounded-lg border border-border bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground transition-all hover:border-primary/30 hover:bg-muted hover:text-foreground"
               >
                 {f}
               </button>

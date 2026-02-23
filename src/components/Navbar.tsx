@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
-import { Sparkles, User, LogOut, ChevronDown, Info } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
+import { Sparkles, User, LogOut, ChevronDown, Info, Sun, Moon } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import LogoComponent from "./LogoComponent";
 import AnimatedButton from "./AnimatedButton";
@@ -51,7 +52,7 @@ const ProfileDropdown = ({ isAuthenticated, user, logout }: ProfileDropdownProps
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.97 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute right-0 top-full mt-2 w-48 overflow-hidden rounded-2xl border border-border bg-white shadow-xl shadow-black/10 z-50"
+            className="absolute right-0 top-full mt-2 w-48 overflow-hidden rounded-2xl border border-border bg-card shadow-xl shadow-black/10 z-50"
           >
             {isAuthenticated && user && (
               <div className="border-b border-border/60 px-4 py-3">
@@ -98,6 +99,7 @@ const ProfileDropdown = ({ isAuthenticated, user, logout }: ProfileDropdownProps
 
 const Navbar = () => {
   const { isAuthenticated, user, logout } = useUser();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
 
@@ -157,6 +159,24 @@ const Navbar = () => {
 
         {/* Desktop right side */}
         <div className="hidden items-center gap-3 md:flex">
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={toggleTheme}
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background/60 text-muted-foreground transition-all hover:text-foreground hover:border-primary/30"
+            aria-label="Toggle theme"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={theme}
+                initial={{ opacity: 0, rotate: -90, scale: 0.5 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: 90, scale: 0.5 }}
+                transition={{ duration: 0.2 }}
+              >
+                {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
           {isAuthenticated ? (
             <ProfileDropdown {...profileProps} />
           ) : (
@@ -175,8 +195,16 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile right side — profile icon only */}
-        <div className="flex items-center md:hidden">
+        {/* Mobile right side */}
+        <div className="flex items-center gap-2 md:hidden">
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={toggleTheme}
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-background/60 text-muted-foreground"
+            aria-label="Toggle theme"
+          >
+            {theme === "light" ? <Moon size={14} /> : <Sun size={14} />}
+          </motion.button>
           {isAuthenticated ? (
             <ProfileDropdown {...profileProps} />
           ) : (
