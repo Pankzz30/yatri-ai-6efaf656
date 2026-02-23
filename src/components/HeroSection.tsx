@@ -135,7 +135,7 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
             <div className="flex-1 border-t border-border/60" />
             <button
               onClick={() => setSwapped((s) => !s)}
-              className="mx-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-white shadow-sm text-primary transition-all hover:scale-110 hover:border-primary/40 active:scale-95"
+              className="mx-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-card shadow-sm text-primary transition-all hover:scale-110 hover:border-primary/40 active:scale-95"
             >
               <ArrowLeftRight size={13} />
             </button>
@@ -216,7 +216,7 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
             <div className="flex-1 border-t border-border/60" />
             <button
               onClick={() => setSwapped((s) => !s)}
-              className="mx-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-white shadow-sm text-primary transition-all hover:scale-110 hover:border-primary/40 active:scale-95"
+              className="mx-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-card shadow-sm text-primary transition-all hover:scale-110 hover:border-primary/40 active:scale-95"
             >
               <ArrowLeftRight size={13} />
             </button>
@@ -294,7 +294,7 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   };
 
   return (
-    <div className="w-full rounded-2xl border border-border/70 bg-white shadow-[0_4px_32px_rgba(0,0,0,0.07)] overflow-hidden">
+    <div className="w-full rounded-2xl border border-border/70 bg-card shadow-[0_4px_32px_rgba(0,0,0,0.07)] overflow-hidden">
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={category}
@@ -310,7 +310,7 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
           <div className="px-5 py-4">
             <button
               onClick={handleSearch}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition-all hover:scale-[1.03] hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] active:scale-[0.98]"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:scale-[1.03] hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] active:scale-[0.98]"
             >
               {category === "bus" && "Search Buses"}
               {category === "train" && "Search Trains"}
@@ -496,7 +496,7 @@ const AIItineraryCard = () => {
       animate="center"
       exit="exit"
       transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
-      className="relative w-full rounded-2xl bg-white shadow-[0_4px_32px_rgba(0,0,0,0.06)] overflow-hidden border border-border/30"
+      className="relative w-full rounded-2xl bg-card shadow-[0_4px_32px_rgba(0,0,0,0.06)] overflow-hidden border border-border/30"
     >
       {/* Header */}
       <div className="px-5 pt-5 pb-4">
@@ -682,7 +682,7 @@ const AIItineraryCard = () => {
             whileHover={isGenerating || !isReady ? {} : { scale: 1.01 }}
             whileTap={isGenerating || !isReady ? {} : { scale: 0.99 }}
             transition={{ duration: 0.15 }}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-primary-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: isGenerating || !isReady
                 ? "hsl(347 77% 60%)"
@@ -717,7 +717,7 @@ const AIItineraryCard = () => {
             whileTap={isGenerating ? {} : { scale: 0.96 }}
             transition={{ duration: 0.15 }}
             title="Surprise Me"
-            className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-lg border border-border/40 bg-white text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary disabled:opacity-50"
+            className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-lg border border-border/40 bg-card text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary disabled:opacity-50"
           >
             <Shuffle size={14} />
           </motion.button>
@@ -808,7 +808,7 @@ const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: b
   return (
     <>
       {/* ── Sticky category tabs — fixed below navbar ── */}
-      <div className="fixed top-16 left-0 right-0 z-40 bg-white border-b border-border/60">
+      <div className="fixed top-16 left-0 right-0 z-40 bg-card border-b border-border/60">
         <div className="container mx-auto px-6">
           <CategoryTabs active={category} onChange={setCategory} />
         </div>
