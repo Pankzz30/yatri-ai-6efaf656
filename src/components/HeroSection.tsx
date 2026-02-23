@@ -65,15 +65,53 @@ const slideVariants = {
 
 const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   const [swapped, setSwapped] = useState(false);
+  const navigate = useNavigate();
+
+  // Bus form state
+  const [busFrom, setBusFrom] = useState("");
+  const [busTo, setBusTo] = useState("");
+  const [busDate, setBusDate] = useState("");
+  const [busPassengers] = useState(1);
 
   const fromLabel = swapped ? "To" : "From";
   const toLabel   = swapped ? "From" : "To";
+
+  const handleSearch = () => {
+    if (category === "bus") {
+      const from = swapped ? busTo : busFrom;
+      const to = swapped ? busFrom : busTo;
+      navigate("/bus-results", {
+        state: {
+          from: from || "Delhi",
+          to: to || "Jaipur",
+          date: busDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+          passengers: busPassengers,
+        },
+      });
+      return;
+    }
+    // Other categories still go to register for now
+    navigate("/register");
+  };
 
   const renderFields = () => {
     if (category === "bus" || category === "train") {
       return (
         <>
-          <FieldRow icon={MapPin} label={fromLabel} placeholder="Origin city" />
+          <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+              <MapPin size={16} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{fromLabel}</p>
+              <input
+                value={category === "bus" ? busFrom : undefined}
+                onChange={category === "bus" ? (e) => setBusFrom(e.target.value) : undefined}
+                placeholder="Origin city"
+                className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+              />
+            </div>
+          </div>
           <div className="relative mx-5 flex items-center">
             <div className="flex-1 border-t border-border/60" />
             <button
@@ -84,9 +122,36 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
             </button>
             <div className="flex-1 border-t border-border/60" />
           </div>
-          <FieldRow icon={MapPin} label={toLabel} placeholder="Destination city" />
+          <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+              <MapPin size={16} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{toLabel}</p>
+              <input
+                value={category === "bus" ? busTo : undefined}
+                onChange={category === "bus" ? (e) => setBusTo(e.target.value) : undefined}
+                placeholder="Destination city"
+                className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+              />
+            </div>
+          </div>
           <div className="mx-5 border-t border-border/60" />
-          <FieldRow icon={Calendar} label="Date" placeholder="Select date" type="date" />
+          <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+              <Calendar size={16} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Date</p>
+              <input
+                type="date"
+                value={category === "bus" ? busDate : undefined}
+                onChange={category === "bus" ? (e) => setBusDate(e.target.value) : undefined}
+                placeholder="Select date"
+                className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+              />
+            </div>
+          </div>
           {category === "train" && (
             <>
               <div className="mx-5 border-t border-border/60" />
@@ -171,15 +236,15 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
 
           {/* CTA */}
           <div className="px-5 py-4">
-            <Link
-              to="/register"
+            <button
+              onClick={handleSearch}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-white shadow-md shadow-primary/20 transition-all hover:scale-[1.03] hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] active:scale-[0.98]"
             >
               {category === "bus" && "Search Buses"}
               {category === "train" && "Search Trains"}
               {category === "flight" && "Search Flights"}
               {category === "hotels" && "Search Hotels"}
-            </Link>
+            </button>
           </div>
         </motion.div>
       </AnimatePresence>
