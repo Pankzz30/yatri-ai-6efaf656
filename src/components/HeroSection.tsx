@@ -85,6 +85,12 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   const [flightDate, setFlightDate] = useState("");
   const [flightPassengers, setFlightPassengers] = useState("1");
 
+  // Hotel form state
+  const [hotelCity, setHotelCity] = useState("");
+  const [hotelCheckIn, setHotelCheckIn] = useState("");
+  const [hotelCheckOut, setHotelCheckOut] = useState("");
+  const [hotelGuests, setHotelGuests] = useState("2");
+
   const fromLabel = swapped ? "To" : "From";
   const toLabel   = swapped ? "From" : "To";
 
@@ -129,7 +135,18 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
       });
       return;
     }
-    // Other categories still go to register for now
+    if (category === "hotels") {
+      navigate("/hotel-results", {
+        state: {
+          destination: hotelCity || "Jaipur",
+          checkIn: hotelCheckIn || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+          checkOut: hotelCheckOut || new Date(Date.now() + 3 * 86400000).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+          guests: parseInt(hotelGuests) || 2,
+          rooms: 1,
+        },
+      });
+      return;
+    }
     navigate("/register");
   };
 
@@ -303,16 +320,70 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
     // Hotels
     return (
       <>
-        <FieldRow icon={MapPin} label="City" placeholder="Where are you going?" />
+        <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+            <MapPin size={16} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">City</p>
+            <input
+              value={hotelCity}
+              onChange={(e) => setHotelCity(e.target.value)}
+              placeholder="Where are you going?"
+              className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+            />
+          </div>
+        </div>
         <div className="mx-5 border-t border-border/60" />
         <div className="grid grid-cols-2">
           <div className="border-r border-border/60">
-            <FieldRow icon={Calendar} label="Check-in" placeholder="Add date" type="date" />
+            <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+                <Calendar size={16} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Check-in</p>
+                <input
+                  type="date"
+                  value={hotelCheckIn}
+                  onChange={(e) => setHotelCheckIn(e.target.value)}
+                  placeholder="Add date"
+                  className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+                />
+              </div>
+            </div>
           </div>
-          <FieldRow icon={Calendar} label="Check-out" placeholder="Add date" type="date" />
+          <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+              <Calendar size={16} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Check-out</p>
+              <input
+                type="date"
+                value={hotelCheckOut}
+                onChange={(e) => setHotelCheckOut(e.target.value)}
+                placeholder="Add date"
+                className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+              />
+            </div>
+          </div>
         </div>
         <div className="mx-5 border-t border-border/60" />
-        <FieldRow icon={Users} label="Guests" placeholder="2 Adults · 1 Room" />
+        <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/8 text-primary">
+            <Users size={16} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Guests</p>
+            <input
+              value={hotelGuests}
+              onChange={(e) => setHotelGuests(e.target.value)}
+              placeholder="2 Adults · 1 Room"
+              className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
+            />
+          </div>
+        </div>
       </>
     );
   };
