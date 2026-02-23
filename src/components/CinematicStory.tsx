@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const SECTIONS = [
   {
@@ -9,6 +10,7 @@ const SECTIONS = [
     video: "https://videos.pexels.com/video-files/2169880/2169880-hd_1920_1080_30fps.mp4",
     poster: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200",
     cta: "Explore Peaks",
+    prompt: "Plan a scenic mountain trip in India with trekking, camping, and breathtaking views. Budget-friendly, 5 days.",
   },
   {
     headline: "Feel the Open Road.",
@@ -16,6 +18,7 @@ const SECTIONS = [
     video: "https://videos.pexels.com/video-files/2795382/2795382-hd_1920_1080_30fps.mp4",
     poster: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200",
     cta: "Start Driving",
+    prompt: "Plan an epic road trip across India covering scenic highways, roadside dhabas, and hidden gems. 7 days, self-drive.",
   },
   {
     headline: "Lose Yourself in the Coast.",
@@ -23,6 +26,7 @@ const SECTIONS = [
     video: "https://videos.pexels.com/video-files/1409899/1409899-hd_1920_1080_25fps.mp4",
     poster: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=1200",
     cta: "Discover Shores",
+    prompt: "Plan a relaxing coastal getaway in India with beaches, seafood, and water activities. 5 days, moderate budget.",
   },
   {
     headline: "Find Stories in Every Skyline.",
@@ -30,6 +34,7 @@ const SECTIONS = [
     video: "https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_30fps.mp4",
     poster: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=1200",
     cta: "Explore Cities",
+    prompt: "Plan a vibrant city exploration trip covering culture, street food, nightlife, and iconic landmarks in India. 4 days.",
   },
 ];
 
@@ -52,6 +57,7 @@ function VideoSection({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -150,6 +156,7 @@ function VideoSection({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+          onClick={() => navigate("/plan", { state: { prompt: section.prompt } })}
           className="group flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:border-white/50"
         >
           {section.cta}
