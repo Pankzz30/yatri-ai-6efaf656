@@ -24,7 +24,7 @@ const AuthButton = ({
     whileHover={{ scale: 1.025, y: -1 }}
     whileTap={{ scale: 0.975 }}
     transition={{ type: "spring", stiffness: 400, damping: 20 }}
-    className="relative w-full rounded-2xl bg-[#E11D48] py-3.5 text-sm font-semibold text-white shadow-lg shadow-red-200/60 transition-all duration-200 hover:bg-[#BE123C] hover:shadow-red-300/60 disabled:opacity-60 disabled:cursor-not-allowed"
+    className="relative w-full rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-200 hover:bg-primary/90 hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed"
   >
     {loading ? (
       <span className="flex items-center justify-center gap-2.5">

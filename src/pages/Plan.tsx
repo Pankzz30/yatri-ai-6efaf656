@@ -209,7 +209,7 @@ const Plan = () => {
   return (
     <div className="flex min-h-screen flex-col bg-background pt-16">
       {/* ── Header ── */}
-      <div className="border-b border-border bg-white/80 backdrop-blur-sm">
+      <div className="border-b border-border bg-card/80 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-4 max-w-3xl">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[hsl(355,90%,60%)] shadow-sm shadow-primary/20">
@@ -263,7 +263,7 @@ const Plan = () => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => send(s)}
-                      className="rounded-2xl border border-border bg-white px-4 py-2 text-xs font-medium text-foreground shadow-sm transition-all hover:border-primary/30 hover:bg-accent hover:shadow-md"
+                      className="rounded-2xl border border-border bg-card px-4 py-2 text-xs font-medium text-foreground shadow-sm transition-all hover:border-primary/30 hover:bg-accent hover:shadow-md"
                     >
                       {s}
                     </motion.button>
@@ -296,7 +296,7 @@ const Plan = () => {
                       <Sparkles size={13} className="text-white" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="rounded-3xl rounded-tl-md border border-border bg-white px-5 py-4 shadow-sm">
+                      <div className="rounded-3xl rounded-tl-md border border-border bg-card px-5 py-4 shadow-sm">
                         {msg.content ? (
                           <div className="prose prose-sm max-w-none
                             prose-headings:font-bold prose-headings:text-foreground
@@ -341,9 +341,9 @@ const Plan = () => {
       </div>
 
       {/* ── Input bar (fixed) ── */}
-      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 border-t border-border bg-white/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] md:pb-0">
+      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] md:pb-0">
         <div className="container mx-auto max-w-3xl px-4 py-3">
-          <div className={`flex items-end gap-3 rounded-2xl border-2 bg-white px-4 py-3 transition-all duration-200 ${
+          <div className={`flex items-end gap-3 rounded-2xl border-2 bg-card px-4 py-3 transition-all duration-200 ${
             loading ? "border-primary/30 shadow-[0_0_0_3px_hsla(347,77%,50%,0.07)]" : "border-border focus-within:border-primary/40 focus-within:shadow-[0_0_0_3px_hsla(347,77%,50%,0.07)]"
           }`}>
             <textarea

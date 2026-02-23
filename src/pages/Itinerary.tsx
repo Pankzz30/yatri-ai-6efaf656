@@ -46,7 +46,7 @@ const CollapsibleCard = ({ trigger, children, defaultOpen = false }: {
 }) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="rounded-xl border border-border/40 bg-white overflow-hidden transition-shadow hover:shadow-sm">
+    <div className="rounded-xl border border-border/40 bg-card overflow-hidden transition-shadow hover:shadow-sm">
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-4 py-3 text-left">
         {trigger}
         <ChevronDown size={14} className={`text-muted-foreground transition-transform duration-250 ${open ? "rotate-180" : ""}`} />
@@ -154,7 +154,7 @@ const Itinerary = () => {
   return (
     <div className="min-h-screen bg-background pt-16 pb-24">
       {/* ── Top bar ── */}
-      <div className="sticky top-16 z-30 border-b border-border/60 bg-white/95 backdrop-blur-sm">
+      <div className="sticky top-16 z-30 border-b border-border/60 bg-background/95 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-3 max-w-3xl">
           <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft size={14} />
@@ -184,7 +184,7 @@ const Itinerary = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-          className="rounded-2xl border border-border/40 bg-white p-5 shadow-sm"
+          className="rounded-2xl border border-border/40 bg-card p-5 shadow-sm"
         >
           <div className="flex items-start justify-between">
             <div>
@@ -219,7 +219,7 @@ const Itinerary = () => {
         <Section title="Getting There" icon={Navigation} index={1}>
           <div className="space-y-2">
             {travelOptions.map((t) => (
-              <div key={t.mode} className="flex items-center gap-3 rounded-xl border border-border/40 bg-white px-4 py-3 transition-shadow hover:shadow-sm">
+              <div key={t.mode} className="flex items-center gap-3 rounded-xl border border-border/40 bg-card px-4 py-3 transition-shadow hover:shadow-sm">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary">
                   <t.icon size={16} className="text-foreground" />
                 </div>
@@ -243,7 +243,7 @@ const Itinerary = () => {
         <Section title="Where to Stay" icon={Hotel} index={2}>
           <div className="space-y-2">
             {stays.map((s) => (
-              <div key={s.name} className="rounded-xl border border-border/40 bg-white px-4 py-3 transition-shadow hover:shadow-sm">
+              <div key={s.name} className="rounded-xl border border-border/40 bg-card px-4 py-3 transition-shadow hover:shadow-sm">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2">
@@ -311,7 +311,7 @@ const Itinerary = () => {
         <Section title="Getting Around" icon={Car} index={4}>
           <div className="grid grid-cols-2 gap-2">
             {localTransport.map((t) => (
-              <div key={t.type} className="rounded-xl border border-border/40 bg-white px-3 py-3">
+              <div key={t.type} className="rounded-xl border border-border/40 bg-card px-3 py-3">
                 <p className="text-[12px] font-semibold text-foreground">{t.type}</p>
                 <p className="text-sm font-bold text-primary mt-1">{t.estimate}</p>
                 <p className="text-[10px] text-muted-foreground mt-1">{t.note}</p>
@@ -324,7 +324,7 @@ const Itinerary = () => {
         <Section title="Must-Try Food" icon={UtensilsCrossed} index={5}>
           <div className="space-y-2">
             {foodItems.map((f) => (
-              <div key={f.name} className="flex items-center gap-3 rounded-xl border border-border/40 bg-white px-4 py-3">
+              <div key={f.name} className="flex items-center gap-3 rounded-xl border border-border/40 bg-card px-4 py-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-semibold text-foreground">{f.name}</p>
@@ -342,7 +342,7 @@ const Itinerary = () => {
         <Section title="Hidden Gems" icon={Gem} index={6}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {hiddenGems.map((g) => (
-              <div key={g.name} className="rounded-xl border border-border/40 bg-white px-4 py-3 transition-shadow hover:shadow-sm">
+              <div key={g.name} className="rounded-xl border border-border/40 bg-card px-4 py-3 transition-shadow hover:shadow-sm">
                 <div className="flex items-center gap-2">
                   <p className="text-[13px] font-semibold text-foreground">{g.name}</p>
                   {g.instagrammable && <Badge variant="primary"><Camera size={8} />Insta</Badge>}
@@ -355,7 +355,7 @@ const Itinerary = () => {
 
         {/* ═══ 8. BUDGET BREAKDOWN ═══ */}
         <Section title="Budget Breakdown" icon={Wallet} index={7}>
-          <div className="rounded-2xl border border-border/40 bg-white p-4">
+          <div className="rounded-2xl border border-border/40 bg-card p-4">
             <div className="space-y-3">
               {budgetBreakdown.map((b) => (
                 <div key={b.category} className="flex items-center justify-between">
@@ -379,7 +379,7 @@ const Itinerary = () => {
         {/* ═══ 9. MAP VIEW ═══ */}
         {viewMode === "map" && (
           <Section title="Route Map" icon={Map} index={8}>
-            <div className="rounded-2xl border border-border/40 bg-white overflow-hidden">
+            <div className="rounded-2xl border border-border/40 bg-card overflow-hidden">
               <div className="relative h-64 bg-secondary flex items-center justify-center">
                 <div className="text-center">
                   <Map size={32} className="mx-auto text-muted-foreground/40" />
@@ -387,15 +387,15 @@ const Itinerary = () => {
                   <p className="text-[11px] text-muted-foreground/60 mt-1">Route lines & key locations</p>
                 </div>
                 {/* Route markers mock */}
-                <div className="absolute top-6 left-8 flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 shadow-sm border border-border/40">
+                <div className="absolute top-6 left-8 flex items-center gap-1.5 rounded-full bg-card px-2.5 py-1 shadow-sm border border-border/40">
                   <div className="h-2 w-2 rounded-full bg-primary" />
                   <span className="text-[10px] font-medium text-foreground">Amber Fort</span>
                 </div>
-                <div className="absolute top-14 right-12 flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 shadow-sm border border-border/40">
+                <div className="absolute top-14 right-12 flex items-center gap-1.5 rounded-full bg-card px-2.5 py-1 shadow-sm border border-border/40">
                   <div className="h-2 w-2 rounded-full bg-primary" />
                   <span className="text-[10px] font-medium text-foreground">City Palace</span>
                 </div>
-                <div className="absolute bottom-8 left-16 flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 shadow-sm border border-border/40">
+                <div className="absolute bottom-8 left-16 flex items-center gap-1.5 rounded-full bg-card px-2.5 py-1 shadow-sm border border-border/40">
                   <div className="h-2 w-2 rounded-full bg-amber-500" />
                   <span className="text-[10px] font-medium text-foreground">Hotel</span>
                 </div>
@@ -414,8 +414,7 @@ const Itinerary = () => {
         >
           <button
             onClick={() => navigate("/plan", { state: { prompt: `Plan a ${dur} trip to ${dest}. Budget: ${budget}. Style: ${styles}. Provide a detailed day-by-day itinerary.` } })}
-            className="w-full rounded-lg py-3 text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ background: "linear-gradient(135deg, hsl(347 77% 48%) 0%, hsl(352 82% 56%) 100%)" }}
+            className="w-full rounded-lg py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 gradient-cta"
           >
             Chat with AI for More Details
           </button>

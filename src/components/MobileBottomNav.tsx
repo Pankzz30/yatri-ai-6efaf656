@@ -20,13 +20,7 @@ const MobileBottomNav = () => {
     path === "/" ? location.pathname === "/" : location.pathname === path;
 
   return (
-    <nav
-      className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
-      style={{
-        background: "white",
-        boxShadow: "0 -1px 0 0 rgba(0,0,0,0.06), 0 -4px 16px rgba(0,0,0,0.08)",
-      }}
-    >
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden border-t border-border bg-card shadow-[0_-1px_0_0_hsl(var(--border)),0_-4px_16px_hsla(0,0%,0%,0.08)]">
       <div className="flex items-stretch h-16">
         {navItems.map(({ to, label, icon: Icon }) => {
           const active = isActive(to);
@@ -44,11 +38,10 @@ const MobileBottomNav = () => {
                 <Icon
                   size={20}
                   strokeWidth={active ? 2.2 : 1.8}
-                  style={{ color: active ? "#E11D48" : "#9CA3AF" }}
+                  className={active ? "text-primary" : "text-muted-foreground"}
                 />
                 <span
-                  className="text-[10px] font-medium leading-tight tracking-tight"
-                  style={{ color: active ? "#E11D48" : "#9CA3AF" }}
+                  className={`text-[10px] font-medium leading-tight tracking-tight ${active ? "text-primary" : "text-muted-foreground"}`}
                 >
                   {label}
                 </span>
@@ -57,7 +50,6 @@ const MobileBottomNav = () => {
           );
         })}
       </div>
-      {/* iOS safe area */}
       <div style={{ height: "env(safe-area-inset-bottom)" }} />
     </nav>
   );
