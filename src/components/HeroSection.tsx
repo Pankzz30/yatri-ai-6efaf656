@@ -838,7 +838,7 @@ const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: b
         </div>
       </div>
 
-      <section className="relative flex flex-col items-center justify-center overflow-hidden bg-background px-4 pt-36 pb-6 lg:pt-28 lg:pb-6">
+      <section className="relative flex flex-col items-center justify-center overflow-hidden bg-background px-4 pt-40 pb-6 lg:pt-36 lg:pb-6">
 
         {/* Dot grid */}
         <div
