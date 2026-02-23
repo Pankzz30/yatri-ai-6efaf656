@@ -1,6 +1,6 @@
 const AuthLogo = () => (
   <div className="flex items-center gap-2.5">
-    <div className="flex items-center justify-center rounded-xl bg-[#E11D48] shadow-md shadow-red-200 overflow-hidden" style={{ width: 36, height: 36 }}>
+    <div className="flex items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/20 overflow-hidden" style={{ width: 36, height: 36 }}>
       <svg width="22" height="14" viewBox="0 0 120 72" fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round">
         {/* Chassis */}
         <path d="M10 46 L10 54 Q10 58 14 58 L106 58 Q110 58 110 54 L110 46 Z" strokeWidth="9" />
@@ -27,8 +27,8 @@ const AuthLogo = () => (
       </svg>
     </div>
     <div>
-      <span className="text-xl font-bold tracking-tight text-[#111827]">Yatri</span>
-      <span className="text-xl font-bold tracking-tight text-[#E11D48]"> AI</span>
+      <span className="text-xl font-bold tracking-tight text-foreground">Yatri</span>
+      <span className="text-xl font-bold tracking-tight text-primary"> AI</span>
     </div>
   </div>
 );
