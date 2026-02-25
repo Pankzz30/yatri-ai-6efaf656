@@ -3,7 +3,7 @@ import SearchTransition from "@/components/SearchTransition";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import {
-  Bus, Train, Plane, Hotel, MapPin, Calendar, Users, ArrowLeftRight, ChevronDown, ArrowRight,
+  Car, Train, Plane, Hotel, MapPin, Calendar, Users, ArrowLeftRight, ChevronDown, ArrowRight,
   Home, Shuffle, Loader2, Navigation, Search, X,
 } from "lucide-react";
 import TravelStoryScene from "@/components/TravelStoryScene";
@@ -16,11 +16,11 @@ import type { DateRange } from "react-day-picker";
 /* ─────────────────────────────────────────────────────────────────
    CATEGORY TABS
 ───────────────────────────────────────────────────────────────── */
-type Category = "home" | "bus" | "train" | "flight" | "hotels";
+type Category = "home" | "cab" | "train" | "flight" | "hotels";
 
 const CATEGORIES: { id: Category; label: string; Icon: React.ElementType }[] = [
-  { id: "home",   label: "AI",   Icon: Home  },
-  { id: "bus",    label: "Bus",    Icon: Bus   },
+  { id: "home",   label: "AI",     Icon: Home  },
+  { id: "cab",    label: "Cab",    Icon: Car   },
   { id: "train",  label: "Train",  Icon: Train  },
   { id: "flight", label: "Flight", Icon: Plane  },
   { id: "hotels", label: "Hotels", Icon: Hotel  },
@@ -70,11 +70,11 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   const [showTransition, setShowTransition] = useState(false);
   const [pendingNav, setPendingNav] = useState<{ path: string; state: any } | null>(null);
 
-  // Bus form state
-  const [busFrom, setBusFrom] = useState("");
-  const [busTo, setBusTo] = useState("");
-  const [busDate, setBusDate] = useState("");
-  const [busPassengers] = useState(1);
+  // Cab form state
+  const [cabFrom, setCabFrom] = useState("");
+  const [cabTo, setCabTo] = useState("");
+  const [cabDate, setCabDate] = useState("");
+  const [cabPassengers] = useState(1);
 
   // Train form state
   const [trainFrom, setTrainFrom] = useState("");
@@ -110,14 +110,14 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   };
 
   const handleSearch = () => {
-    if (category === "bus") {
-      const from = swapped ? busTo : busFrom;
-      const to = swapped ? busFrom : busTo;
-      triggerSearch("/bus-results", {
+    if (category === "cab") {
+      const from = swapped ? cabTo : cabFrom;
+      const to = swapped ? cabFrom : cabTo;
+      triggerSearch("/cab-results", {
         from: from || "Delhi",
         to: to || "Jaipur",
-        date: busDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
-        passengers: busPassengers,
+        date: cabDate || new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+        passengers: cabPassengers,
       });
       return;
     }
@@ -158,7 +158,7 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
   };
 
   const renderFields = () => {
-    if (category === "bus" || category === "train") {
+    if (category === "cab" || category === "train") {
       return (
         <>
           <div className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-secondary/40 cursor-pointer group">
@@ -168,8 +168,8 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{fromLabel}</p>
               <input
-                value={category === "bus" ? busFrom : category === "train" ? trainFrom : undefined}
-                onChange={category === "bus" ? (e) => setBusFrom(e.target.value) : category === "train" ? (e) => setTrainFrom(e.target.value) : undefined}
+                value={category === "cab" ? cabFrom : category === "train" ? trainFrom : undefined}
+                onChange={category === "cab" ? (e) => setCabFrom(e.target.value) : category === "train" ? (e) => setTrainFrom(e.target.value) : undefined}
                 placeholder="Origin city"
                 className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
               />
@@ -192,8 +192,8 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{toLabel}</p>
               <input
-                value={category === "bus" ? busTo : category === "train" ? trainTo : undefined}
-                onChange={category === "bus" ? (e) => setBusTo(e.target.value) : category === "train" ? (e) => setTrainTo(e.target.value) : undefined}
+                value={category === "cab" ? cabTo : category === "train" ? trainTo : undefined}
+                onChange={category === "cab" ? (e) => setCabTo(e.target.value) : category === "train" ? (e) => setTrainTo(e.target.value) : undefined}
                 placeholder="Destination city"
                 className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
               />
@@ -208,8 +208,8 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Date</p>
               <input
                 type="date"
-                value={category === "bus" ? busDate : category === "train" ? trainDate : undefined}
-                onChange={category === "bus" ? (e) => setBusDate(e.target.value) : category === "train" ? (e) => setTrainDate(e.target.value) : undefined}
+                value={category === "cab" ? cabDate : category === "train" ? trainDate : undefined}
+                onChange={category === "cab" ? (e) => setCabDate(e.target.value) : category === "train" ? (e) => setTrainDate(e.target.value) : undefined}
                 placeholder="Select date"
                 className="mt-0.5 w-full bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/45 outline-none"
               />
@@ -420,7 +420,7 @@ const BookingCard = ({ category }: { category: Exclude<Category, "home"> }) => {
                 onClick={handleSearch}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:scale-[1.03] hover:shadow-[0_6px_24px_hsla(347,77%,50%,0.30)] active:scale-[0.98]"
               >
-                {category === "bus" && "Search Buses"}
+                {category === "cab" && "Search Cabs"}
                 {category === "train" && "Search Trains"}
                 {category === "flight" && "Search Flights"}
                 {category === "hotels" && "Search Hotels"}
