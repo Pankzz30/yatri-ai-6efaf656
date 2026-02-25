@@ -6,7 +6,7 @@ import {
   Car, Train, Plane, Hotel, MapPin, Calendar, Users, ArrowLeftRight, ChevronDown, ArrowRight,
   Home, Shuffle, Loader2, Navigation, Search, X,
 } from "lucide-react";
-import TravelStoryScene from "@/components/TravelStoryScene";
+import heroVideo from "@/assets/hero-luxury-video.mp4";
 import { useUser } from "@/context/UserContext";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
@@ -952,7 +952,20 @@ const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: b
               animate={{ opacity: 1 }}
               transition={{ duration: 1.0, ease: "easeOut", delay: 0.2 }}
             >
-              <TravelStoryScene className="w-full h-44 sm:h-52 lg:h-60 max-w-md lg:max-w-none" />
+              {/* Cinematic hero video */}
+              <div className="w-full max-w-md lg:max-w-none h-44 sm:h-52 lg:h-60 rounded-2xl overflow-hidden relative shadow-lg ring-1 ring-border/30">
+                <video
+                  src={heroVideo}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                {/* Theme-adaptive overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/20 pointer-events-none" />
+                <div className="absolute inset-0 pointer-events-none ring-1 ring-inset ring-foreground/[0.06] rounded-2xl" />
+              </div>
 
               <motion.h1
                 className="mt-3 text-[1.7rem] sm:text-[2.1rem] lg:text-[2.6rem] font-extrabold leading-tight tracking-tight text-foreground"
