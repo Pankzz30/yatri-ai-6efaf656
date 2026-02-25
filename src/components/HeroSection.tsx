@@ -960,6 +960,7 @@ const HeroSection = ({ isAuthenticated, sceneStartSignal }: { isAuthenticated: b
                   loop
                   muted
                   playsInline
+                  preload="auto"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 {/* Theme-adaptive overlay */}
