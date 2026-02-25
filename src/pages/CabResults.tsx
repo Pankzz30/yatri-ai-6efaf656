@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import heroCabCinematic from "@/assets/hero-cab-cinematic.jpg";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
-import { ArrowRight, MapPin, Calendar, Users, Clock, Star, Wifi, Zap, Shield, Car } from "lucide-react";
+import { ArrowRight, MapPin, Calendar, Users, Clock, Car, Star, Wifi, Zap, Snowflake } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 /* ── Mock cab data ── */
@@ -10,81 +10,71 @@ const CABS = [
     id: 1,
     name: "Toyota Innova Crysta",
     operator: "Yatri Premium Cabs",
-    departure: "Anytime",
-    arrival: "~3h 30m",
+    type: "SUV Premium",
     duration: "3h 30m",
+    distance: "268 km",
     price: 2499,
     originalPrice: 3499,
     rating: 4.8,
     reviews: 3240,
     seats: 6,
-    type: "SUV Premium",
     amenities: ["wifi", "charging", "ac"],
-    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0afa?w=800&q=80",
   },
   {
     id: 2,
     name: "Mercedes E-Class",
     operator: "LuxRide Select",
-    departure: "Anytime",
-    arrival: "~3h 15m",
+    type: "Luxury Sedan",
     duration: "3h 15m",
+    distance: "268 km",
     price: 4599,
     originalPrice: 5999,
     rating: 4.9,
     reviews: 1820,
     seats: 3,
-    type: "Luxury Sedan",
     amenities: ["wifi", "charging", "ac"],
-    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&q=80",
   },
   {
     id: 3,
     name: "Maruti Suzuki Ertiga",
     operator: "CityLink Cabs",
-    departure: "Anytime",
-    arrival: "~4h 00m",
+    type: "MUV Comfort",
     duration: "4h 00m",
+    distance: "268 km",
     price: 1799,
     originalPrice: 2499,
     rating: 4.5,
     reviews: 5100,
     seats: 6,
-    type: "MUV Comfort",
     amenities: ["charging", "ac"],
-    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80",
   },
   {
     id: 4,
     name: "Toyota Camry Hybrid",
     operator: "GreenCab India",
-    departure: "Anytime",
-    arrival: "~3h 20m",
+    type: "Sedan Premium",
     duration: "3h 20m",
+    distance: "268 km",
     price: 3849,
     originalPrice: 4999,
     rating: 4.7,
     reviews: 960,
     seats: 3,
-    type: "Sedan Premium",
     amenities: ["wifi", "charging", "ac"],
-    image: "https://images.unsplash.com/photo-1550355291-bbee04a92027?w=800&q=80",
   },
   {
     id: 5,
     name: "Mahindra XUV700",
     operator: "DriveEasy",
-    departure: "Anytime",
-    arrival: "~3h 45m",
+    type: "SUV Standard",
     duration: "3h 45m",
+    distance: "268 km",
     price: 2199,
     originalPrice: 2999,
     rating: 4.6,
     reviews: 4200,
     seats: 6,
-    type: "SUV Standard",
     amenities: ["charging", "ac"],
-    image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800&q=80",
   },
 ];
 
@@ -102,23 +92,41 @@ const grainStyle: React.CSSProperties = {
 const amenityIcons: Record<string, { icon: typeof Wifi; label: string }> = {
   wifi: { icon: Wifi, label: "Free WiFi" },
   charging: { icon: Zap, label: "USB Charging" },
-  ac: { icon: Shield, label: "AC Comfort" },
+  ac: { icon: Snowflake, label: "AC" },
 };
+
+/* ── Animated Price ── */
+function AnimatedPrice({ price }: { price: number }) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    let frame: number;
+    const start = Date.now();
+    const dur = 1200;
+    const tick = () => {
+      const p = Math.min((Date.now() - start) / dur, 1);
+      setDisplay(Math.round((1 - Math.pow(1 - p, 3)) * price));
+      if (p < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [price]);
+  return <span>₹{display.toLocaleString("en-IN")}</span>;
+}
 
 /* ── Magnetic Button ── */
 function MagneticButton({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 300, damping: 20 });
-  const springY = useSpring(y, { stiffness: 300, damping: 20 });
+  const sx = useSpring(x, { stiffness: 300, damping: 20 });
+  const sy = useSpring(y, { stiffness: 300, damping: 20 });
 
   return (
     <motion.button
-      style={{ x: springX, y: springY }}
+      style={{ x: sx, y: sy }}
       onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        x.set((e.clientX - rect.left - rect.width / 2) * 0.15);
-        y.set((e.clientY - rect.top - rect.height / 2) * 0.15);
+        const r = e.currentTarget.getBoundingClientRect();
+        x.set((e.clientX - r.left - r.width / 2) * 0.15);
+        y.set((e.clientY - r.top - r.height / 2) * 0.15);
       }}
       onMouseLeave={() => { x.set(0); y.set(0); }}
       onClick={onClick}
@@ -134,40 +142,12 @@ function MagneticButton({ children, onClick }: { children: React.ReactNode; onCl
   );
 }
 
-/* ── Price Counter Animation ── */
-function AnimatedPrice({ price }: { price: number }) {
-  const [display, setDisplay] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    let frame: number;
-    const start = Date.now();
-    const duration = 1200;
-    const animate = () => {
-      const elapsed = Date.now() - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(Math.round(eased * price));
-      if (progress < 1) frame = requestAnimationFrame(animate);
-    };
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [price]);
-
-  return <span ref={ref}>₹{display.toLocaleString("en-IN")}</span>;
-}
-
-/* ── Cab Card ── */
+/* ── Cab Card (horizontal layout matching Flights/Trains) ── */
 function CabCard({ cab, index }: { cab: (typeof CABS)[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [25, -25]);
 
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
@@ -194,102 +174,85 @@ function CabCard({ cab, index }: { cab: (typeof CABS)[0]; index: number }) {
           const rect = e.currentTarget.getBoundingClientRect();
           const cx = (e.clientX - rect.left) / rect.width - 0.5;
           const cy = (e.clientY - rect.top) / rect.height - 0.5;
-          rotateX.set(cy * -8);
-          rotateY.set(cx * 8);
+          rotateX.set(cy * -7);
+          rotateY.set(cx * 7);
         }}
         onMouseLeave={() => { rotateX.set(0); rotateY.set(0); }}
         className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-2xl transition-all duration-500 hover:border-primary/20 hover:shadow-[0_0_80px_hsla(347,77%,50%,0.12)]"
       >
-        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+        {/* Light sweep */}
+        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-primary/[0.03] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
 
-        <div className="flex flex-col lg:flex-row">
-          {/* Cab Image */}
-          <div className="relative h-56 lg:h-auto lg:w-[380px] overflow-hidden flex-shrink-0">
-            <motion.img
-              src={cab.image}
-              alt={cab.name}
-              className="h-full w-full object-cover"
-              initial={{ scale: 1.1 }}
-              whileInView={{ scale: 1 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              viewport={{ once: true }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-card" />
-            <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
-
-            <div className="absolute top-4 left-4">
-              <span className="rounded-lg bg-primary/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground backdrop-blur-sm">
-                {cab.type}
-              </span>
+        <div className="flex flex-col lg:flex-row items-stretch">
+          {/* Cab Info - Left */}
+          <div className="flex items-center gap-4 border-b lg:border-b-0 lg:border-r border-border p-5 lg:p-6 lg:w-[220px] flex-shrink-0">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 p-2 flex-shrink-0">
+              <Car className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-foreground">{cab.name}</p>
+              <p className="text-xs text-muted-foreground">{cab.operator}</p>
+              <div className="mt-1 flex items-center gap-1">
+                <Star className="h-3 w-3 fill-[hsl(45,93%,55%)] text-[hsl(45,93%,55%)]" />
+                <span className="text-[10px] font-semibold text-foreground">{cab.rating}</span>
+                <span className="text-[10px] text-muted-foreground">({cab.reviews.toLocaleString()})</span>
+              </div>
             </div>
           </div>
 
-          {/* Content */}
-          <div className="flex flex-1 flex-col justify-between p-6 lg:p-8">
-            <div>
-              <div className="mb-4 flex items-start justify-between">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.05 }}
-                  viewport={{ once: true }}
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                    {cab.operator}
-                  </p>
-                  <h3 className="mt-1 text-xl font-bold tracking-tight text-foreground lg:text-2xl">
-                    {cab.name}
-                  </h3>
-                </motion.div>
+          {/* Trip Details - Center */}
+          <div className="flex flex-1 items-center justify-between p-5 lg:p-6">
+            <div className="text-center">
+              <p className="text-lg font-black tracking-tight text-foreground">{cab.type}</p>
+              <p className="text-xs font-medium text-primary">{cab.seats} Seater</p>
+            </div>
 
-                <div className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5">
-                  <Star className="h-3.5 w-3.5 fill-[hsl(45,93%,55%)] text-[hsl(45,93%,55%)]" />
-                  <span className="text-sm font-bold text-foreground">{cab.rating}</span>
-                  <span className="text-xs text-muted-foreground">({cab.reviews.toLocaleString()})</span>
-                </div>
+            <div className="flex flex-1 items-center gap-2 mx-4">
+              <div className="h-px flex-1 bg-gradient-to-r from-border via-primary to-border" />
+              <div className="flex flex-col items-center gap-0.5">
+                <Clock className="h-3.5 w-3.5 text-primary" />
+                <span className="text-[10px] font-medium text-muted-foreground">{cab.duration}</span>
+                <span className="text-[10px] text-muted-foreground">{cab.distance}</span>
               </div>
+              <div className="h-px flex-1 bg-gradient-to-r from-border via-primary to-border" />
+            </div>
 
-              {/* Trip details */}
-              <div className="mb-5 flex items-center gap-4">
-                <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2">
-                  <Car className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium text-foreground">{cab.seats} Seater</span>
-                </div>
-                <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1">
-                  <Clock className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs font-medium text-muted-foreground">Est. {cab.duration}</span>
-                </div>
-              </div>
+            <div className="text-center">
+              <p className="text-lg font-black tracking-tight text-foreground">Instant</p>
+              <p className="text-xs font-medium text-primary">Pickup</p>
+            </div>
+          </div>
 
-              {/* Amenities */}
-              <div className="flex gap-3">
-                {cab.amenities.map((a) => {
-                  const item = amenityIcons[a];
-                  if (!item) return null;
-                  const Icon = item.icon;
-                  return (
-                    <div key={a} className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5">
-                      <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-xs text-muted-foreground">{item.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
+          {/* Right Panel: Amenities + Price + CTA */}
+          <div className="flex flex-col gap-3 border-t lg:border-t-0 lg:border-l border-border p-5 lg:p-6 lg:w-[280px] flex-shrink-0">
+            {/* Amenities */}
+            <div className="flex flex-wrap gap-2">
+              {cab.amenities.map((a) => {
+                const item = amenityIcons[a];
+                if (!item) return null;
+                const Icon = item.icon;
+                return (
+                  <div key={a} className="flex items-center gap-1 rounded-md bg-muted px-2 py-1">
+                    <Icon className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-[10px] text-muted-foreground">{item.label}</span>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Price & CTA */}
-            <div className="mt-6 flex items-end justify-between border-t border-border pt-5">
+            <div className="flex items-end justify-between">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 + index * 0.05 }}
+                transition={{ duration: 0.6, delay: 0.15 + index * 0.05 }}
                 viewport={{ once: true }}
               >
                 <p className="text-xs text-muted-foreground line-through">₹{cab.originalPrice.toLocaleString("en-IN")}</p>
-                <p className="text-3xl font-black tracking-tight text-foreground">
+                <p className="text-2xl font-black tracking-tight text-foreground">
                   <AnimatedPrice price={cab.price} />
                 </p>
-                <p className="text-xs text-muted-foreground">per trip · {cab.seats} seats</p>
+                <p className="text-[10px] font-medium text-primary">per trip</p>
               </motion.div>
 
               <MagneticButton onClick={() => navigate("/plan")}>
@@ -355,7 +318,7 @@ export default function CabResults() {
         )}
       </AnimatePresence>
 
-      {/* ── Hero ── */}
+      {/* ── Hero Section ── */}
       <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
         <motion.div
           className="absolute inset-0"
@@ -366,14 +329,19 @@ export default function CabResults() {
           <img
             src={heroCabCinematic}
             alt="Cinematic cab hero"
-            className="h-full w-full object-cover object-[center_40%] sm:object-center brightness-[0.65]"
+            className="h-full w-full object-cover object-[center_40%] sm:object-center brightness-[0.6]"
           />
         </motion.div>
 
+        {/* Multi-layer dark cinematic overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[hsl(0,0%,6%)]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-[hsl(0,0%,6%)] via-transparent to-transparent" />
+
+        {/* Grain */}
         <div style={grainStyle} />
+
+        {/* Vignette */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ boxShadow: "inset 0 0 200px 80px rgba(0,0,0,0.6)" }}
@@ -404,6 +372,7 @@ export default function CabResults() {
           ))}
         </div>
 
+        {/* Soft red ambient glow */}
         <div
           className="absolute inset-0 pointer-events-none opacity-30"
           style={{
@@ -415,6 +384,7 @@ export default function CabResults() {
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-16 sm:pb-20 px-4">
+          {/* Brand badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -427,6 +397,7 @@ export default function CabResults() {
             </span>
           </motion.div>
 
+          {/* Route heading — blur-to-clear */}
           <div className="flex items-center gap-2 sm:gap-4">
             <motion.span
               initial={{ opacity: 0, filter: "blur(20px)" }}
@@ -459,6 +430,7 @@ export default function CabResults() {
             </motion.span>
           </div>
 
+          {/* Subtitle */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -468,6 +440,7 @@ export default function CabResults() {
             <span className="text-[hsl(347,77%,55%)] font-semibold">{CABS.length}</span> premium cabs available · Instant booking
           </motion.p>
 
+          {/* Decorative line */}
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
@@ -477,7 +450,7 @@ export default function CabResults() {
         </div>
       </div>
 
-      {/* ── Search Summary Card ── */}
+      {/* ── Floating Glass Search Summary ── */}
       <div className="relative z-10 -mt-10 px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -562,6 +535,7 @@ export default function CabResults() {
         </div>
       </div>
 
+      {/* ── Subtle ambient glow at bottom ── */}
       <div className="pointer-events-none fixed bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[hsla(347,77%,50%,0.05)] to-transparent" />
     </div>
   );
