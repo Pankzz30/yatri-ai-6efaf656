@@ -1,12 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import heroBus from "@/assets/hero-bus-cinematic.jpg";
+import heroCab from "@/assets/hero-cab-cinematic.jpg";
 import heroFlight from "@/assets/hero-flight-cinematic.jpg";
 import heroTrain from "@/assets/hero-train-cinematic.jpg";
 import heroHotel from "@/assets/hero-hotel-cinematic.jpg";
 
-type TransportType = "bus" | "train" | "flight" | "hotels";
+type TransportType = "cab" | "train" | "flight" | "hotels";
 
 interface SearchTransitionProps {
   active: boolean;
@@ -16,16 +16,16 @@ interface SearchTransitionProps {
 }
 
 const HERO_IMAGES: Record<TransportType, string> = {
-  bus: heroBus,
+  cab: heroCab,
   train: heroTrain,
   flight: heroFlight,
   hotels: heroHotel,
 };
 
 const LOADING_TEXTS: Record<TransportType, string[]> = {
-  bus: [
-    "Finding the best buses for you...",
-    "Scanning 500+ operators...",
+  cab: [
+    "Finding the best cabs for you...",
+    "Matching nearby drivers...",
     "Almost there...",
   ],
   train: [
@@ -46,7 +46,7 @@ const LOADING_TEXTS: Record<TransportType, string[]> = {
 };
 
 const TRANSPORT_LABELS: Record<TransportType, string> = {
-  bus: "Bus",
+  cab: "Cab",
   train: "Train",
   flight: "Flight",
   hotels: "Hotels",

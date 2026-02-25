@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import {
-  MapPin, Clock, Wallet, Plane, Train, Bus, Hotel, Star, ChevronDown,
-  Sun, Sunset, Moon, Car, UtensilsCrossed, Camera,
+  MapPin, Clock, Wallet, Plane, Train, Car, Hotel, Star, ChevronDown,
+  Sun, Sunset, Moon, UtensilsCrossed, Camera,
   Gem, ArrowLeft, Edit3, CloudSun, Map, List, Navigation,
   IndianRupee, ArrowRight,
 } from "lucide-react";
@@ -169,7 +169,7 @@ const Itinerary = () => {
   const travelOptions = [
     { mode: "Flight", icon: Plane, price: "₹3,200", duration: "1h 10m", time: "06:30 AM", tag: "Fastest", tagColor: "primary" as const },
     { mode: "Train (Shatabdi)", icon: Train, price: "₹780", duration: "4h 30m", time: "06:00 AM", tag: "Best Value", tagColor: "primary" as const },
-    { mode: "Bus (Volvo AC)", icon: Bus, price: "₹520", duration: "5h 45m", time: "10:00 PM", tag: "Budget", tagColor: "muted" as const },
+    { mode: "Cab (Sedan)", icon: Car, price: "₹2,500", duration: "3h 30m", time: "Anytime", tag: "Comfortable", tagColor: "muted" as const },
   ];
 
   const stays = [

@@ -1,90 +1,90 @@
 import { useRef, useState, useEffect } from "react";
-import heroBusCinematic from "@/assets/hero-bus-cinematic.jpg";
+import heroCabCinematic from "@/assets/hero-cab-cinematic.jpg";
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
-import { ArrowRight, MapPin, Calendar, Users, Clock, Star, Wifi, Zap, Shield } from "lucide-react";
+import { ArrowRight, MapPin, Calendar, Users, Clock, Star, Wifi, Zap, Shield, Car } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-/* ── Mock bus data ── */
-const BUSES = [
+/* ── Mock cab data ── */
+const CABS = [
   {
     id: 1,
-    name: "Volvo 9600 Multi-Axle",
-    operator: "IntrCity SmartBus",
-    departure: "22:30",
-    arrival: "06:15",
-    duration: "7h 45m",
-    price: 1249,
-    originalPrice: 1899,
-    rating: 4.7,
-    reviews: 2340,
-    seats: 12,
-    type: "AC Sleeper",
-    amenities: ["wifi", "charging", "blanket"],
-    image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80",
+    name: "Toyota Innova Crysta",
+    operator: "Yatri Premium Cabs",
+    departure: "Anytime",
+    arrival: "~3h 30m",
+    duration: "3h 30m",
+    price: 2499,
+    originalPrice: 3499,
+    rating: 4.8,
+    reviews: 3240,
+    seats: 6,
+    type: "SUV Premium",
+    amenities: ["wifi", "charging", "ac"],
+    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0afa?w=800&q=80",
   },
   {
     id: 2,
-    name: "Scania Metrolink HD",
-    operator: "Yatri Premium",
-    departure: "23:00",
-    arrival: "06:45",
-    duration: "7h 45m",
-    price: 1599,
-    originalPrice: 2299,
+    name: "Mercedes E-Class",
+    operator: "LuxRide Select",
+    departure: "Anytime",
+    arrival: "~3h 15m",
+    duration: "3h 15m",
+    price: 4599,
+    originalPrice: 5999,
     rating: 4.9,
     reviews: 1820,
-    seats: 8,
-    type: "AC Sleeper Luxury",
-    amenities: ["wifi", "charging", "blanket"],
-    image: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800&q=80",
+    seats: 3,
+    type: "Luxury Sedan",
+    amenities: ["wifi", "charging", "ac"],
+    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&q=80",
   },
   {
     id: 3,
-    name: "Mercedes-Benz 2441",
-    operator: "RedBus Select",
-    departure: "21:15",
-    arrival: "05:30",
-    duration: "8h 15m",
-    price: 999,
-    originalPrice: 1499,
+    name: "Maruti Suzuki Ertiga",
+    operator: "CityLink Cabs",
+    departure: "Anytime",
+    arrival: "~4h 00m",
+    duration: "4h 00m",
+    price: 1799,
+    originalPrice: 2499,
     rating: 4.5,
-    reviews: 3100,
-    seats: 18,
-    type: "AC Semi-Sleeper",
-    amenities: ["charging", "blanket"],
-    image: "https://images.unsplash.com/photo-1557223562-6c77ef16210f?w=800&q=80",
+    reviews: 5100,
+    seats: 6,
+    type: "MUV Comfort",
+    amenities: ["charging", "ac"],
+    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80",
   },
   {
     id: 4,
-    name: "Volvo B11R",
-    operator: "AbhiBus Elite",
-    departure: "20:00",
-    arrival: "04:30",
-    duration: "8h 30m",
-    price: 1849,
-    originalPrice: 2599,
-    rating: 4.8,
+    name: "Toyota Camry Hybrid",
+    operator: "GreenCab India",
+    departure: "Anytime",
+    arrival: "~3h 20m",
+    duration: "3h 20m",
+    price: 3849,
+    originalPrice: 4999,
+    rating: 4.7,
     reviews: 960,
-    seats: 6,
-    type: "AC Sleeper Premium",
-    amenities: ["wifi", "charging", "blanket"],
-    image: "https://images.unsplash.com/photo-1464219789935-c2d9d9aba644?w=800&q=80",
+    seats: 3,
+    type: "Sedan Premium",
+    amenities: ["wifi", "charging", "ac"],
+    image: "https://images.unsplash.com/photo-1550355291-bbee04a92027?w=800&q=80",
   },
   {
     id: 5,
-    name: "Ashok Leyland B.BOSS",
-    operator: "Orange Travels",
-    departure: "19:45",
-    arrival: "04:00",
-    duration: "8h 15m",
-    price: 799,
-    originalPrice: 1199,
-    rating: 4.3,
+    name: "Mahindra XUV700",
+    operator: "DriveEasy",
+    departure: "Anytime",
+    arrival: "~3h 45m",
+    duration: "3h 45m",
+    price: 2199,
+    originalPrice: 2999,
+    rating: 4.6,
     reviews: 4200,
-    seats: 22,
-    type: "AC Seater/Sleeper",
-    amenities: ["charging"],
-    image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800&q=80",
+    seats: 6,
+    type: "SUV Standard",
+    amenities: ["charging", "ac"],
+    image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800&q=80",
   },
 ];
 
@@ -102,7 +102,7 @@ const grainStyle: React.CSSProperties = {
 const amenityIcons: Record<string, { icon: typeof Wifi; label: string }> = {
   wifi: { icon: Wifi, label: "Free WiFi" },
   charging: { icon: Zap, label: "USB Charging" },
-  blanket: { icon: Shield, label: "Blanket & Pillow" },
+  ac: { icon: Shield, label: "AC Comfort" },
 };
 
 /* ── Magnetic Button ── */
@@ -125,7 +125,6 @@ function MagneticButton({ children, onClick }: { children: React.ReactNode; onCl
       whileTap={{ scale: 0.95 }}
       className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-[hsl(347,77%,50%)] to-[hsl(355,90%,55%)] px-6 py-3 text-sm font-bold text-white shadow-[0_0_30px_hsla(347,77%,50%,0.4)] transition-shadow duration-300 hover:shadow-[0_0_50px_hsla(347,77%,50%,0.6)]"
     >
-      {/* Glow sweep */}
       <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
       <span className="relative flex items-center gap-2">
         {children}
@@ -158,8 +157,8 @@ function AnimatedPrice({ price }: { price: number }) {
   return <span ref={ref}>₹{display.toLocaleString("en-IN")}</span>;
 }
 
-/* ── Bus Card ── */
-function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
+/* ── Cab Card ── */
+function CabCard({ cab, index }: { cab: (typeof CABS)[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -201,15 +200,14 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
         onMouseLeave={() => { rotateX.set(0); rotateY.set(0); }}
         className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-2xl transition-all duration-500 hover:border-primary/20 hover:shadow-[0_0_80px_hsla(347,77%,50%,0.12)]"
       >
-        {/* Light sweep effect */}
         <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
 
         <div className="flex flex-col lg:flex-row">
-          {/* Bus Image */}
+          {/* Cab Image */}
           <div className="relative h-56 lg:h-auto lg:w-[380px] overflow-hidden flex-shrink-0">
             <motion.img
-              src={bus.image}
-              alt={bus.name}
+              src={cab.image}
+              alt={cab.name}
               className="h-full w-full object-cover"
               initial={{ scale: 1.1 }}
               whileInView={{ scale: 1 }}
@@ -219,10 +217,9 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-card" />
             <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
 
-            {/* Type badge */}
             <div className="absolute top-4 left-4">
               <span className="rounded-lg bg-primary/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground backdrop-blur-sm">
-                {bus.type}
+                {cab.type}
               </span>
             </div>
           </div>
@@ -230,7 +227,6 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
           {/* Content */}
           <div className="flex flex-1 flex-col justify-between p-6 lg:p-8">
             <div>
-              {/* Header */}
               <div className="mb-4 flex items-start justify-between">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
@@ -239,43 +235,35 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
                   viewport={{ once: true }}
                 >
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                    {bus.operator}
+                    {cab.operator}
                   </p>
                   <h3 className="mt-1 text-xl font-bold tracking-tight text-foreground lg:text-2xl">
-                    {bus.name}
+                    {cab.name}
                   </h3>
                 </motion.div>
 
                 <div className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5">
                   <Star className="h-3.5 w-3.5 fill-[hsl(45,93%,55%)] text-[hsl(45,93%,55%)]" />
-                  <span className="text-sm font-bold text-foreground">{bus.rating}</span>
-                  <span className="text-xs text-muted-foreground">({bus.reviews.toLocaleString()})</span>
+                  <span className="text-sm font-bold text-foreground">{cab.rating}</span>
+                  <span className="text-xs text-muted-foreground">({cab.reviews.toLocaleString()})</span>
                 </div>
               </div>
 
-              {/* Schedule */}
+              {/* Trip details */}
               <div className="mb-5 flex items-center gap-4">
-                <div className="text-center">
-                  <p className="text-2xl font-black tracking-tight text-foreground">{bus.departure}</p>
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Departure</p>
+                <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2">
+                  <Car className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">{cab.seats} Seater</span>
                 </div>
-                <div className="flex flex-1 items-center gap-2">
-                  <div className="h-px flex-1 bg-gradient-to-r from-border via-primary to-border" />
-                  <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1">
-                    <Clock className="h-3 w-3 text-muted-foreground" />
-                    <span className="text-xs font-medium text-muted-foreground">{bus.duration}</span>
-                  </div>
-                  <div className="h-px flex-1 bg-gradient-to-r from-border via-primary to-border" />
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-black tracking-tight text-foreground">{bus.arrival}</p>
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Arrival</p>
+                <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1">
+                  <Clock className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs font-medium text-muted-foreground">Est. {cab.duration}</span>
                 </div>
               </div>
 
               {/* Amenities */}
               <div className="flex gap-3">
-                {bus.amenities.map((a) => {
+                {cab.amenities.map((a) => {
                   const item = amenityIcons[a];
                   if (!item) return null;
                   const Icon = item.icon;
@@ -297,15 +285,15 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
                 transition={{ duration: 0.6, delay: 0.2 + index * 0.05 }}
                 viewport={{ once: true }}
               >
-                <p className="text-xs text-muted-foreground line-through">₹{bus.originalPrice.toLocaleString("en-IN")}</p>
+                <p className="text-xs text-muted-foreground line-through">₹{cab.originalPrice.toLocaleString("en-IN")}</p>
                 <p className="text-3xl font-black tracking-tight text-foreground">
-                  <AnimatedPrice price={bus.price} />
+                  <AnimatedPrice price={cab.price} />
                 </p>
-                <p className="text-xs text-muted-foreground">{bus.seats} seats left</p>
+                <p className="text-xs text-muted-foreground">per trip · {cab.seats} seats</p>
               </motion.div>
 
               <MagneticButton onClick={() => navigate("/plan")}>
-                Select Journey
+                Book Cab
               </MagneticButton>
             </div>
           </div>
@@ -316,9 +304,9 @@ function BusCard({ bus, index }: { bus: (typeof BUSES)[0]; index: number }) {
 }
 
 /* ═══════════════════════════════════════════════════
-   BUS RESULTS PAGE
+   CAB RESULTS PAGE
 ═══════════════════════════════════════════════════ */
-export default function BusResults() {
+export default function CabResults() {
   const [entered, setEntered] = useState(false);
   const location = useLocation();
   const state = location.state as { from?: string; to?: string; date?: string; passengers?: number } | null;
@@ -343,7 +331,6 @@ export default function BusResults() {
             exit={{ opacity: 0 }}
             transition={{ duration: 1, ease: "easeInOut" }}
           >
-            {/* Motion blur streaks */}
             <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
               {[...Array(8)].map((_, i) => (
                 <motion.div
@@ -368,9 +355,8 @@ export default function BusResults() {
         )}
       </AnimatePresence>
 
-      {/* ── Hero / Video Background ── */}
+      {/* ── Hero ── */}
       <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
-        {/* Background video with slow zoom */}
         <motion.div
           className="absolute inset-0"
           initial={{ scale: 1 }}
@@ -378,27 +364,22 @@ export default function BusResults() {
           transition={{ duration: 30, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
         >
           <img
-            src={heroBusCinematic}
-            alt="Cinematic bus hero"
+            src={heroCabCinematic}
+            alt="Cinematic cab hero"
             className="h-full w-full object-cover object-[center_40%] sm:object-center brightness-[0.65]"
           />
         </motion.div>
 
-        {/* Multi-layer dark cinematic overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[hsl(0,0%,6%)]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-[hsl(0,0%,6%)] via-transparent to-transparent" />
-
-        {/* Animated grain texture */}
         <div style={grainStyle} />
-
-        {/* Vignette */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ boxShadow: "inset 0 0 200px 80px rgba(0,0,0,0.6)" }}
         />
 
-        {/* Animated headlight streaks */}
+        {/* Animated light streaks */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(7)].map((_, i) => (
             <motion.div
@@ -423,7 +404,6 @@ export default function BusResults() {
           ))}
         </div>
 
-        {/* Soft red ambient glow */}
         <div
           className="absolute inset-0 pointer-events-none opacity-30"
           style={{
@@ -435,7 +415,6 @@ export default function BusResults() {
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-16 sm:pb-20 px-4">
-          {/* Brand badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -444,11 +423,10 @@ export default function BusResults() {
           >
             <div className="h-1.5 w-1.5 rounded-full bg-[hsl(347,77%,50%)] animate-pulse" />
             <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
-              Yatri Premium Buses
+              Yatri Premium Cabs
             </span>
           </motion.div>
 
-          {/* Route heading — blur-to-clear effect */}
           <div className="flex items-center gap-2 sm:gap-4">
             <motion.span
               initial={{ opacity: 0, filter: "blur(20px)" }}
@@ -481,17 +459,15 @@ export default function BusResults() {
             </motion.span>
           </div>
 
-          {/* Subtitle */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.7, ease: "easeOut" }}
             className="mt-4 text-sm sm:text-base text-white/35 font-medium tracking-wide"
           >
-            <span className="text-[hsl(347,77%,55%)] font-semibold">{BUSES.length}</span> premium buses found · Best prices guaranteed
+            <span className="text-[hsl(347,77%,55%)] font-semibold">{CABS.length}</span> premium cabs available · Instant booking
           </motion.p>
 
-          {/* Decorative line */}
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
@@ -501,7 +477,7 @@ export default function BusResults() {
         </div>
       </div>
 
-      {/* ── Search Summary Card (Glassmorphism) ── */}
+      {/* ── Search Summary Card ── */}
       <div className="relative z-10 -mt-10 px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -564,11 +540,11 @@ export default function BusResults() {
           className="mb-10 flex items-center justify-between"
         >
           <div>
-            <h2 className="text-2xl font-black tracking-tight">Available Buses</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Sorted by popularity · {BUSES.length} results</p>
+            <h2 className="text-2xl font-black tracking-tight">Available Cabs</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Sorted by popularity · {CABS.length} results</p>
           </div>
           <div className="flex gap-2">
-            {["Price", "Rating", "Departure"].map((f) => (
+            {["Price", "Rating", "Type"].map((f) => (
               <button
                 key={f}
                 className="rounded-lg border border-border bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground transition-all hover:border-primary/30 hover:bg-muted hover:text-foreground"
@@ -580,13 +556,12 @@ export default function BusResults() {
         </motion.div>
 
         <div className="space-y-8">
-          {BUSES.map((bus, i) => (
-            <BusCard key={bus.id} bus={bus} index={i} />
+          {CABS.map((cab, i) => (
+            <CabCard key={cab.id} cab={cab} index={i} />
           ))}
         </div>
       </div>
 
-      {/* ── Subtle ambient glow at bottom ── */}
       <div className="pointer-events-none fixed bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[hsla(347,77%,50%,0.05)] to-transparent" />
     </div>
   );
